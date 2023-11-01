@@ -5,6 +5,12 @@
 # Required
 version: 2
 
+# the build.os and build.tools section is mandatory
+build:
+  os: ubuntu-20.04  # for consistency, matches the one used for CI
+  tools:
+    python: "3.9"
+
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
     fail_on_warning: true

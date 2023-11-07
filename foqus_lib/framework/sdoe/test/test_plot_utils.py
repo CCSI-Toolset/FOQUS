@@ -47,6 +47,7 @@ def test_plot_weights(fake_plt: mock.MagicMock):
     config_file = "config_nusf.ini"
     nd = 2
     copy_from_package(config_file)
+    copy_from_package("candidates_nusf.csv")
 
     result = sdoe.run(config_file=config_file, nd=nd, test=False)
 
@@ -93,6 +94,7 @@ def test_plot_pareto(fake_plt: mock.MagicMock):
     config_file = "config_irsf.ini"
     nd = 2
     copy_from_package(config_file)
+    copy_from_package("candidates_irsf.csv")
 
     result = sdoe.run(config_file=config_file, nd=nd, test=False)
 

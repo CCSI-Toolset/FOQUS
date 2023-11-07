@@ -13,12 +13,14 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import matplotlib.pyplot as plt
+import pandas as pd
 import pytest
 from foqus_lib.framework.sdoe import sdoe, nusf, plot_utils, df_utils
 from unittest import mock
 from importlib import resources
 from pathlib import Path
 import configparser
+import json
 
 
 @mock.patch("foqus_lib.framework.sdoe.plot_utils.plt")
@@ -45,37 +47,33 @@ def test_plot_weights(fake_plt: mock.MagicMock):
     fake_plt.subplots.return_value = (fake_fig, (fake_ax1, fake_ax2))
 
     config_file = "config_nusf.ini"
-    nd = 2
     copy_from_package(config_file)
-    copy_from_package("candidates_nusf.csv")
 
-    result = sdoe.run(config_file=config_file, nd=nd, test=False)
+    cand_file = "candidates_nusf.csv"
+    copy_from_package(cand_file)
+    cand = df_utils.load(cand_file)
+
+    results_file = "results_nusf.json"
+    copy_from_package(results_file)
+    with open(results_file) as file:
+        results_dict = json.load(file)
 
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
     scale_method = config["SF"]["scale_method"]
-    cfile = config["INPUT"]["candidate_file"]
     include = [s.strip() for s in config["INPUT"]["include"].split(",")]
     types = [s.strip() for s in config["INPUT"]["types"].split(",")]
-    cand = df_utils.load(cfile)
+
     i = types.index("Weight")
     wcol = include[i]  # weight column name
-    nusf_args = {
-        "cand": cand,
-        "wcol": wcol,
-        "scale_method": scale_method,
-        "results": result[1][5],
-    }
 
-    des = nusf_args["results"]["best_cand_scaled"].values
+    des = pd.DataFrame.from_dict(results_dict["best_cand_scaled"]).values
     xs = des[:, :-1]  # scaled coordinates from best candidate
     wt = des[:, -1]  # scaled weights from best candidate
-    scale_method = nusf_args["scale_method"]
-    cand = nusf_args["cand"]
-    idw = nusf_args["wcol"]
-    idw_np = cand.columns.get_loc(idw)
+
+    idw_np = cand.columns.get_loc(wcol)
     cand_np = cand.to_numpy()
-    mwr = nusf_args["results"]["mwr"]
+    mwr = results_dict["mwr"]
     cand_ = nusf.scale_y(scale_method, mwr, cand_np, idw_np)
     wts = cand_[:, idw_np]  # scaled weights from all candidates
     title = "SDOE (NUSF) Weight Visualization for MWR={}".format(mwr)
@@ -91,21 +89,18 @@ def test_plot_pareto(fake_plt: mock.MagicMock):
     fake_axes = mock.MagicMock()
     fake_plt.subplots.return_value = (fake_fig, fake_axes)
 
-    config_file = "config_irsf.ini"
-    nd = 2
-    copy_from_package(config_file)
-    copy_from_package("candidates_irsf.csv")
+    cand_file = "candidates_irsf.csv"
+    copy_from_package(cand_file)
+    cand = df_utils.load(cand_file)
 
-    result = sdoe.run(config_file=config_file, nd=nd, test=False)
+    results_file = "results_irsf.json"
+    copy_from_package(results_file)
+    with open(results_file) as file:
+        results_dict = json.load(file)
 
-    config = configparser.ConfigParser(allow_no_value=True)
-    config.read(config_file)
-    cfile = config["INPUT"]["candidate_file"]
-    cand = df_utils.load(cfile)
+    pf = pd.DataFrame.from_dict(results_dict["pareto_front"])
 
-    pf = result[1]["pareto_front"]
-
-    fig = plot_utils.plot_pareto(pf, result, cand, None)
+    fig = plot_utils.plot_pareto(pf, results_dict, cand, None)
 
     assert fig is not None
 

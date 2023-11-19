@@ -56,6 +56,29 @@ from sklearn.neural_network import MLPRegressor  # pylint: disable=import-error
 import pickle
 from types import SimpleNamespace
 
+
+def validate_training_data(xdata: np.ndarray, zdata: np.ndarray):
+    number_columns_in_xdata = xdata.shape[1]
+    number_columns_in_zdata = zdata.shape[1]
+    errors = []
+
+    if number_columns_in_xdata < 1 and number_columns_in_zdata < 1:
+        errors.append("Training data is empty")
+
+    if number_columns_in_xdata < 1:
+        errors.append("No columns in input training data")
+
+    if number_columns_in_zdata < 1:
+        errors.append("No columns in output training data")
+
+    if number_columns_in_zdata > 1:
+        errors.append("Support for multicolumn dataset output not yet available")
+        # todo: check if MLPRegressor works with multiple output columns
+    if errors:
+        message = f"Invalid input:{errors}"
+        raise ValueError(message)
+
+
 # define network layer connections
 def call(self, inputs):
 
@@ -222,6 +245,15 @@ class surrogateMethod(surrogate):
             hint="Takes only 0 or 1",
         )
 
+        self.options.add(
+            name="output_file",
+            section="DATA Settings",
+            dtype=str,
+            default="nn_model_sklearn.pkl",
+            desc="Name of output file for model, should have file extension: .pkl",
+            hint="Enter a custom file name if desired",
+        )
+
     def run(self):
         """
         This function overloads the Thread class function,
@@ -238,26 +270,28 @@ class surrogateMethod(surrogate):
         self.msgQueue.put("Starting training process")
 
         # method to create model
-        def create_model(x_train, z_train):
+        # def create_model(x_train, z_train):
+        #     self.msgQueue.put(f"using input variables: {xlabels}")
+        #     self.msgQueue.put(f"using output variables: {zlabels}")
+        #     validate_training_data(x_train, z_train)
+        #     mlp = MLPRegressor(
+        #         solver="lbfgs",
+        #         activation="relu",
+        #         hidden_layer_sizes=[12] * 3,  # 3 hidden layers, each with 12 neurons
+        #         max_iter=10000,
+        #     )
+        #     model = mlp.fit(x_train, z_train)
+        #     model.custom = SimpleNamespace(
+        #         input_labels=xlabels,
+        #         output_labels=zlabels,
+        #         input_bounds=xdata_bounds,
+        #         output_bounds=zdata_bounds,
+        #         normalized=True,
+        #         normalization_form="Custom",
+        #         normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
+        #     )
 
-            mlp = MLPRegressor(
-                solver="lbfgs",
-                activation="relu",
-                hidden_layer_sizes=[12] * 3,  # 3 hidden layers, each with 12 neurons
-                max_iter=10000,
-            )
-            model = mlp.fit(x_train, z_train)
-            model.custom = SimpleNamespace(
-                input_labels=xlabels,
-                output_labels=zlabels,
-                input_bounds=xdata_bounds,
-                output_bounds=zdata_bounds,
-                normalized=True,
-                normalization_form="Custom",
-                normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
-            )
-
-            return model
+        #     return model
 
         # Main code
 
@@ -292,18 +326,67 @@ class surrogateMethod(surrogate):
         )  # PyTorch requires a Numpy array as input
 
         # define x and z data, not used but will add to variable dictionary
-        xdata = model_data[:, :-2]
-        zdata = model_data[:, -2:]
+        # xdata = model_data[:, :-2]
+        # zdata = model_data[:, -2:]
 
         # create model
-        model = create_model(x_train=xdata, z_train=zdata)
 
-        with open("mea_column_model_customnormform_scikitlearn.pkl", "wb") as file:
+        try:
+            model = create_model(
+                xlabels=xlabels,
+                zlabels=zlabels,
+                x_train=xdata,
+                z_train=zdata,
+                xdata_bounds=xdata_bounds,
+                zdata_bounds=zdata_bounds,
+            )
+        except Exception as e:
+            self.msgQueue.put(f"The training terminated with an error: {e}")
+            return
+        # else:
+        self.msgQueue.put("Model created successfully")
+
+        file_name = self.options["output_file"].value
+        with open(file_name, "wb") as file:
             pickle.dump(model, file)
 
         # load model as pickle format
-        with open("mea_column_model_customnormform_scikitlearn.pkl", "rb") as file:
+        with open(file_name, "rb") as file:
             loaded_model = pickle.load(file)
             self.msgQueue.put(loaded_model)
 
         self.msgQueue.put("Training complete")
+        self.msgQueue.put(f"Model saved to {file_name}")
+
+
+def create_model(xlabels, zlabels, x_train, z_train, xdata_bounds, zdata_bounds):
+    print(f"using input variables: {xdata_bounds}")
+    print(f"using output variables: {zdata_bounds}")
+    print(x_train.shape)
+    print(z_train.shape)
+    validate_training_data(x_train, z_train)
+    # if np.ravel is not called on the output, a DataConversionWarning is emitted
+    # However, using np.ravel will cause an error if output data contains > 1 columns
+    # reshaped = np.ravel(z_train)
+    # print(reshaped.shape)
+    mlp = MLPRegressor(
+        solver="lbfgs",
+        activation="relu",
+        hidden_layer_sizes=[12] * 3,  # 3 hidden layers, each with 12 neurons
+        # trying to set hidden_layer_sizes to resolve DataConversionWarning
+        # but does not appear to fix the issue
+        # hidden_layer_sizes=(x_train.shape[1], z_train.shape[1]),
+        max_iter=10000,
+    )
+    model = mlp.fit(x_train, z_train)
+    model.custom = SimpleNamespace(
+        input_labels=xlabels,
+        output_labels=zlabels,
+        input_bounds=xdata_bounds,
+        output_bounds=zdata_bounds,
+        normalized=True,
+        normalization_form="Custom",
+        normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
+    )
+
+    return model

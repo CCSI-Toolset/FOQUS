@@ -288,6 +288,15 @@ class surrogateMethod(surrogate):
             hint="Takes only 0 or 1",
         )
 
+        self.options.add(
+            name="output_file",
+            section="DATA Settings",
+            dtype=str,
+            default="nn_model.keras",
+            desc="Name of output file for model, should have file extension: .keras",
+            hint="Enter a custom file name if desired",
+        )
+
     def run(self):
         """
         This function overloads the Thread class function,
@@ -386,7 +395,9 @@ class surrogateMethod(surrogate):
         training_output: str = stdout_buffer.getvalue()
         print(training_output)
         self.msgQueue.put(training_output)
+        file_name = self.options["output_file"].value
 
         self.msgQueue.put("Training complete")
         # save model as native Keras
-        model.save("keras_nn.keras")
+        model.save(file_name)
+        self.msgQueue.put(f"Model saved to {file_name}")

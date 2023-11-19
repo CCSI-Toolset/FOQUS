@@ -78,6 +78,25 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 # custom class to define Pytorch NN layers
 
 
+def validate_training_data(x_train: torch.Tensor, z_train: torch.Tensor):
+    number_columns_in_x_train = x_train.size()[1]
+    number_columns_in_z_train = z_train.size()[1]
+    errors = []
+
+    if number_columns_in_x_train < 1 and number_columns_in_z_train < 1:
+        errors.append("Training data is empty")
+
+    if number_columns_in_x_train < 1:
+        errors.append("No columns in input training data")
+
+    if number_columns_in_z_train < 1:
+        errors.append("No columns in output training data")
+
+    if errors:
+        message = f"Invalid input:{errors}"
+        raise ValueError(message)
+
+
 class mea_column_model_customnormform_pytorch(nn.Module):
     def __init__(
         self,
@@ -261,6 +280,15 @@ class surrogateMethod(surrogate):
             hint="Takes only 0 or 1",
         )
 
+        self.options.add(
+            name="output_file",
+            section="DATA Settings",
+            dtype=str,
+            default="nn_model.pt",
+            desc="Name of output file for model, should have file extension: .pt",
+            hint="Enter a custom file name if desired",
+        )
+
     def run(self):
         """
         This function overloads the Thread class function,
@@ -324,34 +352,50 @@ class surrogateMethod(surrogate):
         )  # PyTorch requires a Numpy array as input
 
         # define x and z data, not used but will add to variable dictionary
-        xdata = model_data[:, :-2]
-        zdata = model_data[:, -2:]
+        # xdata = model_data[:, :-2]
+        # zdata = model_data[:, -2:]
 
+        # raise exception here after BPC position
         # create model
         x_train = torch.from_numpy(xdata).float().to(device)
         z_train = torch.from_numpy(zdata).float().to(device)
-        model = create_model(
-            x_train,
-            z_train,
-            xlabels,
-            zlabels,
-            input_bounds=xdata_bounds,
-            output_bounds=zdata_bounds,
-            normalized=True,
-            normalization_form="Custom",
-            normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
-        )
 
+        # print type at this point
+        # can also print inside create_model
+
+        try:
+            model = create_model(
+                x_train,
+                z_train,
+                xlabels,
+                zlabels,
+                input_bounds=xdata_bounds,
+                output_bounds=zdata_bounds,
+                normalized=True,
+                normalization_form="Custom",
+                normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
+            )
+        except Exception as e:
+            self.msgQueue.put(f"The training terminated with an error: {e}")
+            return
+        # else:
+        self.msgQueue.put("Model created successfully")
         print(model)
 
-        x = torch.tensor(xdata, dtype=torch.float)
-        zfit = model(x).detach().numpy()
+        # x = torch.tensor(xdata, dtype=torch.float)
+        # zfit = model(x).detach().numpy()
 
         # save model as PT format
+        file_name = self.options["output_file"].value
         model_scripted = torch.jit.script(model)
-        model_scripted.save("mea_column_model_customnormform_pytorch.pt")
+        model_scripted.save(file_name)
+        # self.msgQueue.put(type(x_train))
+        # self.msgQueue.put(type(z_train))
+        # self.msgQueue.put(x_train.size())
+        # self.msgQueue.put(z_train.size())
         self.msgQueue.put(model)
         self.msgQueue.put("Training complete")
+        self.msgQueue.put(f"Model saved to {file_name}")
 
 
 class main_model(nn.Module):
@@ -377,7 +421,10 @@ class main_model(nn.Module):
 
 
 def create_model(x_train, z_train, x_labels, z_labels, **kwargs):
-
+    # use print?
+    print(f"using input variables: {x_labels}")
+    print(f"using output variables: {z_labels}")
+    validate_training_data(x_train, z_train)
     model = main_model(
         input_labels=x_labels, output_labels=z_labels, hidden=20, **kwargs
     )

@@ -1202,7 +1202,7 @@ def from_sibling_labels(target: W.QWidget, direction="E"):
         tgt_left = tgt_geom.left()
         cand_right = cand_geom.right()
         horizontal_distance = tgt_left - cand_right
-        is_cand_preceding_horizontally= horizontal_distance >= 0
+        is_cand_preceding_horizontally = horizontal_distance >= 0
 
         tgt_top, tgt_btm = tgt_geom.top(), tgt_geom.bottom()
         cand_top, cand_btm = cand_geom.top(), cand_geom.bottom()

@@ -216,7 +216,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         # times after this function returns any button clicks that were
         # stored up sent signals.  But they happen after fnction returns
         # so can't figure out how to block them.  launch process in a
-        # seperate thread?
+        # separate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
         exepath = os.path.join(exepath, "SinterConfigGUI.exe")
         tmp_file = os.path.abspath("temp\\sc_out.txt")

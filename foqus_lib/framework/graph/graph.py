@@ -1176,7 +1176,7 @@ class Graph(threading.Thread):
             log_file = self.tearLogStub
             for j in range(100):
                 # dont want to pick up too many of these files
-                # but if there are multiple loops want to produce seperate
+                # but if there are multiple loops want to produce separate
                 # files for them
                 if not os.path.isfile("{}{}.csv".format(log_file, j + 1)) or j == 99:
                     log_file = "{}{}.csv".format(log_file, j + 1)

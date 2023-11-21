@@ -194,7 +194,7 @@ class session:
         """
         self.flowsheet = None
         # Get to the general foqus settings through the FOQUS session,
-        # but the setting are stored in a seperate file not in the
+        # but the setting are stored in a separate file not in the
         # FOQUS session file.  Its just here to make things easier,
         # since general FOQUS settings where a late addition.
         self.foqusSettings = generalSettings()

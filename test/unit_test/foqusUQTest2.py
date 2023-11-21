@@ -136,7 +136,7 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
     """
     Using timers to push buttons on popups and modal dialogs and
     other things were I need an easy way to make things happen from
-    a seperate thread.  Usually where something is blocking the main
+    a separate thread.  Usually where something is blocking the main
     GUI loop.
 
     name: string name of timer

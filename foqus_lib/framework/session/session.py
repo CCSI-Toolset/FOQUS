@@ -16,7 +16,7 @@
 
 * Some functions to setup FOQUS environment
 * Class to store FOQUS session information
-* Class for genral FOQUS settings
+* Class for general FOQUS settings
 
 John Eslick, Carnegie Mellon University, 2014
 """
@@ -373,10 +373,10 @@ class session:
 
     def saveFlowsheetValues(self, filename, indent=0):
         """
-        Save only the values of flowsheet varaibles to a json file
+        Save only the values of flowsheet variables to a json file
         This is mostly for running flowsheets from the command line,
         where you already loaded a session, and you don't need all
-        the other junk in a sesssion file.  The values file is much
+        the other junk in a session file.  The values file is much
         smaller.
         """
         with open(filename, "w") as f:
@@ -387,10 +387,10 @@ class session:
 
     def loadFlowsheetValues(self, filename):
         """
-        Load only the values of flowsheet varaibles to a json file
+        Load only the values of flowsheet variables to a json file
         This is mostly for running flowsheets from the command line,
         where you already loaded a session, and you don't need all
-        the other junk in a sesssion file.  The values file is much
+        the other junk in a session file.  The values file is much
         smaller.
         """
         with open(filename, "r") as f:
@@ -752,15 +752,15 @@ class generalSettings:
 
     2) The settings file in the working directory overrides the
        main settings file.  This is foqus.cfg in the working
-       direcotry.  The option to override settings by storing a
+       directory.  The option to override settings by storing a
        settings file in the working directory is mainly to allow
        multiple copies of FOQUS to run at the same time without
-       haveing conficts if the user wants to change settings.
+       having conflicts if the user wants to change settings.
 
     The reason the main settings file exists is for starting FOQUS
     from the Windows start menu.  It provide the working directory
     to use.  If you want to run more than one copy of FOQUS at a
-    time it is best to start addtional copies from the command line
+    time it is best to start additional copies from the command line
     specifying the working directory as a command line option.
     """
 
@@ -864,13 +864,13 @@ class generalSettings:
     def getRecentlyOpendFiles(self):
         """
         Just returns the list of files.  This is here in case
-        we deside to add some validation step.
+        we decide to add some validation step.
         """
         return self.recentlyOpenedFiles
 
     def settingsNormpath(self):
         """
-        Make sure all the seperators match and go the right way for
+        Make sure all the separators match and go the right way for
         the OS
         """
         if self.working_dir:
@@ -916,7 +916,7 @@ class generalSettings:
         """
         Load the settings from a dictionary, and apply them
         some setting changes may require a FOQUS restart though and
-        are handeled when FOQUS starts.
+        are handled when FOQUS starts.
         """
         curWdir = os.getcwd()
         for att in self.directCopy:  # reads settings from appdata
@@ -954,7 +954,7 @@ class generalSettings:
             the $HOME or %APPDATA% location regaurdless of the
             setting to save the options in the working directory.
             this allows FOQUS to create a main settings file if
-            it doesn't exist.  Asside from that the
+            it doesn't exist.  Aside from that the
             ignoreWDirSetting argument is pretty useless
         """
         d = self.saveDict(newWdir=newWdir)

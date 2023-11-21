@@ -14,7 +14,7 @@ acosso <- function(X, y, order=2, wt.pow=1, cv='bic', w, lambda.0, gcv.pen=1.01,
 ## wt.pow   - the weights used in the adaptive penalty are ||P^j||^{-wt.pow} 
 ##            wt.pow=0 is the COSSO
 ## cv       - the method used to select the tuning parameter M from the ACOSSO
-##            paper. (the tuning paramter is actually called K in this code).
+##            paper. (the tuning parameter is actually called K in this code).
 ##            Options are '5cv', 'gcv', and 'bic', or a numeric value to use 
 ##            for M
 ## w        - optional vector to use for w (only used if 'cv' is numeric)

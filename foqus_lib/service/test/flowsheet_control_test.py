@@ -82,7 +82,7 @@ def _url_open_side_effect(url):
         if len(args) == idx + 3:
             val = TAGS_USERDATA_BIN
         else:
-            assert len(args) == idx + 4, "unexpect url path length %s" % (url)
+            assert len(args) == idx + 4, "unexpected url path length %s" % (url)
             d = json.loads(INSTANCE_USERDATA_JSON)
             key = args[idx + 3]
             assert key in d, "Missing Key in %s, instance-data %s" % (url, str(args))

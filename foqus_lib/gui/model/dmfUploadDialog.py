@@ -214,7 +214,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         """
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
-        # stored up sent signals.  But they happen after fnction returns
+        # stored up sent signals.  But they happen after function returns
         # so can't figure out how to block them.  launch process in a
         # separate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)

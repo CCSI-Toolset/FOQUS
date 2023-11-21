@@ -150,7 +150,7 @@ def heatIntegrationCalc(node):
             tags = vars[name].tags  # get variable tags
             blk = blockLookup.get(
                 name, None
-            )  # get the blocks that a varible is associated with
+            )  # get the blocks that a variable is associated with
             if blk != None:
                 if (
                     blk in heaterSet and "heater" in tags

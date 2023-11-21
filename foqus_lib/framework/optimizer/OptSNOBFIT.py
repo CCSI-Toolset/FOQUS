@@ -30,7 +30,7 @@ class opt:
         self.optionOrder = []
         self.name = "SNOBFIT-NIST"
         self.available = snobfit_available
-        self.description = "Python implimentation of SNOBFIT from ..."
+        self.description = "Python implementation of SNOBFIT from ..."
         self.mp = False
         self.mobj = False
         # add options   Name             Default              Description

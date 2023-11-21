@@ -68,7 +68,7 @@ class Common(obj):
 
     @staticmethod
     def getPsuadePath():  ### OBSOLETE in this release
-        # Brenda's version of getPsuadePath(), superceded by LocalExecutionModule.getPsuadePath()
+        # Brenda's version of getPsuadePath(), superseded by LocalExecutionModule.getPsuadePath()
         fname = os.getcwd() + os.path.sep + "PSUADEPATH"
         if not os.path.exists(fname):
             error = "%s does not exist." % fname

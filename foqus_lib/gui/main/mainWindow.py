@@ -259,7 +259,7 @@ class mainWindow(QMainWindow):
 
     def clearOldMessages(self):
         """
-        This function clears old mesages from the gui
+        This function clears old messages from the gui
         when loading or creating a new session.
         """
         self.optSetupFrame.clearOld()

@@ -80,7 +80,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
 
     def clearOld(self):
         """
-        Clear messages from old optimzation runs
+        Clear messages from old optimization runs
         """
         self.optMonitorFrame.clearMessages()
         try:
@@ -259,7 +259,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
 
     def scaleHelper(self, ind=0):
         """
-        If a descision variable has a none scale type set the scale
+        If a decision variable has a none scale type set the scale
         to lineae.  For other variables set the scale type to none
         and disable the scale selection.
         """

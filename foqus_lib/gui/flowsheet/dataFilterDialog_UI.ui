@@ -104,7 +104,7 @@
      <item row="2" column="2">
       <widget class="QLineEdit" name="sortTermEdit">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is a json list of columns to sort by.  If rows have the same value in the first column the second will be used to sort and so on.  If a &amp;quot;-&amp;quot; is included at the begining of a column name string (inside quotes), that columns will be sorted in descending order.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is a json list of columns to sort by.  If rows have the same value in the first column the second will be used to sort and so on.  If a &amp;quot;-&amp;quot; is included at the beginning of a column name string (inside quotes), that columns will be sorted in descending order.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>[]</string>

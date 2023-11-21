@@ -112,9 +112,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         """
         Check if the model assigned to the node exists.  This would
         mostly be a problem when someone passes a flowsheet to
-        someone else who is using a differnt Turbine instance.  They
+        someone else who is using a different Turbine instance.  They
         may not have uploaded the models to Turbine, or may be using
-        differnt model names.
+        different model names.
         """
         if self.node.modelType == nodeModelTypes.MODEL_NONE:
             pass
@@ -587,7 +587,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
 
     def addInputClicked(self):
         """
-        The clicked signal contains will send a checked argumnet to the callback
+        The clicked signal contains will send a checked argument to the callback
         which will go into name if I directly use addInput as the callback
         """
         self.addInput()
@@ -692,7 +692,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
 
     def addOutputClicked(self):
         """
-        The clicked signal contains will send a checked argumnet to the callback
+        The clicked signal contains will send a checked argument to the callback
         which will go into name if I directly use addInput as the callback
         """
         self.addOutput()

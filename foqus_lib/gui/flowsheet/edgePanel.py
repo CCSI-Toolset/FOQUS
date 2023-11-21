@@ -61,7 +61,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         For PyQt5 buttons also send a checked argument to the callback even when
         they are not checkable. You can't set a callback that takes args unless
         you account for the checked argument.  So this just drops the checked
-        arg and calls addConection().
+        arg and calls addConnection().
         """
         self.addConnection()
 
@@ -95,7 +95,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
 
     def changeIndex(self, index):
         """
-        Callback to update when a differnt edge is selected from the edge index
+        Callback to update when a different edge is selected from the edge index
         pulldown.
 
         Args:
@@ -264,7 +264,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
     def autoConnect(self):
         """
         Add connections to the connection table that connect variables with the
-        same name in from node to the to node.  The vaiables can be inputs or
+        same name in from node to the to node.  The variables can be inputs or
         outputs in the from node, but only inputs in the to node.
 
         Args:
@@ -287,7 +287,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
     def addConnection(self, fv="", tv=""):
         """
         Add a new row to the connection table, if fv and/or tv are supplied
-        and fv and tv are valid variable names, initally create the row with
+        and fv and tv are valid variable names, initially create the row with
         the specified connection.
 
         Args
@@ -308,7 +308,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         # Fill in the pull down boxes
         row = self.connectTable.rowCount() - 1
         gh.setTableItem(self.connectTable, row, 0, fv, pullDown=vars1out + vars1in)
-        # Put a seperator between output and input vars in from vars
+        # Put a separator between output and input vars in from vars
         self.connectTable.cellWidget(row, 0).insertSeparator(len(vars1out))
         gh.setTableItem(self.connectTable, row, 1, tv, pullDown=vars2)
         gh.setTableItem(  # This is the active checkbox

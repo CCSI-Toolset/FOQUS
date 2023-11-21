@@ -436,7 +436,7 @@
             <item>
              <widget class="QPushButton" name="TestTurb">
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Test the Turbine configuration to be sure that the configured remote instance of Turbine is responding propery.  If the test fails, Turbine may not be running or the configuration may be wrong.  The test result should provide addtional information on any errors encountered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Test the Turbine configuration to be sure that the configured remote instance of Turbine is responding propery.  If the test fails, Turbine may not be running or the configuration may be wrong.  The test result should provide additional information on any errors encountered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>Test</string>

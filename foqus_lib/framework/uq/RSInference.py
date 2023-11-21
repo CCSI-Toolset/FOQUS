@@ -543,7 +543,7 @@ class RSInferencer(
         f.write("3\n")  # number of MCMC chains; default = 3
         f.write(
             "1.05\n"
-        )  # PSRF (convergence metric for MCMC) thershold; default = 1.05
+        )  # PSRF (convergence metric for MCMC) threshold; default = 1.05
         f.write("quit\n")
         f.seek(0)
 

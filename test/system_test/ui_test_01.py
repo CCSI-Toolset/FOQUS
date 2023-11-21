@@ -242,7 +242,7 @@ try:  # Catch any exception and stop all timers before finishing up
         MainWin.nodeDock.inputVarTable.item(0, 6).setText("10")  # max x2
         MainWin.nodeDock.inputVarTable.item(1, 5).setText("-10")  # min x2
         MainWin.nodeDock.inputVarTable.item(1, 6).setText("10")  # max x2
-        MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")  # deafult x1
+        MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")  # default x1
         MainWin.nodeDock.inputVarTable.item(1, 4).setText("2")  # default x2
         MainWin.nodeDock.inputVarTable.item(0, 1).setText("5")  # value x1
         MainWin.nodeDock.inputVarTable.item(1, 1).setText("2")  # value x2

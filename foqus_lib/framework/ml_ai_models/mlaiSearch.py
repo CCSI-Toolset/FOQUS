@@ -15,8 +15,7 @@
 """ mlaiSearch.py
 
 * This class looks for ml_ai model files and creates a list containing the
-  NN model names. The ml_ai models are identified by a certain string contained
-  in the file name. Files containing ml_ai models should have a .h5 extension.
+  NN model names.
 
 John Eslick, Carnegie Mellon University, 2014
 """

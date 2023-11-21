@@ -266,3 +266,18 @@ class TestMLAIPluginFlowsheetRun:
             text_when_success: str = "Finished Single Simulation... Success",
         ):
             assert text_when_success in statusbar_message
+
+    def test_load_and_run_measmt(self, active_session, simnode):
+        pytest.importorskip("smt", reason="smt not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # set sim name and confirm it's the correct model
+        simnode.simNameBox.setCurrentIndex(8)
+        assert simnode.simNameBox.currentText() == "mea_column_model_smt"
+
+        def test_flowsheet_run_successful(
+            self,
+            trigger_flowsheet_run_action,
+            statusbar_message: str,
+            text_when_success: str = "Finished Single Simulation... Success",
+        ):
+            assert text_when_success in statusbar_message

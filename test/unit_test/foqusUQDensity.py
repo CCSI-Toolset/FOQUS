@@ -172,7 +172,7 @@ addTimer("rs_inference", rsInference)
 timers["time_out"].start(MAX_RUN_TIME)
 
 try:
-    # raise(Exception("Test exception handeling"))
+    # raise(Exception("Test exception handling"))
     while 1:
 
         ### This is the dialog I created for this type of stuff

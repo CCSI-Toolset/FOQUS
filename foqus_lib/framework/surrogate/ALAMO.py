@@ -701,8 +701,8 @@ class surrogateMethod(surrogate):
         else:
             maxiter = self.options["MAXITER"].value
         # Number f input and output variables
-        nin = self.nInput()
-        nout = self.nOutput()
+        n_in = self.nInput()
+        n_out = self.nOutput()
         # Filter for initial data
         dataFilter = self.options["Initial Data Filter"].value
         # filter for validation data
@@ -811,8 +811,8 @@ class surrogateMethod(surrogate):
             af.write("simulator {}\n".format(adaptiveExe))
             af.write("#simin input.txt\n")
             af.write("#simout output.txt\n")
-            af.write("ninputs {0}\n".format(nin))
-            af.write("noutputs {0}\n".format(nout))
+            af.write("ninputs {0}\n".format(n_in))
+            af.write("noutputs {0}\n".format(n_out))
             # write the min vector
             self.minVals = []
             for x in self.input:
@@ -930,7 +930,7 @@ class surrogateMethod(surrogate):
                 af.write("\nBEGIN_DATA\n")
                 # reset filter to initial data set
                 for i in res.get_indexes(filtered=True):
-                    line = [0] * (nin + nout)
+                    line = [0] * (n_in + n_out)
                     p = 0
                     for j, vname in enumerate(self.input):
                         line[p] = res["input.{}".format(vname)][i]
@@ -949,7 +949,7 @@ class surrogateMethod(surrogate):
             # Reset data filter to validation set
             res.set_filter(validFilter)
             for i in res.get_indexes(filtered=True):
-                line = [0] * (nin + nout)
+                line = [0] * (n_in + n_out)
                 p = 0
                 for j, vname in enumerate(self.input):
                     line[p] = res["input.{}".format(vname)][i]

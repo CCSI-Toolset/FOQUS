@@ -351,7 +351,7 @@ try:  # Catch any exception and stop all timers before finishing up
         MainWin.uqSetupFrame.simulationTable.cellWidget(0, 4).click()
         if not timerWait("uq_analyze_scheme"):
             break
-        # MainWin.AnalysisDialog.swithcModes.click()
+        # MainWin.AnalysisDialog.switchModes.click()
         break
 except Exception as e:
     # if there is any exception make sure the timers are stopped

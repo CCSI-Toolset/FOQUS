@@ -296,7 +296,7 @@ class Graph(threading.Thread):
         self.singleCount = sd.get("singleCount", self.singleCount)
         self.pre_solve_nodes = sd.get("pre_solve_nodes", [])
         self.post_solve_nodes = sd.get("post_solve_nodes", [])
-        self.no_solve_nodes = sd.get("no_sovle_nodes", [])
+        self.no_solve_nodes = sd.get("no_solve_nodes", [])
         self.turbineSim = sd.get("turbineSim", None)
         temp = sd.get("results", None)
         if temp:
@@ -1448,7 +1448,7 @@ class Graph(threading.Thread):
             for e in self.edges:
                 if e.tear and not includeTear:
                     ntear += 1
-                if not e.acitve and not includeInactive:
+                if not e.active and not includeInactive:
                     ninactive += 1
         return len(self.edges) - ntear - ninactive
 

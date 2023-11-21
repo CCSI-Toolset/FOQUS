@@ -1042,7 +1042,7 @@ class TurbineConfiguration:
         res = None
         state = "submit"  # initial state of the job
         failedStates = ["error", "expired", "cancel", "terminate"]
-        succesStates = ["success", "warning"]
+        successStates = ["success", "warning"]
         while True:  # start status checking loop
             # wait checkInt seconds wait before checking first time,
             # probably started the job, and it won't finish instantly
@@ -1076,7 +1076,7 @@ class TurbineConfiguration:
                 ):
                     state = "error"
                 failure = state in failedStates
-                success = state in succesStates
+                success = state in successStates
                 # Check for the run start time instead of the state just
                 # in case job started and completed between checks
                 if not setupStart and state == "setup":

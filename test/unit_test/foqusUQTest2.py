@@ -166,7 +166,7 @@ addTimer("rs_analyze", rsAnalyze)
 timers["time_out"].start(MAX_RUN_TIME)
 
 try:
-    # raise(Exception("Test excpetion handeling"))
+    # raise(Exception("Test exception handeling"))
     while 1:
 
         ### This is the dialog I created for this type of stuff

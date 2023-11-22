@@ -66,9 +66,13 @@ Download ALAMO and request a license from the `ALAMO download page
 Install NLopt
 ^^^^^^^^^^^^^
 
-NLopt is an optional optimization library, which can be used by FOQUS. NLopt is included in the conda psuade-lite 1.9.0 package.
+NLopt is an optional optimization library, which can be used by FOQUS. NLopt is not available to be installed with pip, but can be installed with conda as follows::
+
+    conda activate ccsi-foqus
+    conda install -c conda-forge nlopt
 
 For more information, see the `NLopt Installation Instructions <https://nlopt.readthedocs.io/en/latest/>`_.
+
 
 Install SnobFit
 ^^^^^^^^^^^^^^^

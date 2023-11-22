@@ -112,7 +112,7 @@ class surrogate(threading.Thread):
         """
         Set input variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist set/return default
-        If val is set and option exists returs val.
+        If val is set and option exists returns val.
             opt: string option name
             var: string variable name
             val: value to set if none use default
@@ -129,7 +129,7 @@ class surrogate(threading.Thread):
         """
         Set output variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist set/return default
-        If val is set and option exists returs val.
+        If val is set and option exists returns val.
             opt: string option name
             var: string variable name
             val: value to set if none use default

@@ -498,7 +498,7 @@ class RSInferencer(
                 if platform.system() == "Windows":
                     driverFile = win32api.GetShortPathName(driverFile)
                 f.write("%s\n" % driverFile)  # driver file
-                f.write("y\n")  # apply auxillary arg (output index)
+                f.write("y\n")  # apply auxiliary arg (output index)
                 arg = userRegressionArgs[i]
                 if isinstance(arg, int):
                     formatString = "%d\n"
@@ -543,7 +543,7 @@ class RSInferencer(
         f.write("3\n")  # number of MCMC chains; default = 3
         f.write(
             "1.05\n"
-        )  # PSRF (convergence metric for MCMC) thershold; default = 1.05
+        )  # PSRF (convergence metric for MCMC) threshold; default = 1.05
         f.write("quit\n")
         f.seek(0)
 

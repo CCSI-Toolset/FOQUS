@@ -948,7 +948,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         sim = self.dat.uqSimList[row]
         if sender.text() == "Launch":
             logging.getLogger("foqus." + __name__).debug(
-                "Lauch button pressed, launching UQ ensemble"
+                "Launch button pressed, launching UQ ensemble"
             )
             sender.setText("Stop")
             # self.freeze()

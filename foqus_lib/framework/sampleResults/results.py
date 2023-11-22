@@ -184,7 +184,7 @@ def search_term_list(st):
             )
             raise Exception(
                 "Error reading sort terms. When using multiple sort"
-                'terms, enclose the column names in "". See log for deatils'
+                'terms, enclose the column names in "". See log for details'
             )
     else:
         if st.startswith('"'):
@@ -211,12 +211,12 @@ class Results(pd.DataFrame):
         super(Results, self).__init__(*args, **kwargs)
         if "set" not in self.columns:
             self.filters = None  # do this to avoid set column from attribute warn
-            self.filters = {}  # now that atribute exists set to empty dict
+            self.filters = {}  # now that attribute exists set to empty dict
             self.filters["none"] = dataFilter(no_results=True)
             self.filters["all"] = dataFilter()
             self._current_filter = None
             self._filter_indexes = None  # avoid set column from attribute warn
-            self._filter_indexes = []  # now that atribute exists set to empty list
+            self._filter_indexes = []  # now that attribute exists set to empty list
             self.flatTable = None  # avoid set column from attribute warn
             self.flatTable = True
             self["set"] = []
@@ -396,7 +396,7 @@ class Results(pd.DataFrame):
         return set(self.loc[:, "set"])
 
     def addFromSavedValues(self, setName, name, time=None, valDict=None):
-        """Temoprary function for compatablility
+        """Temoprary function for compatibility
         should move to add_result()
         """
         self.add_result(valDict, set_name=setName, result_name=name, time=time)
@@ -508,7 +508,7 @@ class Results(pd.DataFrame):
         self.update_filter_indexes()
 
     def exportVarsCSV(self, file, inputs, outputs, flat=True):
-        # flat isn't used, just there for compatablility from when there were vector vars.
+        # flat isn't used, just there for compatibility from when there were vector vars.
         df = pd.DataFrame(columns=inputs + outputs)
         for c in inputs:
             df[c] = self["input." + c]

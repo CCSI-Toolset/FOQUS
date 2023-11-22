@@ -54,9 +54,9 @@ class NodeVarListEx(foqusException):
         self.codeString[0] = "Other exception"
         self.codeString[2] = "Node does not exist"
         self.codeString[3] = "Variable does not exist"
-        self.codeString[5] = "Node name already in use, cannont add"
+        self.codeString[5] = "Node name already in use, cannot add"
         self.codeString[6] = "graph is reserved and cannot be used" " as a node name"
-        self.codeString[7] = "Var name already in use, cannont add"
+        self.codeString[7] = "Var name already in use, cannot add"
 
 
 class NodeVarList(OrderedDict):
@@ -278,7 +278,7 @@ class NodeVarList(OrderedDict):
 
     def getFlat(self, names, scaled=False):
         """
-        Return a flat list of variable values coresponding to a given list of
+        Return a flat list of variable values corresponding to a given list of
         names
 
         Args:
@@ -303,7 +303,7 @@ class NodeVarList(OrderedDict):
 
         Args:
             nameList: a list of variable names. names are either node.var or a
-                two-element list or tupple (node, var)
+                two-element list or tuple (node, var)
             valueList: a list of values for the variables
             unScale: the values are scaled so unscale them before putting in dict
         """
@@ -517,7 +517,7 @@ class NodeVars(object):
             vmax: max value
             vdflt: default value
             unit: string description of units of measure
-            vst: A sring description of a group for the variable {"user", "sinter"}
+            vst: A string description of a group for the variable {"user", "sinter"}
             vdesc: A sentence or so describing the variable
             tags: List of string tags for the variable
             dtype: type of data {float, int, str, object}
@@ -846,7 +846,7 @@ class NodeVarVector(object):
             vmax: max value
             vdflt: default value
             unit: string description of units of measure
-            vst: A sring description of a group for the variable {"user", "sinter"}
+            vst: A string description of a group for the variable {"user", "sinter"}
             vdesc: A sentence or so describing the variable
             tags: List of string tags for the variable
             dtype: type of data {float, int, str, object}

@@ -259,7 +259,7 @@ class mainWindow(QMainWindow):
 
     def clearOldMessages(self):
         """
-        This function clears old mesages from the gui
+        This function clears old messages from the gui
         when loading or creating a new session.
         """
         self.optSetupFrame.clearOld()
@@ -437,7 +437,7 @@ class mainWindow(QMainWindow):
         self.surrogateAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.surrogateAction)
         self.toolbarMain.addAction(self.surrogateAction)
-        # Setings Action
+        # Settings Action
         self.mainSettingsAction = QAction(
             QIcon(self.iconPaths["settings48"]), "Settings", self
         )

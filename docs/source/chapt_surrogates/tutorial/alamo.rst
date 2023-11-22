@@ -139,7 +139,7 @@ data is provided and adaptive sampling is used.
 
    Sample Distributions
 
-19. The **Sampling schem\ e** dialog should display (Figure
+19. The **Sampling scheme** dialog should display (Figure
     :ref:`fig.tut.sur.new.uq.sample2`).
     Select “Latin Hypercube” from the list.
 
@@ -216,7 +216,7 @@ other and for the model building, selecting one output is the same as
 selecting more.
 
 30. Select the **Variable\ s** tab (Figure
-    :ref:`fig.tut.sur.vaiables`).
+    :ref:`fig.tut.sur.variables`).
 
 31. Select the checkbox for both input variables.
 
@@ -224,7 +224,7 @@ selecting more.
 
 .. figure:: ../figs/variables.svg
    :alt: Variable Selection
-   :name: fig.tut.sur.vaiables
+   :name: fig.tut.sur.variables
 
    Variable Selection
 

@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 """
@@ -79,7 +79,7 @@ class opt(optimization):
             "<p><b>PSUADE Optimiation Library</b></p></html>"
         )
         self.available = True
-        self.description = "PSUADE Optimzation solvers"
+        self.description = "PSUADE Optimization solvers"
         self.mp = False  # can be parallel?
         self.mobj = False  # handles multiobjective?
         self.minVars = 2  # minimum number of decision variables

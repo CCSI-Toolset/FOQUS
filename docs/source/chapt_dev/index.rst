@@ -3,7 +3,7 @@
 Developer Documentation
 =======================
 
-Since the `source code for all of FOQUS is publically available
+Since the `source code for all of FOQUS is publicly available
 <https://github.com/CCSI-Toolset/FOQUS>`_, the more adventurous user may wish to look at the
 inner-workings of FOQUS to get a better understand how it works, contribute a fix to a bug, or add
 new features to the source tree. Other members of our CCSI partnership (national laboratories,

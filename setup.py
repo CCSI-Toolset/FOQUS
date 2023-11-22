@@ -20,7 +20,7 @@ import subprocess
 import shutil
 
 # default_version is the version if "git describe --tags" falls through
-# Addtional package info is set in foqus_lib/version/version.template.
+# Additional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
 default_version = "3.20.dev0"
 

@@ -95,7 +95,7 @@ def getfilenames(jid):
 
 
 def scrub_empty_string_values_for_dynamo(db):
-    """DynamoDB throws expection if there is an empty string in dict
+    """DynamoDB throws exception if there is an empty string in dict
     ValidationException: ExpressionAttributeValues contains invalid value:
     One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
     """
@@ -198,7 +198,7 @@ def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
 
 
 def _setup_flowsheet_turbine_node(dat, nkey, user_name):
-    """From s3 download all simulation files into AspenSinterComsumer cache directory '{working_directory\test\{simulation_guid}'.  If
+    """From s3 download all simulation files into AspenSinterConsumer cache directory '{working_directory\test\{simulation_guid}'.  If
     Simulation does not exist create one.  If Simulation does exist just s3 download all simulation files into the above cache directory.
 
     The new simulation_guid is created for all file updates to TurbineWS, so this is sidestepping that process.

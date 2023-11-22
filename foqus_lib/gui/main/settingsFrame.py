@@ -79,7 +79,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.simSinterBrowsButton.clicked.connect(self.browseSinterFile)
         self.alamoPathButton.clicked.connect(self.browseALAMOPath)
         self.rScriptPathButton.clicked.connect(self.browseRScriptPath)
-        # Connect okay/cancel singnals
+        # Connect okay/cancel signals
         self.revertButton.clicked.connect(self.revert)
         #
         self.startLite.clicked.connect(self.startTurbineService)
@@ -100,7 +100,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             "You are changing the Turbine server"
             " connection.  The new server may not have the simulations or"
             " correct versions of simulations for your flowsheet.  Please upload"
-            " or update simluations on Turbine as necessary.",
+            " or update simulations on Turbine as necessary.",
         )
 
     def updateTurbineLitePort(self):
@@ -235,7 +235,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             mess = (
                 "Failed to start Turbine Web Service API.  If the "
                 "reason given below is not clear the likely cause is that "
-                "FOQUS does not have permision to start/stop the services."
+                "FOQUS does not have permission to start/stop the services."
             )
             details = "Details:\n{0}\n{1}".format(out, err)
             QMessageBox.information(self, "Information", "\n\n".join([mess, details]))
@@ -261,7 +261,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             mess = (
                 "Failed to start Turbine Web Service API.  If the "
                 "reason given below is not clear the likely cause is that"
-                "FOQUS does not have permision to start/stop the services."
+                "FOQUS does not have permission to start/stop the services."
             )
             details = "Details:\n{0}\n{1}".format(out, err)
             QMessageBox.information(self, "Information", "\n\n".join([mess, details]))
@@ -374,7 +374,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
-            "Find Turbine Confguration",
+            "Find Turbine Configuration",
             "",
             "Config Files (*.cfg);;Text Files (*.txt);;All Files (*)",
         )
@@ -388,7 +388,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
-            "Find Turbine Cluster Confguration",
+            "Find Turbine Cluster Configuration",
             "",
             "Config Files (*.cfg);;Text Files (*.txt);;All Files (*)",
         )

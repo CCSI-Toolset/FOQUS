@@ -9,9 +9,6 @@ on:
     # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_nightlies`
     types: [ci_run_nightlies]
   workflow_dispatch:
-  # FIXME remove before merging
-  push:
-  pull_request:
 
 defaults:
   run:
@@ -34,7 +31,7 @@ jobs:
           - macos
         foqus-install-target:
           - stable
-          - branch
+          - master
         examples-release:
           - '3.9.0'
         include:
@@ -46,8 +43,8 @@ jobs:
             os-version: windows-2019
           - foqus-install-target: stable
             pip-install-target: ccsi-foqus
-          - foqus-install-target: branch
-            pip-install-target: https://github.com/lbianchi-lbl/FOQUS/archive/issue-1172.zip
+          - foqus-install-target: master
+            pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
           - foqus-install-target: stable
             os: win64
             python-version: '3.8'

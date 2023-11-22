@@ -24,6 +24,7 @@ eggs/
 *.lib
 *.suo
 *.zip
+Pipfile
 
 # OSX
 *.DS_Store

@@ -214,9 +214,9 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         """
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
-        # stored up sent signals.  But they happen after fnction returns
+        # stored up sent signals.  But they happen after function returns
         # so can't figure out how to block them.  launch process in a
-        # seperate thread?
+        # separate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
         exepath = os.path.join(exepath, "SinterConfigGUI.exe")
         tmp_file = os.path.abspath("temp\\sc_out.txt")
@@ -420,11 +420,11 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         # if selected and drop the indexes for those rows
         if 0 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for configuration"
+                self, "Warning", "Won't set relative path for configuration"
             )
         if 1 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for model"
+                self, "Warning", "Won't set relative path for model"
             )
         rows.discard(0)
         rows.discard(1)

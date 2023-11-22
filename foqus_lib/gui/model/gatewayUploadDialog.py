@@ -127,9 +127,9 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         """
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
-        # stored up sent signals.  But they happen after fnction returns
+        # stored up sent signals.  But they happen after function returns
         # so can't figure out how to block them.  launch process in a
-        # seperate thread?
+        # separate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
         exepath = os.path.join(exepath, "SinterConfigGUI.exe")
         tmp_file = os.path.abspath("temp\\sc_out.txt")
@@ -276,7 +276,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                 return
             finally:
                 self.notwaiting.emit()
-        # If uploaded to a Turbine gatway other that the current,
+        # If uploaded to a Turbine gateway other that the current,
         # make sure the turbine version is set back to proper value.
         self.turb.updateSettings()
         self.done(QDialog.Accepted)
@@ -362,11 +362,11 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         # if selected and drop the indexes for those rows
         if 0 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for configuration"
+                self, "Warning", "Won't set relative path for configuration"
             )
         if 1 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for model"
+                self, "Warning", "Won't set relative path for model"
             )
         rows.discard(0)
         rows.discard(1)

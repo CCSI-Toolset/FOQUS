@@ -409,7 +409,7 @@ class turbineLiteDB:
         """
         Turbine Consumer Function
         ---
-        Put job output in the databae
+        Put job output in the database
 
         args
 

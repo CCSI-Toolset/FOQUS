@@ -54,7 +54,7 @@ If the MATLAB engine package was installed correctly, a similar message to the F
 
 .. figure:: ../figs/terminal_window_msg.png
 
-   Figure 1 - Terminal window message after installating the MATLAB engine package
+   Figure 1 - Terminal window message after installing the MATLAB engine package
 
 Now, to run MATLAB models within FOQUS follow the steps below:
 

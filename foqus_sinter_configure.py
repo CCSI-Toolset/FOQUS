@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 """
-Prototype SimSinter Confiuration Writer, at this point focusing on gPROMS.
+Prototype SimSinter Configuration Writer, at this point focusing on gPROMS.
 """
 import sys
 from PyQt5.QtWidgets import QApplication

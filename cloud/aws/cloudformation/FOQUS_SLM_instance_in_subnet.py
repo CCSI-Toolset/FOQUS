@@ -78,7 +78,7 @@ def _create_template(
     t.add_version("2010-09-09")
     t.add_description(
         """Template to create SLM instance and bind to
-    passed in Newtork Interface\
+    passed in Network Interface\
     """
     )
 

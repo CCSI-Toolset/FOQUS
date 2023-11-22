@@ -86,7 +86,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Distance used to draw a curved edge used to prevent edges from overlapping.  Can be positive or negitive.</string>
+         <string>Distance used to draw a curved edge used to prevent edges from overlapping.  Can be positive or negative.</string>
         </property>
        </widget>
       </item>

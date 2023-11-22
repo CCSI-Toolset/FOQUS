@@ -77,8 +77,8 @@ Vectorize" will be displayed as shown in Figure 3.
           elements required as a part of the vector.
 
           In this case, "B_TEMP" is the variable name corresponding to the
-          liquid phase temerature along the absorber column, and "TVAP" is the
-          variable name corresponding to the vapor phase temerature along the
+          liquid phase temperature along the absorber column, and "TVAP" is the
+          variable name corresponding to the vapor phase temperature along the
           absorber column, according to their path in SimSinter.
           These vector variables are indexed over the absorber stages, which is
           why the number of elements in each of them would be 90.
@@ -104,7 +104,7 @@ steps 3 and 4 with the correct user inputs. If it is created, open the json file
 directly to check whether it has been modified correctly.
 
 In the json file, the dictionary corresponding to the "outputs" key must contain
-180 scalar variables 90 each corrsponding to the vector variables "B_TEMP" and
+180 scalar variables 90 each corresponding to the vector variables "B_TEMP" and
 "TVAP". Each scalar output variable corresponding to the vector must contain a
 "vector" field which includes the vector variable it is associated with, and an
 "index" field, which defines its location in the vector. The indices range from

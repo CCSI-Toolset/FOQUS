@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for Surrogate Based Optimization in Pyomo
@@ -129,7 +129,7 @@ class opt(optimization):
         self.available = packages_available  # If plugin is available
         self.description = "Optimization Solver"  # Short description
         self.mp = False  # Can evaluate objectives in parallel?
-        self.mobj = False  # Can do multi-objective optimzation?
+        self.mobj = False  # Can do multi-objective optimization?
         self.minVars = 1  # Minimum number of decision variables
         self.maxVars = 10000  # Maximum number of decision variables
 
@@ -285,11 +285,11 @@ class opt(optimization):
 
         if self.stop.isSet():  # if user pushed stop button
             self.userInterupt = True
-            raise Exception("User interupt")  # raise exeception to stop
+            raise Exception("User interrupt")  # raise exception to stop
 
         objValues, cv, pv = self.prob.runSamples([x], self)
         # objValues = list of lists of objective function values
-        #             first list is for mutiple evaluations second list
+        #             first list is for multiple evaluations second list
         #             is for multi-objective.  In this case one evaluation
         #             one objective [[obj]].
         # cv = constraint violations
@@ -345,9 +345,9 @@ class opt(optimization):
         # The solver is all setup and ready to go
         start = time.time()  # get start time
         self.userInterupt = False  #
-        self.bestSoFar = float("inf")  # set inital best values
+        self.bestSoFar = float("inf")  # set initial best values
 
-        # self.prob is the optimzation problem. get it ready
+        # self.prob is the optimization problem. get it ready
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters()  #
         self.prob.solverStart = start

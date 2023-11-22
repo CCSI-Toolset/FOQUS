@@ -111,11 +111,11 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.doneButton.clicked.connect(self.doneClicked)
         self.addCalcButton.clicked.connect(self.showCalcEdit)
         self.prevFilter = None
-        # Set up column list widget for help selecting fileter and sort terms
+        # Set up column list widget for help selecting filter and sort terms
         self.updateColList()
         self.colList.itemDoubleClicked.connect(self.copyCol2)
         self.colList.setDragDropMode(QAbstractItemView.DragOnly)
-        # When draging into sort and filter text boxes add text to mimedata
+        # When dragging into sort and filter text boxes add text to mimedata
         self.filterTermEdit.installEventFilter(_DropHandler(self, True))
         self.sortTermEdit.installEventFilter(_DropHandler(self, False))
         # Initially populate the dialog

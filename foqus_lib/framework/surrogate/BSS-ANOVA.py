@@ -15,11 +15,11 @@
 """ #FOQUS_SURROGATE_PLUGIN
 
 Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the surrogate class.
 
 * Plugin wrapper for the BSS-ANOVA surrogate model builer.
-* BSS-ANOVA is excuted in R and a working R install with the quadprog
+* BSS-ANOVA is executed in R and a working R install with the quadprog
   package is required.  The user must install R
 * BSS-ANOVA Ref:
 
@@ -157,7 +157,7 @@ class surrogateMethod(surrogate):
             name="Burn In",
             default=0,
             dtype=int,
-            desc="Number of data point to ignore from begining",
+            desc="Number of data point to ignore from beginning",
         )
         self.options.add(
             name="MCMC Iterations",

@@ -284,7 +284,7 @@ class surrogateMethod(surrogate):
             name="output_file",
             section="DATA Settings",
             dtype=str,
-            default="nn_model.pt",
+            default="user_ml_ai_models/nn_model.pt",
             desc="Name of output file for model, should have file extension: .pt",
             hint="Enter a custom file name if desired",
         )

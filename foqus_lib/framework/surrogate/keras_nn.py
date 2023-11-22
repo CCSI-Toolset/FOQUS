@@ -292,7 +292,7 @@ class surrogateMethod(surrogate):
             name="output_file",
             section="DATA Settings",
             dtype=str,
-            default="nn_model.keras",
+            default="user_ml_ai_models/nn_model.keras",
             desc="Name of output file for model, should have file extension: .keras",
             hint="Enter a custom file name if desired",
         )

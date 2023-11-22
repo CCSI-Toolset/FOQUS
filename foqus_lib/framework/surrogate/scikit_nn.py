@@ -249,7 +249,7 @@ class surrogateMethod(surrogate):
             name="output_file",
             section="DATA Settings",
             dtype=str,
-            default="nn_model_sklearn.pkl",
+            default="user_ml_ai_models/nn_model.pkl",
             desc="Name of output file for model, should have file extension: .pkl",
             hint="Enter a custom file name if desired",
         )

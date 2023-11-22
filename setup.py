@@ -99,7 +99,7 @@ dist = setup(
         "pandas",
         "psutil",
         "PyQt5==5.15.7; platform_machine != 'arm64' or sys_platform != 'darwin'",
-        "pywin32<305; sys_platform == 'win32'",
+        "pywin32==306; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",

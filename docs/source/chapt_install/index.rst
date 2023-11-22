@@ -20,7 +20,7 @@ FOQUS:
 
   - In a terminal, to setup and install::
       
-      conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32
+      conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32=306
       conda activate ccsi-foqus
       pip install ccsi-foqus
       foqus --make-shortcut  # Create Desktop shortcut (Windows only)

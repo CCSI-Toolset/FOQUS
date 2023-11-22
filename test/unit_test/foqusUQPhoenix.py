@@ -192,7 +192,7 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
     """
     Using timers to push buttons on popups and modal dialogs and
     other things were I need an easy way to make things happen from
-    a seperate thread.  Usually where something is blocking the main
+    a separate thread.  Usually where something is blocking the main
     GUI loop.
 
     name: string name of timer
@@ -212,7 +212,7 @@ def timersStop(timers=timers):
 
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
-# or some crazy stuff may happen untill you exit FOQUS.
+# or some crazy stuff may happen until you exit FOQUS.
 addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script for taking too long
 addTimer("msg_okay", MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
 addTimer("msg_no", MainWin.helpDock.msgBoxNo)  # Click no on a popup message box
@@ -222,7 +222,7 @@ addTimer("rs_analyze", rsAnalyze)
 timers["time_out"].start(MAX_RUN_TIME)
 
 try:
-    # raise(Exception("Test excpetion handeling"))
+    # raise(Exception("Test exception handling"))
     while 1:
 
         ### This is the dialog I created for this type of stuff

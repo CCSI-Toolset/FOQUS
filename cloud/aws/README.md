@@ -140,8 +140,7 @@ PSParentPath          : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\S
 PSChildName           : Windows
 PSDrive               : HKLM
 PSProvider            : Microsoft.PowerShell.Core\Registry
-PS C:\Users\Administrator> Set-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Windows\ -Name NoInteractiveSer
-vices -Value 0
+PS C:\Users\Administrator> Set-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Windows\ -Name NoInteractiveServices -Value 0
 ```
 ##### Registry set NoInteractiveServices
 ```

@@ -40,7 +40,7 @@ def go(sleep=0.25, MainWin=MainWin, stopFlag=MainWin.helpDock.stop):
 
 
 def getButton(w, label):
-    """Get a buttom in window w labeled label, this could probably be better"""
+    """Get a button in window w labeled label, this could probably be better"""
     if isinstance(label, str):
         try:
             blist = w.buttons()
@@ -114,7 +114,7 @@ def timerWait(timer, sleep=0.25, n=40):
             else:
                 return True
     timers[timer].stop()  # Timer never did it's thing so just shut it down
-    _log.error("timer {} didn't stop in alloted time\n".format(timer))
+    _log.error("timer {} didn't stop in allotted time\n".format(timer))
     return False  # return False to stop script.  Something is wrong
 
 
@@ -188,7 +188,7 @@ def time_out():
 
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
-# or some crazy stuff may happen untill you exit FOQUS.
+# or some crazy stuff may happen until you exit FOQUS.
 addTimer("time_out", time_out)  # stop script if too long
 addTimer("msg_okay", msg_okay)  # click OK on mgsbox
 addTimer("msg_no", msg_no)  # click No on msgbox
@@ -242,7 +242,7 @@ try:  # Catch any exception and stop all timers before finishing up
         MainWin.nodeDock.inputVarTable.item(0, 6).setText("10")  # max x2
         MainWin.nodeDock.inputVarTable.item(1, 5).setText("-10")  # min x2
         MainWin.nodeDock.inputVarTable.item(1, 6).setText("10")  # max x2
-        MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")  # deafult x1
+        MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")  # default x1
         MainWin.nodeDock.inputVarTable.item(1, 4).setText("2")  # default x2
         MainWin.nodeDock.inputVarTable.item(0, 1).setText("5")  # value x1
         MainWin.nodeDock.inputVarTable.item(1, 1).setText("2")  # value x2

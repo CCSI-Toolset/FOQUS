@@ -456,7 +456,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(
@@ -811,7 +811,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             if data.getNamesIncludeNodes():
@@ -922,7 +922,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(
@@ -1171,7 +1171,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(
@@ -1342,7 +1342,7 @@ class RSAnalyzer:
                 if platform.system() == "Windows":
                     userRegressionFile = win32api.GetShortPathName(userRegressionFile)
                 f.write("%s\n" % userRegressionFile)  # driver file
-                f.write("y\n")  # apply auxillary arg (output name)
+                f.write("y\n")  # apply auxiliary arg (output name)
                 outName = outVarNames[y - 1]
                 outName = Common.getUserRegressionOutputName(
                     outName, userRegressionFile, data

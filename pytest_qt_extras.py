@@ -1202,7 +1202,7 @@ def from_sibling_labels(target: W.QWidget, direction="E"):
         tgt_left = tgt_geom.left()
         cand_right = cand_geom.right()
         horizontal_distance = tgt_left - cand_right
-        is_cand_preceeding_horizontally = horizontal_distance >= 0
+        is_cand_preceding_horizontally = horizontal_distance >= 0
 
         tgt_top, tgt_btm = tgt_geom.top(), tgt_geom.bottom()
         cand_top, cand_btm = cand_geom.top(), cand_geom.bottom()
@@ -1213,7 +1213,7 @@ def from_sibling_labels(target: W.QWidget, direction="E"):
             is_cand_completely_above or is_cand_completely_below
         )
 
-        is_match = is_cand_preceeding_horizontally and has_partial_vertical_overlap
+        is_match = is_cand_preceding_horizontally and has_partial_vertical_overlap
 
         return Selection.from_locals(locals())
 

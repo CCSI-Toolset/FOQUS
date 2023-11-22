@@ -21,7 +21,7 @@ class pymodel:
     def __init__(self):
         self.inputs = OrderedDict()
         self.outputs = OrderedDict()
-        self.status = -1  # Caclulation status code
+        self.status = -1  # Calculation status code
         self.description = "A Python model plugin"
         self.node = None
 

@@ -312,7 +312,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         pg.updateOptions()
 
         for i, btn in enumerate(pg.inputVarButtons):
-            # this is because I am beeing lazy there are two
+            # this is because I am being lazy there are two
             # preexisting buttons
             if i == 0:
                 self.ivGeneralButton1.setText(btn[0])

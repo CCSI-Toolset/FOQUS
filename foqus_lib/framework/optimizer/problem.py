@@ -130,7 +130,7 @@ class problem(object):
 
     def loadDict(self, sd):
         """
-        Load the optimization problem from a dictionary.  Usualy
+        Load the optimization problem from a dictionary.  Usually
         used when reading a problem back in from a json file.
         """
         self.obj = []
@@ -231,7 +231,7 @@ class problem(object):
     def addSampleVar(self, vname):
         """
         Adds a variable to the sample dict, not to the sample var
-        list (self.vs).  I keep track of samples for varaibles that
+        list (self.vs).  I keep track of samples for variables that
         are not sample variables just in case the user changes their
         mind about the set of sample variables.  All the defined
         samples won't be lost.
@@ -254,7 +254,7 @@ class problem(object):
         """Runs the flowsheet samples for the objective calculation
 
         Args:
-        X: a list of flat vector of descision variable values.
+        X: a list of flat vector of decision variable values.
             The variableordering is given by the list self.v
         gr: is the graph (flowsheet) object that will be used to
             run the samples
@@ -322,7 +322,7 @@ class problem(object):
                 # if it is the last time through because the thread is
                 # no longer alive make sure to read the last of the
                 # results, the finished counter goes up before the
-                # job results are retrived from turbine
+                # job results are retrieved from turbine
                 finished = status["finished"]
                 # Put out progress monitor message to queue
                 slv.resQueue.put(
@@ -521,7 +521,7 @@ class problem(object):
             else:
                 vi = eval(o.pycode, locals())
             if vi <= 0:
-                # if vi is negitive no constraint violation so set
+                # if vi is negative no constraint violation so set
                 # vi to 0 for zero penalty
                 vi = 0
             # calculate penalty
@@ -534,7 +534,7 @@ class problem(object):
             penTotal += pen
             const_e.append(pen)
         # Evaluate objective functions there may be more than one
-        # this is to accomidate multi-objective optimization
+        # this is to accommodate multi-objective optimization
         for o in self.obj:
             if fail:
                 objfunc = o.fail
@@ -618,7 +618,7 @@ class problem(object):
         #        for o in self.g:
         #            try:
         #                exec(o.pycode)
-        #                violoation + 1.0
+        #                violation + 1.0
         #            except Exception, e:
         #                return [
         #                    1,

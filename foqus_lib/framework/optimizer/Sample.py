@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * Just evaluates the objective function for flowsheet results and picks the best
@@ -60,7 +60,7 @@ class opt(optimization):
         self.methodDescription = (
             "This plugin just runs samples evaluetes all the flowsheet "
             "samples and picks out the best one.  If any samples have "
-            "not been evaluted (status -1), they will be evaluted.  "
+            "not been evaluated (status -1), they will be evaluated.  "
             "This works with the currently selected data filter, and "
             "is mostly used for testing."
         )
@@ -106,7 +106,7 @@ class opt(optimization):
                     bestRes = i
         self.msgQueue.put("Running {0} samples".format(len(rerunSamp)))
         err = 0
-        # now rerun samples that were not alreay run
+        # now rerun samples that were not already run
         self.resQueue.put(["PROG", 0, len(rerunSamp), 0, 0, 0, 0])
         timeOfBackup = time.process_time()
         if len(rerunSamp) > 0:
@@ -140,7 +140,7 @@ class opt(optimization):
                         ]
                     )
                 # back up if its time.  Don't back up for intervals
-                # of less than 15 seconds, because that setting dosen't
+                # of less than 15 seconds, because that setting doesn't
                 # make sense even 15 seconds is crazy.
                 timeSinceBackup = time.process_time() - timeOfBackup
                 if backupInt > 15.0 and timeSinceBackup > backupInt:

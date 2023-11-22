@@ -661,7 +661,7 @@ class TestPymodelMLAI:
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # For this example, the inputs values for some variables are large per
         # the expected_in in the no_scaling test above, and attempting to scale
-        # by 10^value breaks the intepreter with a math overflow error
+        # by 10^value breaks the interpreter with a math overflow error
         # To test this method, we need to arbitrarily scale down the values.
         # An issue like this would not break the plugin, as the user would not
         # be able to train the neural network with this formulation at all.
@@ -773,7 +773,7 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     # ----------------------------------------------------------------------------
-    # this set of tests bulids and runs the pymodel class and checks exceptions
+    # this set of tests builds and runs the pymodel class and checks exceptions
 
     def test_no_norm_form(self, example_2):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
@@ -783,7 +783,7 @@ class TestPymodelMLAI:
         assert test_pymodel.normalized is True  # flag to check norm form
         assert test_pymodel.model.layers[1].normalization_form == "Linear"
 
-        # delete the attrbute and check that proper exception is thrown
+        # delete the attribute and check that proper exception is thrown
         delattr(test_pymodel.model.layers[1], "normalization_form")
 
         with pytest.raises(AttributeError):
@@ -817,7 +817,7 @@ class TestPymodelMLAI:
             == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
         )
 
-        # delete the attrbute and check that proper exception is thrown
+        # delete the attribute and check that proper exception is thrown
         delattr(test_pymodel.model.layers[1], "normalization_function")
 
         with pytest.raises(AttributeError):
@@ -1145,7 +1145,7 @@ class TestNode:
     def test_setSim_newmodel(self, node):
         node.setSim(newModel="newName", newType="newType")
         assert node.modelName == "newName"
-        assert node.modelType == "newType"  # not actuall a valid type, just
+        assert node.modelType == "newType"  # not actually a valid type, just
         # checking that the new attribute matches the passed argument above
 
     def test_setSim_modelNone(self, node):

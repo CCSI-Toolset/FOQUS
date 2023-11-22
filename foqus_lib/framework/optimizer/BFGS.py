@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for scipy BFGS using finite dif
@@ -149,7 +149,7 @@ class opt(optimization):
         objValues, cv, pv = self.prob.runSamples([x], self)
         if self.stop.isSet():
             self.userInterupt = True
-            raise Exception("User interupt")
+            raise Exception("User interrupt")
         obj = float(objValues[0][0])
         if obj < self.bestSoFar:
             self.bestSoFar = obj
@@ -229,7 +229,7 @@ class opt(optimization):
         # Print some final words
         eltime = time.time() - start
         self.msgQueue.put(
-            "{0}, Total Elasped Time {1}s, Obj: {2}".format(
+            "{0}, Total Elapsed Time {1}s, Obj: {2}".format(
                 self.prob.iterationNumber, math.floor(eltime), self.bestSoFar
             )
         )

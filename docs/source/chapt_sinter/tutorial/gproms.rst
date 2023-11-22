@@ -404,7 +404,7 @@ configuration can be done.
    Default Initialization page will display. Here the default values of
    the vectors may be edited.
 
-   .. figure:: ../figs/gPROMS/25_Vectorss.png
+   .. figure:: ../figs/gPROMS/25_Vectors.png
       :alt: Editing Vectors
       :name: fig.sinter.gproms.vectors
 

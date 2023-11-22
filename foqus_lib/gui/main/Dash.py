@@ -14,7 +14,7 @@
 #################################################################################
 """Dash.py
 * This FOQUS home screen, it doesn't do much but show the screen
-  and emit signals that are handeled by the main window
+  and emit signals that are handled by the main window
 
     John Eslick, Carnegie Mellon University, 2014
 """

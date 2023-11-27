@@ -15,11 +15,11 @@
 """ #FOQUS_SURROGATE_PLUGIN
 
 Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the surrogate class.
 
 * Plugin wprapper for the ACOSSO surrogate model builer.
-* ACOSSO is excuted in R and a working R install with the quadprog
+* ACOSSO is executed in R and a working R install with the quadprog
   package is required.  The user must install R
 * ACOSSO Ref:
 

@@ -23,9 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - '3.7'
           - '3.8'
-          # - '3.9'
+          - '3.9'
         os:
           - linux
           - win64
@@ -59,7 +58,7 @@ jobs:
           pip_install_target: ${{ matrix.pip-install-target }}
         run: |
           echo '::group::Output of conda create/activate/install'
-          conda create --name ccsi-foqus --quiet --yes -c conda-forge python="$py_ver" pywin32
+          conda create --name ccsi-foqus --quiet --yes -c conda-forge python="$py_ver" pywin32=306
           conda activate ccsi-foqus
           conda install --yes -c CCSI-Toolset -c conda-forge psuade-lite=1.9
           echo '::endgroup::'

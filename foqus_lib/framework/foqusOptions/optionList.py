@@ -26,7 +26,7 @@ from foqus_lib.framework.foqusOptions.option import *
 class optionList(dict):
     def __init__(self):
         """
-        Initalize an option list
+        Initialize an option list
         """
         dict.__init__(self)
         self.order = []  # display order for options

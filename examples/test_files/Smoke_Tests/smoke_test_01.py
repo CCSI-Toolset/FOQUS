@@ -33,7 +33,7 @@ def go(sleep=0.25, MainWin=MainWin):
 
 
 def getButton(w, label):
-    """Get a buttom in window w labeled label"""
+    """Get a button in window w labeled label"""
     blist = w.buttons()
     for b in blist:
         if b.text().replace("&", "") == label:
@@ -219,13 +219,13 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
             return True
     timers[timer].stop()  # Timer never did it's thing so just shut it down
     with open(tf, "a") as f:  # file to write test results to
-        f.write("ERROR: timer {} didn't stop in alloted time\n".format(timer))
+        f.write("ERROR: timer {} didn't stop in allotted time\n".format(timer))
     return False  # return False to stop script.  Something is wrong
 
 
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
-# or some crazy stuff may happen untill you exit FOQUS.
+# or some crazy stuff may happen until you exit FOQUS.
 addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script if too long
 addTimer("msg_okay", msg_okay)  # click OK on mgsbox
 addTimer("msg_no", msg_no)  # click No on msgbox
@@ -322,7 +322,7 @@ try:  # Catch any exception and stop all timers before finishing up
             break
         # assert abs(self.flowsheet.output["Rosenbrock"]["f"] - 126859) < 1e-8
         # assert self.flowsheet.errorStat==0
-        ## Try out controling UQ ensemble add
+        ## Try out controlling UQ ensemble add
         MainWin.uqSetupAction.trigger()
         if not go():
             break
@@ -351,7 +351,7 @@ try:  # Catch any exception and stop all timers before finishing up
         MainWin.uqSetupFrame.simulationTable.cellWidget(0, 4).click()
         if not timerWait("uq_analyze_scheme"):
             break
-        # MainWin.AnalysisDialog.swithcModes.click()
+        # MainWin.AnalysisDialog.switchModes.click()
         break
 except Exception as e:
     # if there is any exception make sure the timers are stopped

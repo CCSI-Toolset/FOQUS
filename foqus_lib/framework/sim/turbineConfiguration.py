@@ -132,7 +132,7 @@ class TurbineInterfaceEx(foqusException):
         self.codeString[14] = "Gateway 400 bad request"
         self.codeString[15] = "Gateway 500 server error"
         self.codeString[151] = "Could not start Turbine consumer"
-        self.codeString[152] = "Cound not get consumer ID"
+        self.codeString[152] = "Could not get consumer ID"
         self.codeString[153] = (
             "Will not start consumer for non-Lite Turbine, check local"
             " Turbine config file."
@@ -525,7 +525,7 @@ class TurbineConfiguration:
         ordered and keyword arguments for the function.
         """
         # Only retry on errors I expect could possibly resolve with time
-        # (could be caused by a temprary network/sever problem)
+        # (could be caused by a temporary network/sever problem)
         retryList = self.retryErrors  # actually I gave up on this, there
         # are too many weird unexpected
         # errors that work on second attempt
@@ -771,7 +771,7 @@ class TurbineConfiguration:
     #     except Exception as e:
     #         raise TurbineInterfaceEx(
     #             code=0,
-    #             msg="Error getting session staus. ",
+    #             msg="Error getting session status. ",
     #             e=e,
     #             tb=traceback.format_exc(),
     #         )
@@ -942,7 +942,7 @@ class TurbineConfiguration:
             )
 
     def simResourceList(self, sim):
-        """Get a list of resources for a simualtion"""
+        """Get a list of resources for a simulation"""
         kw = {}
         cp = self.turbineConfigParse()
         url, auth, params = read_configuration(cp, _tsim.SECTION, **kw)
@@ -1042,13 +1042,13 @@ class TurbineConfiguration:
         res = None
         state = "submit"  # initial state of the job
         failedStates = ["error", "expired", "cancel", "terminate"]
-        succesStates = ["success", "warning"]
+        successStates = ["success", "warning"]
         while True:  # start status checking loop
             # wait checkInt seconds wait before checking first time,
             # probably started the job, and it won't finish instantly
             time.sleep(checkInt)
             # Check that consumer is still running, had trouble with it
-            # stopping for unknwn reasons, so I'll keep an eye on it.
+            # stopping for unknown reasons, so I'll keep an eye on it.
             if checkConsumer:
                 proc = self.checkConsumer(nodeName)
                 if proc == None:
@@ -1076,7 +1076,7 @@ class TurbineConfiguration:
                 ):
                     state = "error"
                 failure = state in failedStates
-                success = state in succesStates
+                success = state in successStates
                 # Check for the run start time instead of the state just
                 # in case job started and completed between checks
                 if not setupStart and state == "setup":
@@ -1206,7 +1206,7 @@ class TurbineConfiguration:
             app = "foqus"
             modelFile = (None, app)
         # WHY the undefined-variable errors reported by pylint look like true positive
-        # this suggests that the code branches where the underfined variables are used are not run
+        # this suggests that the code branches where the undefined variables are used are not run
         else:
             # if no model file found it is probably not a sinter
             # configuration file or FOQUS is out of sync with
@@ -1260,7 +1260,7 @@ class TurbineConfiguration:
             # type and make sure it matches the resource type in the sinter
             # configuration file.
             app, resourceType = self.getAppByExtension(modelFile)
-            # Now get anyother extra input files
+            # Now get any other extra input files
             other = sinterConfData.get("input-files", [])
         return (modelFile, resourceType, app, other)
 

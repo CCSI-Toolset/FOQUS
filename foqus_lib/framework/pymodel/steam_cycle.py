@@ -53,7 +53,7 @@ class pymodel_pg(pymodel):
             tags=[],
             dtype=float,
         )  # if dtype is not specified the type is taken
-        # from the default vaule.
+        # from the default value.
         self.inputs["Net.Efficiency"] = NodeVars(
             value=42.06,
             vmin=0.0,

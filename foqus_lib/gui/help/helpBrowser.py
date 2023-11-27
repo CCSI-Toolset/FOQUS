@@ -295,7 +295,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
                 )
             except ValueError as e:
                 logging.getLogger("foqus." + __name__).info(str(e))
-                self.CloudLogView.append("Cloud Notifcations: OFF")
+                self.CloudLogView.append("Cloud Notifications: OFF")
                 self.CloudLogView.append(
                     "turbine configuration section Application, key notification"
                 )

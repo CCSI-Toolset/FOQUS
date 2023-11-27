@@ -20,7 +20,7 @@ import subprocess
 import shutil
 
 # default_version is the version if "git describe --tags" falls through
-# Addtional package info is set in foqus_lib/version/version.template.
+# Additional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
 default_version = "3.20.dev0"
 
@@ -99,7 +99,7 @@ dist = setup(
         "pandas",
         "psutil",
         "PyQt5==5.15.7; platform_machine != 'arm64' or sys_platform != 'darwin'",
-        "pywin32<305; sys_platform == 'win32'",
+        "pywin32==306; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",

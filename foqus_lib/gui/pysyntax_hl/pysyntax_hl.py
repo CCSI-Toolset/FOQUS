@@ -236,7 +236,7 @@ class PythonHighlighter(QSyntaxHighlighter):
 
     def highlightBlock(self, text):
         """Apply syntax highlighting to the given block of text."""
-        # Opening braces also waht to keep track of location for
+        # Opening braces also what to keep track of location for
         # matching sets
         for expression, nth, format in self.obraceRules:
             index = expression.indexIn(text, 0)
@@ -247,7 +247,7 @@ class PythonHighlighter(QSyntaxHighlighter):
                 # print "{0}, {1}, {2}".format(index, length, nth)
                 self.setFormat(index, length, format)
                 index = expression.indexIn(text, index + length)
-        # Closing braces also waht to keep track of location for
+        # Closing braces also what to keep track of location for
         # matching sets
         for expression, nth, format in self.cbraceRules:
             index = expression.indexIn(text, 0)

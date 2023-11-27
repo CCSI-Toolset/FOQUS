@@ -77,7 +77,7 @@ class ExperimentalDesign:
         outf.write("OUTPUT\n")
         if data.getNumOutputs() == 0:
             outf.write("   dimension = 1\n")
-            names = ["ghostOuput"]
+            names = ["ghostOutput"]
             indices = list(range(1))
             for i, name in zip(indices, names):
                 outf.write("   variable %d %s\n" % (i + 1, name))

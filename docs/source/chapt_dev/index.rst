@@ -3,7 +3,7 @@
 Developer Documentation
 =======================
 
-Since the `source code for all of FOQUS is publically available
+Since the `source code for all of FOQUS is publicly available
 <https://github.com/CCSI-Toolset/FOQUS>`_, the more adventurous user may wish to look at the
 inner-workings of FOQUS to get a better understand how it works, contribute a fix to a bug, or add
 new features to the source tree. Other members of our CCSI partnership (national laboratories,
@@ -43,7 +43,7 @@ will need a copy of the source to work with. Here is rough set of steps to get s
 
 - In a terminal create a conda env in which to work::
 
-    conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32
+    conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32=306
     conda activate ccsi-foqus
 
 - In a terminal, get the FOQUS source::

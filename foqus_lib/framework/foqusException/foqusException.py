@@ -71,7 +71,7 @@ class foqusException(Exception):
     def __str__(self):
         """
         This is function gets called when use use the str() function
-        to turn the excepetion into a string.  This tries to turn
+        to turn the exception into a string.  This tries to turn
         the exception object into a nice helpful string message to
         print out.
         """

@@ -1,0 +1,43 @@
+[files]
+extend-exclude = [
+    "*.smp",
+    "*.ui",
+    "*.html",
+    "*.css",
+    "*.js",
+    "*.svg",
+    "*.foqus",
+    "*.bkp",
+    "*.acmf",
+    "*.for",
+    "*.his",
+    "*.def",
+    "*.ads",
+    "*.pt",
+    "*.pkl",
+    "*.R",
+    "*.json",
+]
+
+[default.extend-words]
+# Ignore IDAES
+IDAES = "IDAES"
+FO = "FO"  # TODO: probably an abbreviation?
+sur = "sur"  # abbreviation for 'surrogate'
+nd = "nd"  # used as a variable name in sdoeAnalysisDialog
+astroid = "astroid"  # Python package name
+# proper nouns
+Gess = "Gess"
+# false positives
+strat = "strat"  # abbreviation of "strategy" used by Hypothesis
+
+[default.extend-identifiers]
+# false positives
+strngComps = "strngComps"  # strng = strongly (connected)
+# true positives that are part of the API
+userInterupt = "userInterupt"
+maxTimeInterupt = "maxTimeInterupt"
+PyCodeInterupt = "PyCodeInterupt"
+simin_nam = "simin_nam"
+simout_nam = "simout_nam"
+displayAvailablityWarning = "displayAvailablityWarning"

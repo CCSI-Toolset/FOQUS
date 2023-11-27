@@ -154,7 +154,7 @@ def startGUI(
         showSplash: if false don't show splash screen
         app: if already created pyside app to show message use it
         showUQ: Show the UQ tab
-        showOpt: Show the optimzation tab
+        showOpt: Show the optimization tab
         showBasicDataTab: Show the Basic Data tab
         ts: A testing script to automatiacally run when GUI starts.
     """
@@ -208,7 +208,7 @@ def logException(etype, evalue, etrace):
             "unhandled exception", exc_info=(etype, evalue, etrace)
         )
         if foqus_application:
-            # just incase the exception happend when
+            # just in case the exception happened when
             # cursor was set to waiting type set to normal
             foqus_application.restoreOverrideCursor()
             # Now show error in a message box
@@ -231,8 +231,8 @@ def signal_handler(signal, frame):
     A signal handler to cause a siginal to raise a keyboardinterupt exception.
     Used to override a default signal like SIGINT so the FOQUS consumer process
     can shutdown cleanly. The FOQUS consumer catches the keyboardinterupt
-    exception as one (slighlty unreliable) way to shut down.  Seems ctrl-c
-    causes keyboard interupt exception and SIGINT signal, hense need to change
+    exception as one (slightly unreliable) way to shut down.  Seems ctrl-c
+    causes keyboard interrupt exception and SIGINT signal, hence need to change
     SIGINT handler.
     """
     raise KeyboardInterrupt()
@@ -255,7 +255,7 @@ def main(args_to_parse=None):
     try:
         turbine.commands._setup_logging.done = True
     except:
-        logging.getLogger("foqus." + __name__).exception("Cannot finde turbine module")
+        logging.getLogger("foqus." + __name__).exception("Cannot find turbine module")
     app = None  # Qt application if I need to display message boxes.
     ## Setup the command line arguments
     parser = argparse.ArgumentParser()
@@ -600,7 +600,7 @@ def main(args_to_parse=None):
         from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer
 
         load_gui = False
-        # Make ctrl-c do nothing but and SIGINT donothing but interupt
+        # Make ctrl-c do nothing but and SIGINT donothing but interrupt
         # the loop
         signal.signal(signal.SIGINT, signal_handler)
         # Register consumer TurbineLite DB
@@ -819,7 +819,7 @@ def main(args_to_parse=None):
             if guid:
                 try:
                     db.add_message(
-                        "consumer={0}, stopping consumer keyboard interupt".format(
+                        "consumer={0}, stopping consumer keyboard interrupt".format(
                             consumer_uuid
                         ),
                         guid,

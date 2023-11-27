@@ -186,7 +186,7 @@ def attempt_load_smt(try_imports=True):
     return smt_pickle_load
 
 
-# attempt to load optional dependenices for node script
+# attempt to load optional dependencies for node script
 
 # pickle is loaded identically twice so that sklearn and smt can load or fail
 # independently of each other
@@ -263,7 +263,7 @@ class NodeEx(foqusException):
         self.codeString[21] = "Error in Python node script code"
         self.codeString[23] = "Could not convert numpy value to list"
         self.codeString[27] = "Can't read variable in results (see log)"
-        self.codeString[50] = "Node script interupt exception"
+        self.codeString[50] = "Node script interrupt exception"
         self.codeString[61] = "Unknow type string"
         self.codeString[
             self.ERROR_CONFIGURATION_MISSING
@@ -765,7 +765,7 @@ class Node:
     """
     This class stores information for graph nodes.  It also contains
     function for running a calculations and simulations associated
-    with a node.  The varaibles associated with nodes are all stored
+    with a node.  The variables associated with nodes are all stored
     at the graph level, so the parent graph of a node needs to be
     set before running any calculations, so the node knows where
     to find variables, turbine config info,...
@@ -912,7 +912,7 @@ class Node:
             default=1440.0,
             dtype=float,
             desc=(
-                "This is the ammount of time in seconds that FOQUS "
+                "This is the amount of time in seconds that FOQUS "
                 "should wait for results to come back from Turbine."
             ),
             optSet=NodeOptionSets.TURBINE_OPTIONS,
@@ -921,7 +921,7 @@ class Node:
             name="Maximum Run Time (s)",
             default=840.0,
             desc=(
-                "This is the ammount of time in seconds that FOQUS "
+                "This is the amount of time in seconds that FOQUS "
                 "should wait for results to come back from Turbine "
                 "once the simulation starts running."
             ),
@@ -936,7 +936,7 @@ class Node:
         self.options.addIfNew(
             name="Max Status Check Interval",
             default=5.0,
-            desc=("This is the maximum ammount of time between job " "status"),
+            desc=("This is the maximum amount of time between job " "status"),
             optSet=NodeOptionSets.TURBINE_OPTIONS,
         )
         self.options.addIfNew(
@@ -945,7 +945,7 @@ class Node:
             desc=(
                 "Optional, provide a path to a Trubine config to "
                 "submit models for this node to a alternative Turbine "
-                "gateway.  This can be used for special simualtions."
+                "gateway.  This can be used for special simulations."
             ),
             optSet=NodeOptionSets.TURBINE_OPTIONS,
         )
@@ -1023,7 +1023,7 @@ class Node:
                 v.loadDict(var)
 
     def stringToType(self, s):
-        # only check start of string since sinter inclued dimensions
+        # only check start of string since sinter included dimensions
         # after foqus will pick up dimensions from the default value
         if s[:6] == "double":
             return float
@@ -1338,19 +1338,19 @@ class Node:
         the inputs.  First it does the model calculations then
         any Python post-processing calculations.  The model and
         or the post-processing calculations can be omitted.  If
-        niether are pressent the model will successfully execute
+        neither are present the model will successfully execute
         but do nothing.
         """
         self.turbineMessages = ""
         self.calcError = -1  # set error code to incomplete
         self.calcCount += 1
         self.altInput = None
-        # raise Exception("Test exeception")
+        # raise Exception("Test exception")
         if nanout:
             # Set all outputs to numpy.nan to avoid confusion about
             # whether the output value is valid.  After successful
             # completion the nan values will be replaced.  May want
-            # ouput values for initial guess though so I made this
+            # output values for initial guess though so I made this
             # optional and disabled for now.  Should check node status
             # instead of depending on nan
             for vname, var in self.outVars.items():
@@ -1379,7 +1379,7 @@ class Node:
         ):
             self.runPython()
         # If you made it here and nothing threw an exception or reset
-        # the error code, the cacluation finished succesfully
+        # the error code, the calculation finished successfully
         if self.calcError == -1:
             self.calcError = 0
 
@@ -1475,7 +1475,7 @@ class Node:
                                 idx
                             ]["value"]
         except PyCodeInterupt as e:
-            _logger.error("Node script interupt: " + str(e))
+            _logger.error("Node script interrupt: " + str(e))
             if self.calcError == -1:
                 # if no error code set go with 50
                 # otherwise the sim would appear to be successful
@@ -1685,7 +1685,7 @@ class Node:
                 self.turbineMessages = ""
             else:
                 self.turbineMessages = json.dumps(m)
-            # single quotes are bad news when trying to instert this into
+            # single quotes are bad news when trying to insert this into
             # the TurbineLite database in consumer mode so they gone
             self.turbineMessages = self.turbineMessages.replace("'", '"')
         if res and readResults and "Output" in res and res["Output"]:

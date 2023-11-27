@@ -57,7 +57,7 @@ Methods:
 
     setSampleFileName(name):
         Set the name of the file from which to sample.
-        This is to accomodate the S distribution type in psuade
+        This is to accommodate the S distribution type in psuade
     getSampleFileName():
         Get the name of the file that was sampled
 

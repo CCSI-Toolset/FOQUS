@@ -17,7 +17,7 @@ runs:
       shell: bash -l {0}
       run: |
         echo '::group::Output of "conda install" command'
-        conda install --yes --quiet -c conda-forge pip pywin32
+        conda install --yes --quiet -c conda-forge pip pywin32=306
         conda list
         echo '::endgroup::'
     - name: Install FOQUS and dependencies using pip

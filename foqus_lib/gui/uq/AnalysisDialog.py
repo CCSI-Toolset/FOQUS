@@ -195,8 +195,8 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         )
         if self.infoTable.verticalScrollBar().isVisible():
             width += self.infoTable.verticalScrollBar().width()
-        #        scollBarWidth = QApplication.style().pixelMetric(QStyle.PM_ScrollBarExtent)
-        #        width += scollBarWidth
+        #        scrollBarWidth = QApplication.style().pixelMetric(QStyle.PM_ScrollBarExtent)
+        #        width += scrollBarWidth
         self.infoTable.setMaximumWidth(width)
         self.infoGroup.setMinimumWidth(width + 22)
         # self.infoGroup.setMaximumWidth(width + 60)
@@ -212,7 +212,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         #            print self.analysisTable.columnWidth(i)
         if self.analysisTable.verticalScrollBar().isVisible():
             width += self.analysisTable.verticalScrollBar().width()
-        #        width += scollBarWidth
+        #        width += scrollBarWidth
         self.analysisTable.setMinimumWidth(width)
         self.analysisTable.setMaximumWidth(width)
         self.analysisTable.setRowCount(0)

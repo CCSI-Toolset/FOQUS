@@ -508,7 +508,7 @@ class Results(pd.DataFrame):
         self.update_filter_indexes()
 
     def exportVars(self, inputs, outputs, flat=True) -> pd.DataFrame:
-        # flat isn't used, just there for compatablility from when there were vector vars.
+        # flat isn't used, just there for compatibility from when there were vector vars.
         df = pd.DataFrame(columns=inputs + outputs)
         for c in inputs:
             df[c] = self["input." + c]

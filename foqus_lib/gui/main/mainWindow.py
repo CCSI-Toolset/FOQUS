@@ -43,33 +43,50 @@ from PyQt5.QtWidgets import (
     QMenu,
     QAction,
     QToolBar,
+    QMessageBox,
+    QFileDialog,
+    QDialog,
 )
 from PyQt5.QtGui import QIcon, QKeySequence
 from foqus_lib.gui import icons_rc
-from foqus_lib.gui.dialogs.variableBrowser import *
-from foqus_lib.gui.main.Dash import *
-from foqus_lib.gui.main.settingsFrame import *
-from foqus_lib.gui.main.sessionDescriptionEdit import *
-from foqus_lib.gui.main.saveMetadataDialog import *
-from foqus_lib.gui.model.gatewayUploadDialog import *
-from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import *
-from foqus_lib.gui.flowsheet.drawFlowsheet import *
-from foqus_lib.gui.flowsheet.nodePanel import *
-from foqus_lib.gui.flowsheet.edgePanel import *
-from foqus_lib.gui.flowsheet.flowsheetSettingsDialog import *
-from foqus_lib.gui.flowsheet.dataBrowserDialog import *
-from foqus_lib.gui.basic_data.basicDataParentFrame import *
-from foqus_lib.gui.optimization.optSetupFrame import *
-from foqus_lib.gui.ouu.ouuSetupFrame import *
-from foqus_lib.gui.uq.uqSetupFrame import *
-from foqus_lib.gui.sdoe.sdoeSetupFrame import *
-from foqus_lib.gui.uq.updateUQModelDialog import *
-from foqus_lib.gui.help.helpBrowser import *
-from foqus_lib.gui.surrogate.surrogateFrame import *
-from foqus_lib.gui.heatIntegration.heatIntegrationFrame import *
+from foqus_lib.gui.dialogs.variableBrowser import variableBrowser
+from foqus_lib.gui.flowsheet.dataBrowserDialog import dataBrowserDialog
+from foqus_lib.gui.flowsheet.flowsheetSettingsDialog import flowsheetSettingsDialog
+from foqus_lib.gui.main.saveMetadataDialog import saveMetadataDialog
+from foqus_lib.gui.model.gatewayUploadDialog import gatewayUploadDialog
+from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import SinterVectorizeDialog
+from foqus_lib.gui.main.sessionDescriptionEdit import sessionDescriptionDialog
+
 from configparser import *
 
+try:
+    from importlib import metadata
+except ImportError:
+    import importlib_metadata as metadata
+from typing import Dict
+from types import ModuleType
+
 _log = logging.getLogger("foqus." + __name__)
+
+
+def _load_gui_plugins(group_name: str = "foqus.plugins.gui") -> Dict[str, ModuleType]:
+    eps_by_group = metadata.entry_points()
+    foqus_eps = eps_by_group[group_name]
+    module_by_name = {}
+
+    for ep in foqus_eps:
+        try:
+            mod = ep.load()
+        except ImportError as e:
+            _log.exception(
+                "module %r for plugin %r could not be imported", ep.value, ep.name
+            )
+        else:
+            module_by_name[ep.name] = mod
+
+    if not module_by_name:
+        _log.error("No plugins loaded from entry_point group %r", group_name)
+    return module_by_name
 
 
 class mainWindow(QMainWindow):
@@ -123,89 +140,13 @@ class mainWindow(QMainWindow):
         )
         self.mainWidget = QStackedWidget(self)
         self.setCentralWidget(self.mainWidget)
-        ### Create the main window widgets for stacked widget
-        #  Create the flowsheet editor/viewer
-        self.flowsheetEditor = drawFlowsheet(self.dat, self)
-        self.flowsheetEditor.nodeSelected.connect(self.setNodePanel)
-        self.flowsheetEditor.edgeSelected.connect(self.setEdgePanel)
-        self.flowsheetEditor.updateEdgeEdit.connect(self.applyAndUpdateEdgeEdit)
-        # self.flowsheetEditor.noneSelected.connect(self.fsSelectNone)
-        self.flowsheetEditor.updateFS.connect(self.refreshFlowsheet)
-        self.flowsheetEditor.updateFSPos.connect(self.refreshNodeCoord)
-        # Set-up dash/home widget
-        self.dashFrame = dashFrame(self)
-        self.dashFrame.buttonBox.rejected.connect(self.cancelSession)
-        self.dashFrame.buttonBox.button(QDialogButtonBox.Help).clicked.connect(
-            self.showHelp
-        )
-        # Basic Data tab
-        self.basicDataFrame = basicDataParentFrame(parent=self)
-        # Set up UQ setup widget
-        self.uqSetupFrame = uqSetupFrame(self.dat, self)
-        # set-up opt setup widget
-        self.optSetupFrame = optSetupFrame(self.dat, self)
-        self.optSetupFrame.setStatusBar.connect(self.setStatus)
-        self.optSetupFrame.updateGraph.connect(self.refreshFlowsheet)
-        # OUU screen
-        self.ouuSetupFrame = ouuSetupFrame(self.dat, self)
-        # SDOE screen
-        self.sdoeSetupFrame = sdoeSetupFrame(self.dat, self)
-        # surrogate screen
-        self.surFrame = surrogateFrame(self.dat, self)
-        self.surFrame.setStatusBar.connect(self.setStatus)
-        # heat integration screen
-        self.heatIntFrame = heatIntegrationFrame(self.dat, self)
-        # settings screen
-        self.fsettingsFrame = settingsFrame(self.dat, self)
-        self.fsettingsFrame.waiting.connect(self.setCursorWaiting)
-        self.fsettingsFrame.notwaiting.connect(self.setCursorNormal)
-        # Data-Browser widget
-        self.dataBrowserDialog = dataBrowserDialog(self.dat, self)
-        ## Add widgets to stacked widget
-        self.mainWidget.addWidget(self.dashFrame)  # 0
-        self.mainWidget.addWidget(self.basicDataFrame)  # 1
-        self.mainWidget.addWidget(self.flowsheetEditor)  # 2
-        self.mainWidget.addWidget(self.uqSetupFrame)  # 3
-        self.mainWidget.addWidget(self.optSetupFrame)  # 4
-        self.mainWidget.addWidget(self.ouuSetupFrame)  # 5
-        self.mainWidget.addWidget(self.sdoeSetupFrame)  # 6
-        self.mainWidget.addWidget(self.surFrame)  # 7
-        self.mainWidget.addWidget(self.heatIntFrame)  # 8
-        self.mainWidget.addWidget(self.fsettingsFrame)  # 9
-        # make a dictionary to look up widget indexes in stacked widget
-        self.screenIndex = {
-            "home": 0,
-            "basicData": 1,
-            "flow": 2,
-            "uq": 3,
-            "opt": 4,
-            "ouu": 5,
-            "sdoe": 6,
-            "surrogate": 7,
-            "heatInt": 8,
-            "settings": 9,
-        }
+
+        self.frames = self._load_frames_from_plugins(session=self.dat)
+        self._install_frame_widgets(frames=self.frames, container=self.mainWidget)
         ## Create toolboxes for editing nodes and edges in flowsheet
-        # node editor
-        self.nodeDock = nodeDock(self.dat, self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.nodeDock)
-        self.nodeDock.redrawFlowsheet.connect(self.refreshFlowsheet)
-        self.nodeDock.waiting.connect(self.setCursorWaiting)
-        self.nodeDock.notwaiting.connect(self.setCursorNormal)
-        self.nodeDock.hide()
-        # Edge editor
-        self.edgeDock = edgeDock(self.dat, self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.edgeDock)
-        self.edgeDock.redrawFlowsheet.connect(self.refreshFlowsheet)
-        self.edgeDock.hide()
-        ##create help dock widget
-        self.helpDock = helpBrowserDock(self, self.dat)
-        self.helpDock.hideHelp.connect(self.hideHelp)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.helpDock)
-        self.helpDock.hide()
-        self.helpDock.showAbout.connect(self.showAbout)
+        self._install_dock_widgets(session=self.dat)
         ## Center the flowsheet view on flowsheet
-        self.flowsheetEditor.center()
+        # self.flowsheetEditor.center()
         ## Create a variable browser dialog browser
         self.varBrowse = variableBrowser(self.dat, self)
         ## Create the toolbar and menu bar for mainwindow
@@ -224,6 +165,67 @@ class mainWindow(QMainWindow):
             self.tstimer.start(2000)
         else:
             self.tstimer = None
+
+    def _load_frames_from_plugins(
+        self, session, register_func_name: str = "foqus_register_gui"
+    ):
+        module_by_name = _load_gui_plugins()
+        frames = {}
+        for name, module in module_by_name.items():
+            register_func = getattr(module, register_func_name, None)
+            if register_func is None:
+                _log.warning(
+                    "function %r is not defined for plugin %r", register_func_name, name
+                )
+                continue
+            try:
+                frame = register_func(window=self, session=session)
+            except Exception as e:
+                _log.exception(
+                    "An error occurred while calling %r for plugin %r",
+                    register_func,
+                    name,
+                )
+            else:
+                frames[name] = frame
+        _log.info("Created %d frames", len(frames))
+        return frames
+
+    def _install_frame_widgets(self, frames: dict, container: QWidget) -> None:
+        self.screenIndex = idx_by_name = collections.defaultdict(lambda *args: -1)
+        for idx, (name, frame) in enumerate(frames.items()):
+            _log.debug("Installing frame widget %s for %r", frame, name)
+            container.addWidget(frame)
+            idx_by_name[name] = idx
+        _log.info("Installed %d frame widgets", len(self.screenIndex))
+
+    def _install_dock_widgets(self, session) -> None:
+        # node editor
+        from foqus_lib.gui.flowsheet.nodePanel import nodeDock
+
+        self.nodeDock = nodeDock(session, self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.nodeDock)
+        self.nodeDock.redrawFlowsheet.connect(self.refreshFlowsheet)
+        self.nodeDock.waiting.connect(self.setCursorWaiting)
+        self.nodeDock.notwaiting.connect(self.setCursorNormal)
+        self.nodeDock.hide()
+        from foqus_lib.gui.flowsheet.edgePanel import edgeDock
+
+        # Edge editor
+        self.edgeDock = edgeDock(session, self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.edgeDock)
+        self.edgeDock.redrawFlowsheet.connect(self.refreshFlowsheet)
+        self.edgeDock.hide()
+        ##create help dock widget
+        from foqus_lib.gui.help.helpBrowser import helpBrowserDock
+
+        self.helpDock = helpBrowserDock(self, session)
+        self.helpDock.hideHelp.connect(self.hideHelp)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.helpDock)
+        self.helpDock.hide()
+        self.helpDock.showAbout.connect(self.showAbout)
+        # data browser dialog
+        self.dataBrowserDialog = dataBrowserDialog(self.dat, self)
 
     def handleNodeException(self, ex: NodeEx):
         """

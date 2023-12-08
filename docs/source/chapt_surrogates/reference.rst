@@ -34,6 +34,12 @@ The following surrogate modeling tools are currently available:
 -  Keras Neural Networks (keras_nn) – Surrogate models leveraging neural networks in
    TensorFlow Keras, a high-level machine learning library that supports training sequential or interconnected graph-based models.
 
+-  PyTorch Neural Networks (pytorch_nn) – Surrogate models leveraging neural networks in
+   PyTorch, an optimized tensor library for deep learning that supports training sequential or interconnected graph-based models.
+
+-  Scikit-learn Neural Networks (scikit_nn) – Surrogate models leveraging neural networks in
+   Scikit-learn, a predictive data analysis and surrogate modeling library that supports multi-layer regression and classification.
+
 Data Selection
 --------------
 

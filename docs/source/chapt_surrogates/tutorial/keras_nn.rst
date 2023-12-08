@@ -1,6 +1,6 @@
 .. _(sec.surrogate.keras_nn):
 
-Tutorial 3: TensorFlow Keras Neural Networks
+Tutorial 6: TensorFlow Keras Neural Networks
 ============================================
 
 This tutorial covers the TensorFlow Keras Neural Network surrogate modeling method.
@@ -33,7 +33,7 @@ the installation instructions in the TensorFlow documentation.
    examples/tutorial_files/Flowsheets/Tutorial_4 folder.
 
 #. Click the **Surrogates** button from the Home window (Figure
-   :ref:`fig.bssanova.settings`).
+   :ref:`fig.kerasnn.settings`).
 
 #. Select “keras_nn” in the **Tool** drop-down list.
 
@@ -50,7 +50,7 @@ the installation instructions in the TensorFlow documentation.
 #. Set "epoch" to "500", "verbose" to "0" (i.e. epoch results will not print during training) and ensure "output_file" has a file name of the form "user_ml_ai_models/[NAME].keras". NAME may be changed, if desired. The model will be saved to the working directory folder user_ml_ai_models.
 
 #. Click the **Run** icon (Figure
-   :ref:`fig.bssanova.settings`).
+   :ref:`fig.kerasnn.settings`).
 
 .. figure:: ../figs/kerasnn_settings.svg
    :alt: Keras Neural Network Session Set Up

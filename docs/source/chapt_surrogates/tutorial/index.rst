@@ -9,4 +9,4 @@ Tutorial
     bssanova
     uq_model
     flowsheet
-    keras_nn
+    neural_networks

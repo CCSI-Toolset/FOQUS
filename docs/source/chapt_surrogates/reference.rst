@@ -31,6 +31,9 @@ The following surrogate modeling tools are currently available:
    Neural Networks. It contains special features specifically designed
    for working with CFDs.
 
+-  Keras Neural Networks (keras_nn) – Surrogate models leveraging neural networks in
+   TensorFlow Keras, a high-level machine learning library that supports training sequential or interconnected graph-based models.
+
 Data Selection
 --------------
 

@@ -57,3 +57,10 @@ the installation instructions in the TensorFlow documentation.
 10. The execution window will automatically display. While the regression training is finished running, TensorFlow Keras will display some information on the model size and shape.
 
 11. When the run completes, the script produces a saved model file which is compatible with the Machine Learning & Artificial Intelligence Plugin. (See Section :ref:`mlaiplugin`.)
+
+In the future, these plugins will support additional items yielding enhanced surrogate modeling capabilities.
+
+- Expanded data normalization options
+- Offline data loading from a file, e.g. CSV, Excel, PSUADE
+- Support for regression of multi-output neural networks
+- Automatic regression parameter selection during model training from user-supplied parameter options

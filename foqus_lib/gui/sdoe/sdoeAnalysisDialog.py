@@ -20,7 +20,7 @@ from foqus_lib.framework.sdoe import order, sdoe
 from foqus_lib.framework.sdoe.df_utils import load
 from foqus_lib.framework.sdoe.plot_utils import plot_pareto
 from .sdoeSetupFrame import *
-from .sdoePreview import sdoePreview
+from .sdoePreview import sdoePreview, Window
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
@@ -1301,7 +1301,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             results = self.analysis[row].results
             cand = load(cfile)
             irsf = {"cand": cand}
-            plot_pareto(pf, results, irsf["cand"], hname)
+            fig = plot_pareto(pf, results, irsf["cand"], hname)
+            dialog = Window(fig, None, self)
+            title = "SDoE (IRSF) Pareto Front"
+            dialog.setWindowTitle(title)
+            dialog.show()
             return
 
         fullName = self.analysis[row].fnames["cand"]

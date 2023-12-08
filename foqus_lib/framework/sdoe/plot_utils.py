@@ -150,15 +150,17 @@ def load_data(fname, hname):
 
 
 def remove_xticklabels(ax):
-    labels = [item.get_text() for item in ax.get_xticklabels()]
-    no_labels = [""] * len(labels)
+    ticks_loc = ax.get_xticks().tolist()
+    no_labels = [""] * len(ticks_loc)
+    ax.set_xticks(ticks_loc)
     ax.set_xticklabels(no_labels)
     return ax
 
 
 def remove_yticklabels(ax):
-    labels = [item.get_text() for item in ax.get_yticklabels()]
-    no_labels = [""] * len(labels)
+    ticks_loc = ax.get_yticks().tolist()
+    no_labels = [""] * len(ticks_loc)
+    ax.set_yticks(ticks_loc)
     ax.set_yticklabels(no_labels)
     return ax
 
@@ -435,7 +437,7 @@ def plot(
     else:
         cand = None
         wcol = None
-    _fig1 = plot_candidates(
+    fig1 = plot_candidates(
         df, hf, show, title, scatter_label, cand, wcol=wcol, nImpPts=nImpPts
     )
     if nusf:
@@ -451,9 +453,10 @@ def plot(
         cand_ = scale_y(scale_method, mwr, cand_np, idw_np)
         wts = cand_[:, idw_np]  # scaled weights from all candidates
         title = "SDOE (NUSF) Weight Visualization for MWR={}".format(mwr)
-        _fig2 = plot_weights(xs, wt, wts, title)
-
-    plt.show()
+        fig2 = plot_weights(xs, wt, wts, title)
+        return fig1, fig2
+    else:
+        return fig1
 
 
 def plot_pareto(pf, results, cand, hname):  # Plot Pareto front with hovering labels
@@ -524,4 +527,4 @@ def plot_pareto(pf, results, cand, hname):  # Plot Pareto front with hovering la
     fig.canvas.manager.set_window_title("Pareto Front")
     fig.canvas.mpl_connect("pick_event", onpick)
 
-    plt.show()
+    return fig

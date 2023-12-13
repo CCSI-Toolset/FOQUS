@@ -12,12 +12,15 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os, re
+import os
+import re
+
 import numpy as np
+
+from .Distribution import Distribution
 from .Model import Model
 from .SampleData import SampleData
 from .SamplingMethods import SamplingMethods
-from .Distribution import Distribution
 
 
 class SurrogateParser:

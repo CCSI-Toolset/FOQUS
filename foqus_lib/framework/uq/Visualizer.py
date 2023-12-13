@@ -13,16 +13,18 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
+import re
 import subprocess
 import tempfile
-import re
-import platform
+
 import numpy as np
-from .Model import Model
-from .SampleData import SampleData
-from .LocalExecutionModule import LocalExecutionModule
+
 from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .Model import Model
 from .Plotter import Plotter
+from .SampleData import SampleData
 
 
 class Visualizer:

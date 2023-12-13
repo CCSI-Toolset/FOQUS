@@ -21,8 +21,9 @@ from May 8, 2015
 """
 
 import sys
+
 from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+from PyQt5.QtGui import QColor, QFont, QSyntaxHighlighter, QTextCharFormat
 
 
 def format(color, style=""):

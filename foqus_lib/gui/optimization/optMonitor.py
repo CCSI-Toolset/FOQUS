@@ -16,18 +16,20 @@
 John Eslick, Carnegie Mellon University, 2013
 """
 
-from foqus_lib.framework.session.hhmmss import *
-
-import numpy as np
-import time
 import math
+import os
+import time
+
 import matplotlib
+import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from .optMessageWindow import *
-import os
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QWidget, QMessageBox, QVBoxLayout
+from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QWidget
+
+from foqus_lib.framework.session.hhmmss import *
+
+from .optMessageWindow import *
 
 mypath = os.path.dirname(__file__)
 _optMonitorUI, _optMonitor = uic.loadUiType(os.path.join(mypath, "optMonitor_UI.ui"))

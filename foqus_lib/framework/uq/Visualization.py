@@ -13,9 +13,10 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import numpy
+
+from .Common import Common
 from .UQAnalysis import UQAnalysis
 from .Visualizer import Visualizer
-from .Common import Common
 
 
 class Visualization(UQAnalysis):

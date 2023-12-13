@@ -17,23 +17,22 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import ast
 import os
-import types
 import platform
+import types
 from configparser import RawConfigParser
 from io import StringIO
-import ast
-
-from foqus_lib.gui.dialogs.tagSelectDialog import *
-from foqus_lib.framework.graph.node import *
-from foqus_lib.framework.graph.node import *
-import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-from foqus_lib.framework.uq.Distribution import Distribution
 
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit, QAbstractItemView
 from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QAbstractItemView, QInputDialog, QLineEdit, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
+from foqus_lib.framework.graph.node import *
+from foqus_lib.framework.uq.Distribution import Distribution
+from foqus_lib.gui.dialogs.tagSelectDialog import *
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
 mypath = os.path.dirname(__file__)
 _nodeDockUI, _nodeDock = uic.loadUiType(os.path.join(mypath, "nodePanel_UI.ui"))

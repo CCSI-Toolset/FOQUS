@@ -12,8 +12,9 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from . import node as gn
 import subprocess
+
+from . import node as gn
 
 
 def makeHeatIntegrationNode(node):

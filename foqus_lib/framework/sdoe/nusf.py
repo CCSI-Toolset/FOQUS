@@ -12,11 +12,13 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import numpy as np
-from scipy.stats import rankdata
-from .distance import compute_dist, compute_min_params
 import time
+
+import numpy as np
 import pandas as pd  # only used for the final output of criterion
+from scipy.stats import rankdata
+
+from .distance import compute_dist, compute_min_params
 
 
 def compute_dmat(weight_mat, xcols, wcol, hist=None):

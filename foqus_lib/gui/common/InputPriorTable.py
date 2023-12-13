@@ -13,23 +13,24 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+
+import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
     QApplication,
+    QCheckBox,
+    QComboBox,
+    QFileDialog,
+    QMessageBox,
+    QSpinBox,
     QTableWidget,
     QTableWidgetItem,
-    QComboBox,
-    QCheckBox,
-    QMessageBox,
-    QAbstractItemView,
-    QSpinBox,
-    QFileDialog,
 )
-from PyQt5.QtGui import QColor
-import numpy as np
 
-from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.SampleData import *
 
 
 class InputPriorTable(QTableWidget):

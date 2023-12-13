@@ -12,11 +12,13 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from .distance import compute_dist, compute_min_params
+import itertools
+import time
+
 import numpy as np
 import pandas as pd
-import time
-import itertools
+
+from .distance import compute_dist, compute_min_params
 
 
 def unit_scale(xs):

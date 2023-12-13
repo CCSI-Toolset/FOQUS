@@ -13,10 +13,10 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 
-from foqus_lib.gui.main.mainWindow import mainWindow
-from foqus_lib.gui.surrogate.surrogateFrame import surrogateFrame
 import pytest
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.gui.surrogate.surrogateFrame import surrogateFrame
 
 pytestmark = pytest.mark.gui
 

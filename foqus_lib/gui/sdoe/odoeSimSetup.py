@@ -12,28 +12,29 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
 import copy
-import tempfile
+import os
 import subprocess
-
-from foqus_lib.framework.sampleResults.results import Results
-from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
-from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Distribution import Distribution
-from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
-from foqus_lib.framework.uq.ExperimentalDesign import ExperimentalDesign
-from foqus_lib.framework.uq.Common import Common
-from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
-from .sdoePreview import sdoePreview
-from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+import tempfile
 
 # from SimSetup_UI import Ui_Dialog
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QStackedLayout, QComboBox, QApplication, QMessageBox
 from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QApplication, QComboBox, QMessageBox, QStackedLayout
+
+from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.Distribution import Distribution
+from foqus_lib.framework.uq.ExperimentalDesign import ExperimentalDesign
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.SampleData import SampleData
+from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
+
+from .sdoePreview import sdoePreview
 
 mypath = os.path.dirname(__file__)
 _SimSetupUI, _odoeSimSetup = uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))

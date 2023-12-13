@@ -12,24 +12,24 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import platform
 import os
-
-from foqus_lib.framework.graph.graph import *
-from foqus_lib.framework.uq.flowsheetToUQModel import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.Common import Common
+import platform
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QDialog,
+    QDialogButtonBox,
     QFileDialog,
     QListWidgetItem,
-    QAbstractItemView,
-    QDialogButtonBox,
-    QDialog,
 )
+
+from foqus_lib.framework.graph.graph import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.flowsheetToUQModel import *
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.uq.ResponseSurfaces import *
 
 mypath = os.path.dirname(__file__)
 _updateUQModelDialogUI, _updateUQModelDialog = uic.loadUiType(

@@ -12,33 +12,34 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
-import shutil
 import os
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.RSInference import *
-from foqus_lib.framework.solventfit.SolventFit import SolventFit
-from foqus_lib.framework.uq.Visualizer import Visualizer
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.gui.uq import RSCombos
-from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+import shutil
+import sys
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import (
-    QFileDialog,
-    QMessageBox,
     QApplication,
-    QTableWidgetItem,
     QCheckBox,
-    QMainWindow,
-    QVBoxLayout,
+    QFileDialog,
     QLabel,
+    QMainWindow,
+    QMessageBox,
+    QTableWidgetItem,
+    QVBoxLayout,
 )
+
+from foqus_lib.framework.solventfit.SolventFit import SolventFit
+from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.uq.ResponseSurfaces import *
+from foqus_lib.framework.uq.RSInference import *
+from foqus_lib.framework.uq.SampleData import *
+from foqus_lib.framework.uq.SamplingMethods import *
+from foqus_lib.framework.uq.Visualizer import Visualizer
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+from foqus_lib.gui.uq import RSCombos
 
 mypath = os.path.dirname(__file__)
 _solventFitSetupFrameUI, _solventFitSetupFrame = uic.loadUiType(

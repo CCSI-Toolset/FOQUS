@@ -12,9 +12,9 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from .UQAnalysis import UQAnalysis
-from .RawDataAnalyzer import RawDataAnalyzer
 from .Common import Common
+from .RawDataAnalyzer import RawDataAnalyzer
+from .UQAnalysis import UQAnalysis
 
 
 class SensitivityAnalysis(UQAnalysis):

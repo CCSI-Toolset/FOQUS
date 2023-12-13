@@ -21,39 +21,35 @@ text).  They also need to have a .py extension and inherit the surrogate class.
 """
 
 
+import copy
+import logging
+import math
+import os
+import queue
+import random as rn
+import re
+import shutil
+import subprocess
+import sys
+import threading
+import time
+import traceback
 from contextlib import nullcontext
-from tokenize import String
+from multiprocessing.connection import Client
 from pathlib import Path
+from tokenize import String
+
 import numpy as np
 import pandas as pd
-import threading
-import queue
-import logging
-import subprocess
-import os
-import sys
-import copy
-import traceback
-import time
-import shutil
-import re
-import math
+import torch  # pylint: disable=import-error
+import torch.nn as nn  # pylint: disable=import-error
 
-try:
-    import win32api  # used to get short file name for alamo sim exe
-    import win32process
-except:
-    pass
+from foqus_lib.framework.listen import listen
+from foqus_lib.framework.session.session import exePath
+
 # from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
-from foqus_lib.framework.listen import listen
-from foqus_lib.framework.session.session import exePath
-from multiprocessing.connection import Client
-
-import random as rn
-import torch  # pylint: disable=import-error
-import torch.nn as nn  # pylint: disable=import-error
 
 # custom class to define Keras NN layers
 np.random.seed(46)

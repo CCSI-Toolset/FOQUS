@@ -13,13 +13,13 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
-import tempfile
-import re
 import platform
+import re
+import tempfile
 
-from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
-from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 
 dname = os.path.join(os.getcwd(), "ODOE_files")
 

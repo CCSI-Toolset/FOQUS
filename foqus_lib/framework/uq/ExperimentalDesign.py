@@ -12,20 +12,22 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
-import subprocess
 import copy
-import numpy
+import os
 import platform
+import subprocess
 import tempfile
 
+import numpy
+
+from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
+
+from .Common import Common
 from .LocalExecutionModule import LocalExecutionModule
 from .RSAnalyzer import RSAnalyzer
-from .Common import Common
 
 
 class ExperimentalDesign:

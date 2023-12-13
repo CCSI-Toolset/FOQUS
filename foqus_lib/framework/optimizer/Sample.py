@@ -24,16 +24,18 @@ text).  They also need to have a .py extension and inherit the optimization clas
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import time
 import copy
 import csv
-import queue
-import sys
 import logging
 import math
-import numpy
 import os
+import queue
+import sys
+import time
 import traceback
+
+import numpy
+
 from foqus_lib.framework.optimizer.optimization import optimization
 
 

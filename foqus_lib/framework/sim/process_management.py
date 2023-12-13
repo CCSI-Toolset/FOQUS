@@ -19,8 +19,9 @@
 Joshua Boverhof, Lawrence Berkeley National Lab
 
 """
-import psutil
 import logging
+
+import psutil
 
 _log = logging.getLogger("foqus." + __name__)
 _process_username = psutil.Process().username()

@@ -12,16 +12,17 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from foqus_lib.framework.foqusOptions.optionList import optionList
-import threading
 import copy
-import queue
-import os
-import foqus_lib.framework.uq.SurrogateParser
 import json
-
+import os
+import queue
+import threading
 from typing import Tuple
+
 import pandas as pd
+
+import foqus_lib.framework.uq.SurrogateParser
+from foqus_lib.framework.foqusOptions.optionList import optionList
 
 
 class surrogate(threading.Thread):

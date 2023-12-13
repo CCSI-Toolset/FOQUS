@@ -19,19 +19,21 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import os
 import json
-import math
-import numpy as np
 import logging
-from foqus_lib.framework.pymodel.pymodel import *
-from foqus_lib.framework.graph.nodeVars import *
-from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
+import math
+import os
 from collections import OrderedDict
-from foqus_lib.framework.foqusOptions.optionList import optionList
-from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
-from foqus_lib.framework.at_dict.at_dict import AtDict
 from importlib import import_module
+
+import numpy as np
+
+from foqus_lib.framework.at_dict.at_dict import AtDict
+from foqus_lib.framework.foqusOptions.optionList import optionList
+from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
+from foqus_lib.framework.graph.nodeVars import *
+from foqus_lib.framework.pymodel.pymodel import *
+from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 
 _logger = logging.getLogger("foqus." + __name__)
 
@@ -146,7 +148,6 @@ def attempt_load_sklearn(try_imports=True):
     try:
         assert try_imports  # if False will auto-trigger exceptions
         # sklearn should be installed, but not required for non ML/AI models
-        import sklearn
         import pickle
 
         skl_pickle_load = pickle.load
@@ -168,8 +169,9 @@ def attempt_load_smt(try_imports=True):
     try:
         assert try_imports  # if False will auto-trigger exceptions
         # smt should be installed, but not required for non ML/AI models
-        import smt
         import pickle
+
+        import smt
 
         smt_pickle_load = pickle.load
 

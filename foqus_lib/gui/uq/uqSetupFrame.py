@@ -12,47 +12,47 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import platform
-import os
-import logging
-import numpy
 import copy
-from foqus_lib.gui.uq.updateUQModelDialog import *
-from foqus_lib.gui.uq.SimSetup import *
-from foqus_lib.gui.uq.stopEnsembleDialog import *
-from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.DataProcessor import *
-from foqus_lib.framework.uq.RawDataAnalyzer import *
-from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.Visualizer import *
-from foqus_lib.framework.uq.SampleRefiner import *
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.sampleResults.results import Results
-from .AnalysisDialog import AnalysisDialog
+import logging
+import os
+import platform
 
-from PyQt5 import QtCore, uic, QtGui
+import numpy
+from PyQt5 import QtCore, QtGui, uic
+from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
+from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import (
-    QStyledItemDelegate,
     QApplication,
     QButtonGroup,
-    QTableWidgetItem,
+    QDialog,
+    QInputDialog,
+    QMenu,
+    QMessageBox,
     QProgressBar,
     QPushButton,
     QStyle,
-    QDialog,
-    QMessageBox,
-    QInputDialog,
-    QMenu,
+    QStyledItemDelegate,
+    QTableWidgetItem,
 )
-from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
-from PyQt5.QtGui import QCursor, QColor
 
-from PyQt5 import uic
+from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.DataProcessor import *
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.uq.RawDataAnalyzer import *
+from foqus_lib.framework.uq.ResponseSurfaces import *
+from foqus_lib.framework.uq.RSAnalyzer import *
+from foqus_lib.framework.uq.SampleData import *
+from foqus_lib.framework.uq.SampleRefiner import *
+from foqus_lib.framework.uq.SamplingMethods import *
+from foqus_lib.framework.uq.Visualizer import *
+from foqus_lib.gui.uq.SimSetup import *
+from foqus_lib.gui.uq.stopEnsembleDialog import *
+from foqus_lib.gui.uq.updateUQModelDialog import *
+from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
+
+from .AnalysisDialog import AnalysisDialog
 
 mypath = os.path.dirname(__file__)
 _uqSetupFrameUI, _uqSetupFrame = uic.loadUiType(

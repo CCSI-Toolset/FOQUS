@@ -21,26 +21,42 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import configparser
+import imp
+import json
+import logging
 import os
 import os.path
-import configparser
-import json
-import re
-import time
 import random
+import re
+import socket
 import ssl
+import subprocess
+import time
+import traceback
 import urllib.parse
 import urllib.request
-import logging
-import traceback
-import subprocess
-import socket
-import imp
-import foqus_lib.framework.sim.process_management as _pm
-
-_log = logging.getLogger("foqus." + __name__)
 from collections import OrderedDict
 
+import turbine.commands
+import turbine.commands.turbine_application_script as _tapp
+import turbine.commands.turbine_consumer_script as _tcon
+import turbine.commands.turbine_job_script as _tjob
+import turbine.commands.turbine_session_script as _tsess
+import turbine.commands.turbine_simulation_script as _tsim
+from turbine.commands import turbine_session_result_script
+from turbine.commands.requests_base import (
+    HTTPStatusCode,
+    delete_page,
+    get_page_by_url,
+    post_page_by_url,
+    read_configuration,
+)
+
+import foqus_lib.framework.sim.process_management as _pm
+from foqus_lib.framework.foqusException.foqusException import *
+
+_log = logging.getLogger("foqus." + __name__)
 
 if os.name == "nt":
     import win32process
@@ -49,22 +65,6 @@ if os.name == "nt":
         from . import turbineLiteDB
     except Exception:
         _log.exception("Problem importing turbineLiteDB")
-
-from foqus_lib.framework.foqusException.foqusException import *
-import turbine.commands.turbine_application_script as _tapp
-import turbine.commands.turbine_session_script as _tsess
-import turbine.commands.turbine_simulation_script as _tsim
-import turbine.commands.turbine_job_script as _tjob
-import turbine.commands.turbine_consumer_script as _tcon
-import turbine.commands
-from turbine.commands.requests_base import (
-    HTTPStatusCode,
-    read_configuration,
-    get_page_by_url,
-    post_page_by_url,
-    delete_page,
-)
-from turbine.commands import turbine_session_result_script
 
 
 class TurbineInterfaceEx(foqusException):

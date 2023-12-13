@@ -12,11 +12,11 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from .UQRSAnalysis import UQRSAnalysis
-from .UQAnalysis import UQAnalysis
+from .Common import Common
 from .ResponseSurfaces import ResponseSurfaces
 from .RSAnalyzer import RSAnalyzer
-from .Common import Common
+from .UQAnalysis import UQAnalysis
+from .UQRSAnalysis import UQRSAnalysis
 
 
 class RSUncertaintyAnalysis(UQRSAnalysis):

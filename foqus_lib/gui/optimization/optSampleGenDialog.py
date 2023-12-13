@@ -18,9 +18,11 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import os
-import foqus_lib.gui.helpers.guiHelpers as gh
+
 from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
 
 mypath = os.path.dirname(__file__)
 _optSampleGenDialogUI, _optSampleGenDialog = uic.loadUiType(

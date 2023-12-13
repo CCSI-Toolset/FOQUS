@@ -12,13 +12,15 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from foqus_lib.framework.graph.graph import *
-import traceback
-import unittest
 import copy
-import numpy
 import json
 import os
+import traceback
+import unittest
+
+import numpy
+
+from foqus_lib.framework.graph.graph import *
 
 
 class testMassBalance(unittest.TestCase):

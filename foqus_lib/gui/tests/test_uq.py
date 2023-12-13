@@ -14,15 +14,14 @@
 #################################################################################
 import time
 import typing
-from PyQt5 import QtWidgets, QtCore
-
-from foqus_lib.gui.uq.uqSetupFrame import uqSetupFrame
-from foqus_lib.gui.uq.SimSetup import SimSetup
-from foqus_lib.gui.uq.updateUQModelDialog import updateUQModelDialog
-from foqus_lib.gui.uq.AnalysisDialog import AnalysisDialog
 
 import pytest
+from PyQt5 import QtCore, QtWidgets
 
+from foqus_lib.gui.uq.AnalysisDialog import AnalysisDialog
+from foqus_lib.gui.uq.SimSetup import SimSetup
+from foqus_lib.gui.uq.updateUQModelDialog import updateUQModelDialog
+from foqus_lib.gui.uq.uqSetupFrame import uqSetupFrame
 
 pytestmark = pytest.mark.gui
 

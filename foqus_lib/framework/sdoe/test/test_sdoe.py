@@ -12,9 +12,10 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from foqus_lib.framework.sdoe import sdoe
 from importlib import resources
 from pathlib import Path
+
+from foqus_lib.framework.sdoe import sdoe
 
 
 def test_run_irsf():

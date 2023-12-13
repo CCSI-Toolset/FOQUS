@@ -59,7 +59,7 @@ jobs:
           config: .typos.toml
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
-    needs: [code-formatting, spell-check]
+    needs: [spell-check, code-formatting, pylint]
     runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
@@ -148,7 +148,7 @@ jobs:
           pip-install-target: -r requirements-dev.txt
       - name: Run pylint
         run: |
-          pylint --rcfile=.pylint/pylintrc --disable=W,C,R,I foqus_lib/
+          pylint --rcfile=.pylint/pylintrc --disable=all --enable=E --enable=wrong-import-order foqus_lib/
 
   docs:
     name: Build docs

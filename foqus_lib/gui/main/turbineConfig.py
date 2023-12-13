@@ -18,12 +18,14 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import os
-from foqus_lib.framework.sim.turbineConfiguration import (
-    TurbineInterfaceEx,
-    TurbineConfiguration,
-)
+
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QDialog
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+
+from foqus_lib.framework.sim.turbineConfiguration import (
+    TurbineConfiguration,
+    TurbineInterfaceEx,
+)
 
 mypath = os.path.dirname(__file__)
 _turbineConfigUI, _turbineConfigFrame = uic.loadUiType(

@@ -12,46 +12,45 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import platform
-import os
-import logging
 import copy
+import logging
+import os
+import platform
 import time
-import pandas as pd
 from datetime import datetime
-from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
-from foqus_lib.gui.sdoe.sdoeSimSetup import *
-from foqus_lib.gui.sdoe.odoeSimSetup import *
-from foqus_lib.gui.uq import RSCombos
-from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
-from foqus_lib.framework.uq.DataProcessor import *
-from foqus_lib.framework.uq.RSValidation import *
-from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.sampleResults.results import Results
 
-from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe
-from .sdoePreview import sdoePreview
-from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-
-from PyQt5 import QtCore, uic, QtGui
+import pandas as pd
+from PyQt5 import QtCore, QtGui, uic
+from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
+from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
-    QStyledItemDelegate,
+    QAbstractItemView,
     QApplication,
-    QTableWidgetItem,
+    QCheckBox,
+    QDialog,
+    QMenu,
+    QMessageBox,
     QPushButton,
     QStyle,
-    QDialog,
-    QMessageBox,
-    QMenu,
-    QAbstractItemView,
-    QCheckBox,
+    QStyledItemDelegate,
+    QTableWidgetItem,
 )
-from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
-from PyQt5.QtGui import QCursor
 
-from PyQt5 import uic
+from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe
+from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.DataProcessor import *
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.RSAnalyzer import *
+from foqus_lib.framework.uq.RSValidation import *
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+from foqus_lib.gui.sdoe.odoeSimSetup import *
+from foqus_lib.gui.sdoe.sdoeSimSetup import *
+from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
+from foqus_lib.gui.uq import RSCombos
+from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
+
+from .sdoePreview import sdoePreview
 
 mypath = os.path.dirname(__file__)
 _sdoeSetupFrameUI, _sdoeSetupFrame = uic.loadUiType(

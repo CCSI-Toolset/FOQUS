@@ -104,11 +104,13 @@ Methods:
 """
 
 import collections.abc
-import numbers, json
+import json
+import numbers
+
 import numpy
 
-from .SamplingMethods import SamplingMethods
 from .Distribution import *
+from .SamplingMethods import SamplingMethods
 
 
 class Model:

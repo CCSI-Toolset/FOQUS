@@ -15,6 +15,6 @@ runs:
       shell: bash
       run: |
         echo '::group::Output of pylint'
-        pylint --rcfile=.pylint/pylintrc --disable=W,C,R,I foqus_lib/
+        pylint --rcfile=.pylint/pylintrc --disable=all --enable=E --enable=wrong-import-order foqus_lib/
         echo '::endgroup::'
 

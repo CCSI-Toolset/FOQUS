@@ -23,12 +23,12 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import sys
-import os
+import imp
 import importlib
 import logging
-import imp
+import os
 import re
+import sys
 import traceback
 
 _log = logging.getLogger("foqus." + __name__)

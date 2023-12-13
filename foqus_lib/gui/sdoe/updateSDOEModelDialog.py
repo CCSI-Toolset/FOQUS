@@ -12,14 +12,14 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import platform
 import os
+import platform
+
 import numpy as np
+from PyQt5 import uic
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem
 
 from foqus_lib.framework.uq.LocalExecutionModule import *
-
-from PyQt5 import uic
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, QDialogButtonBox, QDialog
 
 mypath = os.path.dirname(__file__)
 _updateSDOEModelDialogUI, _updateSDOEModelDialog = uic.loadUiType(

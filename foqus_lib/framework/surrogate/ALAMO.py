@@ -31,31 +31,34 @@ John Eslick, Carnegie Mellon University, 2014
 """
 
 
-import numpy as np
-import threading
-import queue
-import logging
-import subprocess
-import os
-import sys
 import copy
-import traceback
-import time
-import shutil
-import re
+import logging
 import math
+import os
+import queue
+import re
+import shutil
+import subprocess
+import sys
+import threading
+import time
+import traceback
+from multiprocessing.connection import Client
+
+import numpy as np
+
+from foqus_lib.framework.listen import listen
+from foqus_lib.framework.session.session import exePath
+
+# from foqus_lib.framework.graph.graph import Graph
+from foqus_lib.framework.surrogate.surrogate import surrogate
+from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
 try:
     import win32api  # used to get short file name for alamo sim exe
     import win32process
 except:
     pass
-# from foqus_lib.framework.graph.graph import Graph
-from foqus_lib.framework.surrogate.surrogate import surrogate
-from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
-from foqus_lib.framework.listen import listen
-from foqus_lib.framework.session.session import exePath
-from multiprocessing.connection import Client
 
 
 def checkAvailable():

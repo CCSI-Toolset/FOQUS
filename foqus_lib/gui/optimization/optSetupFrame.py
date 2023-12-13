@@ -18,21 +18,21 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import json
 import copy
+import json
 import os
 
+from PyQt5 import QtCore, uic
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QDialog, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.graph.node import *
 from foqus_lib.framework.graph.nodeVars import *
-import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.optimization.optMonitor import *
 from foqus_lib.gui.optimization.optSampleGenDialog import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QDialog
-from PyQt5.QtGui import QColor
 
 mypath = os.path.dirname(__file__)
 _optSetupFrameUI, _optSetupFrame = uic.loadUiType(

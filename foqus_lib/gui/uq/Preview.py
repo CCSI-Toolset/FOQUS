@@ -12,28 +12,29 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
 import os
-
-from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Visualizer import Visualizer
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.RSInference import RSInferencer
-
-# from Preview_UI import Ui_Dialog
+import sys
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QDialogButtonBox,
     QFileDialog,
     QListWidgetItem,
-    QAbstractItemView,
-    QDialogButtonBox,
-    QApplication,
     QTableWidgetItem,
 )
-from PyQt5.QtGui import QCursor, QColor
+
+from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.RSInference import RSInferencer
+from foqus_lib.framework.uq.SampleData import SampleData
+from foqus_lib.framework.uq.Visualizer import Visualizer
+
+# from Preview_UI import Ui_Dialog
+
 
 mypath = os.path.dirname(__file__)
 _PreviewUI, _Preview = uic.loadUiType(os.path.join(mypath, "Preview_UI.ui"))

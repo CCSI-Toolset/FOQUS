@@ -17,12 +17,14 @@ Tests for sdoe/irsf
 
 See LICENSE.md for license and copyright details.
 """
+from importlib import resources
 from unittest import result
-import pytest
+
 import numpy as np
 import pandas as pd
+import pytest
+
 from foqus_lib.framework.sdoe import irsf
-from importlib import resources
 
 
 @pytest.mark.skip

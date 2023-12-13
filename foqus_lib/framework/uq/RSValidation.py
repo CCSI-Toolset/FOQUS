@@ -13,11 +13,12 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
-from .UQRSAnalysis import UQRSAnalysis
-from .UQAnalysis import UQAnalysis
-from .RSAnalyzer import RSAnalyzer
-from .ResponseSurfaces import ResponseSurfaces
+
 from .Common import Common
+from .ResponseSurfaces import ResponseSurfaces
+from .RSAnalyzer import RSAnalyzer
+from .UQAnalysis import UQAnalysis
+from .UQRSAnalysis import UQRSAnalysis
 
 
 class RSValidation(UQRSAnalysis):

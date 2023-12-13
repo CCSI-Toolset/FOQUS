@@ -13,11 +13,12 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import numpy
-from .UQRSAnalysis import UQRSAnalysis
+
+from .Common import Common
 from .ResponseSurfaces import ResponseSurfaces
 from .UQAnalysis import UQAnalysis
+from .UQRSAnalysis import UQRSAnalysis
 from .Visualizer import Visualizer
-from .Common import Common
 
 
 class RSVisualization(UQRSAnalysis):

@@ -23,22 +23,23 @@ text).  They also need to have a .py extension and inherit the optimization clas
 Anuja Deshpande, KeyLogic Systems, Inc. - NETL
 """
 
-import csv
-import pickle
-import importlib
-import numpy as np
-import threading
-import queue
-import logging
-import subprocess
-import os
-import sys
 import copy
-import traceback
-import time
-import shutil
-import re
+import csv
+import importlib
+import logging
 import math
+import os
+import pickle
+import queue
+import re
+import shutil
+import subprocess
+import sys
+import threading
+import time
+import traceback
+
+import numpy as np
 
 try:
     import win32api  # used to get short file name for alamo sim exe
@@ -46,9 +47,9 @@ try:
 except:
     pass
 
-from foqus_lib.framework.optimizer.optimization import optimization
-from foqus_lib.framework.graph.nodeVars import NodeVars
 from foqus_lib.framework.graph.edge import edge, edgeConnect
+from foqus_lib.framework.graph.nodeVars import NodeVars
+from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
@@ -58,24 +59,24 @@ from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 try:
     # add direct imports (in addition to existing wildcard import)
     # to make pylint happy without affecting the existing runtime behavior
+    import pyutilib.subprocess.GlobalData
     from pyomo.environ import (
-        Var,
-        Objective,
+        ConcreteModel,
         Constraint,
         ConstraintList,
-        ConcreteModel,
+        Objective,
         PositiveReals,
-        value,
-        log,
+        Var,
         exp,
+        log,
+        value,
     )
     from pyomo.opt import SolverFactory
-    import pyutilib.subprocess.GlobalData
 
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
+    from pyDOE import *
     from pyomo.core.expr import current as EXPR
     from pyomo.core.expr.current import clone_expression
-    from pyDOE import *
     from smt.sampling_methods import LHS
 
     packages_available = True

@@ -16,10 +16,10 @@
 
 def makeShortcut():
     """Create a windows shortcut on the desktop to start FOQUS"""
+    import logging
     import os
     import pathlib as pl
     import sys
-    import logging
 
     log = logging.getLogger("foqus." + __name__)
     if os.name != "nt":

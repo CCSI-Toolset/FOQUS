@@ -12,25 +12,27 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
+import abc
 import copy
+import os
+import platform
 import subprocess
 import tempfile
-import platform
-import abc
+
 import numpy as np
-from scipy.stats import norm, lognorm, triang, gamma, beta, expon, weibull_min
 
 # from PySide import QtCore, QtGui
 from PyQt5 import QtCore, QtGui
-from .Model import Model
-from .SampleData import SampleData
-from .Distribution import Distribution
+from scipy.stats import beta, expon, gamma, lognorm, norm, triang, weibull_min
+
 from .Common import Common
+from .Distribution import Distribution
 from .LocalExecutionModule import LocalExecutionModule
+from .Model import Model
+from .Plotter import Plotter
 from .ResponseSurfaces import ResponseSurfaces
 from .RSAnalyzer import RSAnalyzer
-from .Plotter import Plotter
+from .SampleData import SampleData
 from .UQAnalysis import UQAnalysis
 from .UQRSAnalysis import UQRSAnalysis
 

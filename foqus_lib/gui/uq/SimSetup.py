@@ -12,39 +12,41 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
-import os
 import copy
-import tempfile
-import subprocess
-import numpy
+import os
 import platform
+import subprocess
+import sys
+import tempfile
 
-from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
-from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Distribution import Distribution
-from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
-from foqus_lib.framework.uq.ExperimentalDesign import ExperimentalDesign
-from foqus_lib.framework.uq.Common import Common
-from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
-from .Preview import Preview
-from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+import numpy
 
 # from SimSetup_UI import Ui_Dialog
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QComboBox,
+    QDialogButtonBox,
     QFileDialog,
     QListWidgetItem,
-    QAbstractItemView,
-    QDialogButtonBox,
-    QStackedLayout,
-    QComboBox,
-    QApplication,
     QMessageBox,
+    QStackedLayout,
 )
-from PyQt5.QtGui import QCursor
+
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.Distribution import Distribution
+from foqus_lib.framework.uq.ExperimentalDesign import ExperimentalDesign
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.SampleData import SampleData
+from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
+
+from .Preview import Preview
 
 mypath = os.path.dirname(__file__)
 _SimSetupUI, _SimSetup = uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))

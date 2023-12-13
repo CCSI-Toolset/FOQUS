@@ -13,8 +13,8 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 from foqus_lib.framework.graph.graph import *
-from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.Distribution import *
+from foqus_lib.framework.uq.Model import *
 
 
 def flowsheetToUQModel(gr):

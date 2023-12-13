@@ -20,19 +20,20 @@ John Eslick, Carnegie Mellon University, 2014
 Keith Beattie, Lawrence Berkeley National Labs, 2020
 """
 
-# Imports
-import signal
-import uuid
-import sys
 import argparse
-import time
 import json
 import logging
 
+# Imports
+import signal
+import sys
+import time
+import uuid
+
 # FOQUS imports
 import foqus_lib.version.version as ver  # foqus version and other info
-from foqus_lib.framework.session.session import *
 from foqus_lib.framework.listen.listen import foqusListener2
+from foqus_lib.framework.session.session import *
 from foqus_lib.gui.make_shortcut import makeShortcut
 
 loadGUI = False
@@ -56,7 +57,10 @@ def guiImport(mpl_backend="Qt5Agg"):
     global PyQt5
     # GUI Imports
     try:  # Check if the PySide libraries are available
+        import matplotlib
         import PyQt5
+        import PyQt5.QtCore
+        import PyQt5.QtGui
 
         # QtWidgets, QtGui, and QtCore are used in this module,
         # but they might not be available in PyQt5 without importing them first
@@ -64,9 +68,6 @@ def guiImport(mpl_backend="Qt5Agg"):
         # from the imports in foqus_lib.framework.session.session
         # to be on the safe side, we run these imports explicitly here, too
         import PyQt5.QtWidgets
-        import PyQt5.QtGui
-        import PyQt5.QtCore
-        import matplotlib
 
         matplotlib.use(mpl_backend)
         matplotlib.rcParams["backend"] = mpl_backend
@@ -362,8 +363,10 @@ def main(args_to_parse=None):
         sys.exit(makeShortcut())
     if args.terminateConsumer:
         try:
-            from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
-            from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer
+            from foqus_lib.framework.sim.turbineLiteDB import (
+                keepAliveTimer,
+                turbineLiteDB,
+            )
 
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
@@ -379,8 +382,10 @@ def main(args_to_parse=None):
             sys.exit(1)
     elif args.addTurbineApp:
         try:
-            from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
-            from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer
+            from foqus_lib.framework.sim.turbineLiteDB import (
+                keepAliveTimer,
+                turbineLiteDB,
+            )
 
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
@@ -596,8 +601,7 @@ def main(args_to_parse=None):
         listener.start()
         listener.join()
     elif args.consumer:
-        from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
-        from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer
+        from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer, turbineLiteDB
 
         load_gui = False
         # Make ctrl-c do nothing but and SIGINT donothing but interrupt

@@ -17,15 +17,18 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import math
+import types
+
 from PyQt5 import QtCore
 from PyQt5.QtGui import (
+    QBrush,
     QColor,
     QFont,
-    QPen,
-    QBrush,
     QPainter,
     QPainterPath,
     QPainterPathStroker,
+    QPen,
 )
 from PyQt5.QtWidgets import (
     QGraphicsScene,
@@ -34,9 +37,8 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QMessageBox,
 )
+
 from foqus_lib.framework.graph import *
-import math
-import types
 
 
 class fsScene(QGraphicsScene):

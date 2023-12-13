@@ -15,16 +15,16 @@
 import contextlib
 import logging
 import os
-from pathlib import Path
 import shutil
 import sys
 import typing as t
-
-from PyQt5 import QtWidgets, QtCore, QtGui
+from pathlib import Path
 
 import pytest
-from pytestqt.exceptions import capture_exceptions, format_captured_exceptions
 from _pytest.monkeypatch import MonkeyPatch
+from PyQt5 import QtCore, QtGui, QtWidgets
+from pytestqt.exceptions import capture_exceptions, format_captured_exceptions
+
 import pytest_qt_extras
 
 

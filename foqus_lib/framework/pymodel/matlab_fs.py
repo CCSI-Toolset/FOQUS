@@ -14,9 +14,10 @@
 #################################################################################
 # FOQUS_PYMODEL_PLUGIN
 #
-from foqus_lib.framework.pymodel.pymodel import *
-import time
 import subprocess
+import time
+
+from foqus_lib.framework.pymodel.pymodel import *
 
 # Check that the MATLAB engine module is available and import it if possible.
 # If not the MATLAB plug-in cannot be used.

@@ -18,13 +18,15 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import json
-import os
-import sys
-import subprocess
 import logging
-import foqus_lib.gui.helpers.guiHelpers as gh
+import os
+import subprocess
+import sys
+
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog, QLineEdit
+from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
 
 mypath = os.path.dirname(__file__)
 _gatewayUploadDialogUI, _gatewayUploadDialog = uic.loadUiType(

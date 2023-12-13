@@ -12,11 +12,12 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
-import numpy as np
 import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 import mplcursors
+import numpy as np
+from matplotlib.ticker import MaxNLocator
+
 from .df_utils import load
 from .nusf import scale_y
 

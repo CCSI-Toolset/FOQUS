@@ -13,11 +13,12 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import re
-import numpy as np
+
 import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 import matplotlib.cm as cmx
+import matplotlib.colors as colors
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.figure import Figure
 
 try:

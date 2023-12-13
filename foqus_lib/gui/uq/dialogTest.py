@@ -13,7 +13,8 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import sys
-from PyQt5 import QtGui, QtCore, QtWidgets
+
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Dialog(QtWidgets.QDialog):  # QtWidgets.QMainWindow):

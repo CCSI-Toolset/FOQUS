@@ -129,14 +129,16 @@ Methods:
         Writes SampleData data to a csv file that can be read in by Excel
 """
 
-import os
-import numpy
 import copy
+import os
 import time
-from .Model import Model
+
+import numpy
+
 from .Distribution import Distribution
-from .SamplingMethods import SamplingMethods
+from .Model import Model
 from .ResponseSurfaces import ResponseSurfaces
+from .SamplingMethods import SamplingMethods
 from .UQAnalysis import UQAnalysis
 
 

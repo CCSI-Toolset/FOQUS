@@ -17,12 +17,12 @@
     to include vector variables.
 
 """
-import sys
-import json
-import copy
-from collections import OrderedDict
-import os
 import ast
+import copy
+import json
+import os
+import sys
+from collections import OrderedDict
 
 # Check that the win32com module is available and import it if possible.
 # If not, the module will not be used.

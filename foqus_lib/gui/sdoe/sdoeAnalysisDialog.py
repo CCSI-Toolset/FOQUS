@@ -12,27 +12,28 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import configparser
 import os
 from datetime import datetime
-import configparser
+
+from PyQt5 import uic
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QCheckBox,
+    QMessageBox,
+    QPushButton,
+    QTableWidgetItem,
+)
 
 from foqus_lib.framework.sdoe import order, sdoe
 from foqus_lib.framework.sdoe.df_utils import load
 from foqus_lib.framework.sdoe.plot_utils import plot_pareto
-from .sdoeSetupFrame import *
-from .sdoePreview import sdoePreview, Window
 
-from PyQt5 import uic
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMessageBox,
-    QCheckBox,
-    QTableWidgetItem,
-    QAbstractItemView,
-    QPushButton,
-)
-from PyQt5.QtGui import QCursor
+from .sdoePreview import Window, sdoePreview
+from .sdoeSetupFrame import *
 
 mypath = os.path.dirname(__file__)
 _sdoeAnalysisDialogUI, _sdoeAnalysisDialog = uic.loadUiType(

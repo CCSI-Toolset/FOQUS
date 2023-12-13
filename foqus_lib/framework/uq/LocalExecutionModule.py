@@ -59,15 +59,16 @@ Methods:
 
 """
 
-import sys
-import os
-import subprocess
-import glob
-import platform
-import numpy
 import copy
-import re
 import csv
+import glob
+import os
+import platform
+import re
+import subprocess
+import sys
+
+import numpy
 
 try:
     from PyQt5 import QtCore, QtWidgets
@@ -76,15 +77,14 @@ try:
 except:
     usePyside = False
 
-from .Model import Model
-from .SampleData import SampleData
-from .Distribution import Distribution
-from .ResponseSurfaces import ResponseSurfaces
-from .SamplingMethods import SamplingMethods
-from .Common import Common
+from turbine.commands import _open_config, turbine_psuade_session_script
 
-from turbine.commands import turbine_psuade_session_script
-from turbine.commands import _open_config
+from .Common import Common
+from .Distribution import Distribution
+from .Model import Model
+from .ResponseSurfaces import ResponseSurfaces
+from .SampleData import SampleData
+from .SamplingMethods import SamplingMethods
 
 
 class LocalExecutionModule(object):
@@ -1135,9 +1135,9 @@ if usePyside:
             # print outputStatus
             emulatorFileName = "emulatorData"
             self.data.writeToPsuade(emulatorFileName)
-            from .RSAnalyzer import (
+            from .RSAnalyzer import (  # importing at top creates circular import
                 RSAnalyzer,
-            )  # importing at top creates circular import
+            )
 
             LocalExecutionModule.runStarted = True
             Common.initFolder(RSAnalyzer.dname)

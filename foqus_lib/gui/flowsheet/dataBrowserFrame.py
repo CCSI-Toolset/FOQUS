@@ -21,21 +21,22 @@ John Eslick, Carnegie Mellon University, 2014
 import json
 import os
 
-from foqus_lib.gui.flowsheet.columns import *
-from . import dataFilterDialog
-from foqus_lib.gui.flowsheet.dataModel import *
-from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
-
 from PyQt5 import uic
 from PyQt5.QtWidgets import (
+    QAction,
     QApplication,
+    QFileDialog,
+    QInputDialog,
+    QLineEdit,
     QMenu,
     QMessageBox,
-    QAction,
-    QLineEdit,
-    QInputDialog,
-    QFileDialog,
 )
+
+from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
+from foqus_lib.gui.flowsheet.columns import *
+from foqus_lib.gui.flowsheet.dataModel import *
+
+from . import dataFilterDialog
 
 mypath = os.path.dirname(__file__)
 _dataBrowserFrameUI, _dataBrowserFrame = uic.loadUiType(

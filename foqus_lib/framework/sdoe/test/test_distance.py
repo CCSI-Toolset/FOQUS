@@ -12,12 +12,15 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+from contextlib import contextmanager
+
 import numpy as np
 import pytest
+from hypothesis import assume, example, given
+from hypothesis.extra.numpy import array_shapes
+from hypothesis.extra.numpy import arrays as arrays_strat
+
 from foqus_lib.framework.sdoe import distance
-from hypothesis.extra.numpy import arrays as arrays_strat, array_shapes
-from hypothesis import given, example, assume
-from contextlib import contextmanager
 
 
 @contextmanager

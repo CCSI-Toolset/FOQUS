@@ -13,9 +13,10 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
+
 import numpy
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QSpinBox
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QComboBox, QFileDialog, QSpinBox
 
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.uq.ResponseSurfaces import *

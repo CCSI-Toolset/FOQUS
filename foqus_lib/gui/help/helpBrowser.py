@@ -23,21 +23,22 @@ Joshua Boverhof, Lawrence Berkeley National Lab
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import os
-import time
-import logging
 import base64
 import json
+import logging
+import os
 import threading
+import time
 from datetime import datetime
-from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
-import websocket
 from typing import Optional
-from foqus_lib.help.helpPath import *
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
+
+import websocket
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QTextBrowser
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMainWindow, QMessageBox, QTextBrowser
+
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
+from foqus_lib.help.helpPath import *
 
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = uic.loadUiType(

@@ -12,13 +12,12 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
 import logging
+import os
 import platform
 import subprocess
-from urllib.request import urlopen
-
 from io import StringIO
+from urllib.request import urlopen
 
 if os.name == "nt":
     try:

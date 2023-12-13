@@ -24,8 +24,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-from foqus_lib.framework.sdoe import order
-from foqus_lib.framework.sdoe import df_utils
+from foqus_lib.framework.sdoe import df_utils, order
 
 
 def test_mat2tuples():

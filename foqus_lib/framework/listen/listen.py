@@ -23,12 +23,13 @@ John Eslick, Carnegie Mellon University, 2014
 """
 
 
+import copy
 import logging
-from multiprocessing.connection import Listener
 import threading
 import time
+from multiprocessing.connection import Listener
+
 import numpy as np
-import copy
 
 
 class foqusListener2(threading.Thread):

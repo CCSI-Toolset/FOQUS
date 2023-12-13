@@ -12,30 +12,30 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from foqus_lib.framework.graph.node import (
-    attempt_load_tensorflow,
-    attempt_load_sympy,
-    attempt_load_pytorch,
-    attempt_load_sklearn,
-    attempt_load_smt,
-    pymodel_ml_ai,
-    Node,
-    NodeEx,
-)
-
-from foqus_lib.framework.graph.graph import Graph
-from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
-from foqus_lib.framework.pymodel.pymodel import pymodel
-from foqus_lib.framework.pymodel import pymodel_test
-
+import os
+import sys
+import unittest
+from collections import OrderedDict
 from importlib import import_module
 from pathlib import Path
 from typing import List, Tuple
-from collections import OrderedDict
-import unittest
-import os
-import sys
+
 import pytest
+
+from foqus_lib.framework.graph.graph import Graph
+from foqus_lib.framework.graph.node import (
+    Node,
+    NodeEx,
+    attempt_load_pytorch,
+    attempt_load_sklearn,
+    attempt_load_smt,
+    attempt_load_sympy,
+    attempt_load_tensorflow,
+    pymodel_ml_ai,
+)
+from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
+from foqus_lib.framework.pymodel import pymodel_test
+from foqus_lib.framework.pymodel.pymodel import pymodel
 
 
 @pytest.fixture(scope="session")

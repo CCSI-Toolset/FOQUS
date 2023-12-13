@@ -9,3 +9,4 @@ Tutorial
     bssanova
     uq_model
     flowsheet
+    neural_networks

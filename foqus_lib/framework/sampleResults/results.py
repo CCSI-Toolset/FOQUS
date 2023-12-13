@@ -507,6 +507,15 @@ class Results(pd.DataFrame):
                 self.loc[row, col] = dat[row][i]
         self.update_filter_indexes()
 
+    def exportVars(self, inputs, outputs, flat=True) -> pd.DataFrame:
+        # flat isn't used, just there for compatibility from when there were vector vars.
+        df = pd.DataFrame(columns=inputs + outputs)
+        for c in inputs:
+            df[c] = self["input." + c]
+        for c in outputs:
+            df[c] = self["output." + c]
+        return df
+
     def exportVarsCSV(self, file, inputs, outputs, flat=True):
         # flat isn't used, just there for compatibility from when there were vector vars.
         df = pd.DataFrame(columns=inputs + outputs)

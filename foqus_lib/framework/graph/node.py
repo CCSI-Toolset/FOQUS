@@ -169,8 +169,9 @@ def attempt_load_smt(try_imports=True):
     try:
         assert try_imports  # if False will auto-trigger exceptions
         # smt should be installed, but not required for non ML/AI models
-        import smt
         import pickle
+
+        import smt
 
         smt_pickle_load = pickle.load
 

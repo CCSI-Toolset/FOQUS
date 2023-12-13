@@ -31,8 +31,9 @@ from PyQt5.QtWidgets import (
 from foqus_lib.framework.sdoe import order, sdoe
 from foqus_lib.framework.sdoe.df_utils import load
 from foqus_lib.framework.sdoe.plot_utils import plot_pareto
+
+from .sdoePreview import Window, sdoePreview
 from .sdoeSetupFrame import *
-from .sdoePreview import sdoePreview, Window
 
 mypath = os.path.dirname(__file__)
 _sdoeAnalysisDialogUI, _sdoeAnalysisDialog = uic.loadUiType(

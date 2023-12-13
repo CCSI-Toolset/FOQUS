@@ -12,19 +12,17 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import configparser
+import json
+from importlib import resources
+from pathlib import Path
+from unittest import mock
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
-from foqus_lib.framework.sdoe import sdoe, nusf, plot_utils, df_utils
-from unittest import mock
-from importlib import resources
-from pathlib import Path
-import configparser
-import json
 
-import pytest
-
-from foqus_lib.framework.sdoe import plot_utils
+from foqus_lib.framework.sdoe import df_utils, nusf, plot_utils, sdoe
 
 
 @mock.patch("foqus_lib.framework.sdoe.plot_utils.plt")

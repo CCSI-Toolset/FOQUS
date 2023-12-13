@@ -17,12 +17,12 @@ import json
 import os
 import queue
 import threading
+from typing import Tuple
+
+import pandas as pd
 
 import foqus_lib.framework.uq.SurrogateParser
 from foqus_lib.framework.foqusOptions.optionList import optionList
-
-from typing import Tuple
-import pandas as pd
 
 
 class surrogate(threading.Thread):

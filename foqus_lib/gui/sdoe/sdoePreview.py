@@ -16,23 +16,21 @@ import os
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-
-from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.sdoe import plot_utils
-from foqus_lib.framework.uq.Model import Model
-
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QHBoxLayout,
-    QListWidgetItem,
     QAbstractItemView,
     QApplication,
+    QDialog,
+    QHBoxLayout,
+    QListWidgetItem,
     QTableWidgetItem,
+    QVBoxLayout,
 )
-from PyQt5.QtGui import QCursor, QColor
+
+from foqus_lib.framework.sdoe import plot_utils
+from foqus_lib.framework.uq.Model import Model
 
 mypath = os.path.dirname(__file__)
 _sdoePreviewUI, _sdoePreview = uic.loadUiType(os.path.join(mypath, "sdoePreview_UI.ui"))

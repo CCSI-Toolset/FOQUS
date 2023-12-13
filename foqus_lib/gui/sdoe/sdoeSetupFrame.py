@@ -1057,7 +1057,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             candidateData, dname, analysis, historyData, type, self
         )
         dialog.open()
-        # dialog.deleteLater()
 
     def initUQToolBox(self):
 

@@ -13,7 +13,7 @@ simulation errors can be observed when a negative input value is
 provided.
 
 This tutorial will show the user the procedure for creating a flowsheet in FOQUS.
-However, if the user is interested, the finished flowsheet is available in: **examples/tutorial_files/Flowsheets/Tutorial_1**
+However, if the user is interested, the finished flowsheet is available in: :path:`examples/tutorial_files/Flowsheets/Tutorial_4`
 
 .. note:: |examples_reminder_text|
 

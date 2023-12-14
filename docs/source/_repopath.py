@@ -32,7 +32,9 @@ class PathRoleBase:
         if not path.exists():
             relpath = path.relative_to(self.base_path)
             _logger.warning(
-                "path %r does not exist within %r", os.fspath(relpath), os.fspath(self.base_path)
+                "path %r does not exist within %r",
+                os.fspath(relpath),
+                os.fspath(self.base_path),
             )
 
     def display(self, path: Path, text="") -> str:

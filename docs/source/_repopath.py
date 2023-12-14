@@ -24,18 +24,6 @@ def _get_repo_root() -> Path:
     return Path(repo_root).resolve()
 
 
-class RepoPath(EmphasizedLiteral):
-    @property
-    def path(self) -> Path:
-        repo_root = _get_repo_root()
-        return repo_root / self.text
-
-    def run(self):
-        if not self.path.exists():
-            _logger.warning("path %r does not exist", self.text)
-        return super().run()
-
-
 class PathRoleBase:
     def __init__(self, base_path=""):
         self.base_path = Path(base_path)

@@ -18,7 +18,7 @@ executable file must be set in FOQUS settings (see Section
 
 The FOQUS file (**Surrogate_Tutorial_1.foqus**),
 where Steps 1 to 42 of this tutorial have been completed
-is located in: **examples/tutorial_files/Surrogates**
+is located in: :path:`examples/tutorial_files/Surrogates`
 
 .. note:: |examples_reminder_text|
 

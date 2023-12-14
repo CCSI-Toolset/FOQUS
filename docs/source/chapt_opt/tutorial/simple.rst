@@ -8,7 +8,7 @@ optimization. This tutorial builds on the tutorial in Section
 :ref:`tutorial.sim.flowsheet`.
 
 The files for this tutorial are located in:
-**examples/test_files/Optimization/Model_Files/**
+:path:`examples/test_files/Optimization/Model_Files/`
 
 .. note:: |examples_reminder_text|
 

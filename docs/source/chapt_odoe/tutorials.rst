@@ -5,7 +5,7 @@ Tutorials
 
 This section walks through a couple of examples of running ODoE.
 
-The files for these tutorials are located in: **examples/tutorial_files/ODOE**
+The files for these tutorials are located in: :path:`examples/tutorial_files/ODOE`
 
 The first example will use an existing candidate set and an existing evaluation set.
 

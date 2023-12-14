@@ -17,7 +17,7 @@ gPROMS simulation be runnable with SimSinter. They are divided up to
 make later reference easier.
 
 The files for this tutorial are located in:
-**examples/tutorial_files/SimSinter/Tutorial_4**
+:path:`examples/tutorial_files/SimSinter/Tutorial_4`
 
 .. note:: |examples_reminder_text|
 

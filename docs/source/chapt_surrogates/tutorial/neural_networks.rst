@@ -18,7 +18,7 @@ https://scikit-learn.org/stable/index.html and further information on deep learn
 https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html#sklearn.neural_network.MLPRegressor.
 
 The FOQUS file for this tutorial is **Simple_flow.foqus**, and 
-this file is located in: **examples/tutorial_files/Flowsheets/Tutorial_4**
+this file is located in: :path:`examples/tutorial_files/Flowsheets/Tutorial_4`
 
 .. note:: |examples_reminder_text|
 

@@ -5,7 +5,7 @@ In this tutorial, instructions to change the data before analysis are
 described. Current capabilities include sample filtering, input/output
 variable deletion, and output value modification.
 
-The files for this tutorial are located in: **examples/tutorial_files/UQ/Tutorial_2**
+The files for this tutorial are located in: :path:`examples/tutorial_files/UQ/Tutorial_2`
 
 .. note:: |examples_reminder_text|
 

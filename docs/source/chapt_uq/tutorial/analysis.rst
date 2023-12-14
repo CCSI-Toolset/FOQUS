@@ -5,7 +5,7 @@ From the Single-Output Analysis Screen, the user can perform analyses
 that are specific to a particular output of interest. Here, the
 “removalCO2” output parameter is discussed.
 
-The files for this tutorial are located in: **examples/tutorial_files/UQ/Tutorial_3** 
+The files for this tutorial are located in: :path:`examples/tutorial_files/UQ/Tutorial_3` 
 
 .. note:: |examples_reminder_text|
 

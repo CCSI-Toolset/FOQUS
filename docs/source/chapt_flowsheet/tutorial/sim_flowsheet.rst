@@ -19,7 +19,7 @@ before adding capture) supercritical pulverized coal power plant with
 solid sorbent post combustion CO\ :math:`_2` capture process added.
 
 The files for this tutorial is located in:
-**examples/test_files/Optimization/Model_Files/**.
+:path:`examples/test_files/Optimization/Model_Files`.
 
 .. note:: |examples_reminder_text|
 
@@ -57,9 +57,9 @@ The files for this tutorial is located in:
 
 There are two models needed for this optimization problem: (1) the ACM model for
 the BFB capture system and (2) the Excel cost estimating spreadsheet. These
-models are provided in the ``example/Optimization/Model_Files/`` directory. There are two SimSinter configuration
-files: (1) ``BFB_sinter_config_v6.2.json`` for the process model and (2)
-``BFB_cost_v6.2.3.json`` for the cost model. The next step is to upload the models
+models are provided in the :path:`examples/test_files/Optimization/Model_Files/` directory. There are two SimSinter configuration
+files: (1) :filename:`examples/test_files/Optimization/Model_Files/BFB_sinter_config_v6.2.json` for the process model and (2)
+:filename:`examples/test_files/Optimization/Model_Files/BFB_cost_v6.2.3.json` for the cost model. The next step is to upload the models
 to Turbine.
 
 6.  Open the **Add/Update Model to Turbine** dialog box (Figure

@@ -33,6 +33,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath("."))
 
 # For Read the Docs theme
 import sphinx_rtd_theme
@@ -56,6 +57,10 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
     "sphinx.ext.autosectionlabel",
+    # sphinxcontrib.jquery needed for search to work on some versions of RTD theme
+    # see https://github.com/readthedocs/sphinx_rtd_theme/issues/1452
+    "sphinxcontrib.jquery",
+    "_repopath",
     #    'sphinxarg.ext',
     #    'sphinx-jsonschema'
 ]

@@ -12,7 +12,7 @@ Example NUSF-2 considers a CCSI example, with a non-regular region, and the weig
 
 Example IRSF-1 constructs a set of "best" designs (a Pareto front) along a spectrum of input and response space-filling. The designs are based on a 2-dimensional input space and a 1-dimensional response. Different designs along the Pareto front are compared to illustrate (a) what a Pareto front is and (b) how to choose a design from those on the Pareto front. 
 
-The files for these tutorials are located in: **examples/tutorial_files/SDOE**
+The files for these tutorials are located in: :path:`examples/tutorial_files/SDOE`
 
 .. note:: |examples_reminder_text|
 

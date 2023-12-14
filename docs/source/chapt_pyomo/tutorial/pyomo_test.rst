@@ -15,7 +15,7 @@ Subject to:
    ax_1 + bx_2 \geq c
 
 The complete FOQUS file (**Pyomo_Test_Example.foqus**), with the code written,
-is located in: **examples/tutorial_files/PYOMO**
+is located in: :path:`examples/tutorial_files/PYOMO`
 
 .. note:: |examples_reminder_text|
 

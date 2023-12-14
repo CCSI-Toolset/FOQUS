@@ -2,7 +2,7 @@ Tutorial 2: Aspen Plus Configuration
 ====================================
 
 The files (both the Aspen Plus file and the JSON file)
-for this tutorial are located in: **examples/tutorial_files/SimSinter/Tutorial_2**
+for this tutorial are located in: :path:`examples/tutorial_files/SimSinter/Tutorial_2`
 
 .. note:: |examples_reminder_text|
 

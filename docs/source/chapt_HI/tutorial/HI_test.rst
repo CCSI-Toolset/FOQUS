@@ -4,7 +4,7 @@ Tutorial: Heat Integration with FOQUS
 =====================================
 
 The files for this tutorial are located in:
-**examples/tutorial_files/Heat_Integration**
+:path:`examples/tutorial_files/Heat_Integration`
 
 .. note:: |examples_reminder_text|
 
@@ -33,7 +33,7 @@ Procedure:
 ~~~~~~~~~~
 
 #. Firstly, a SimSinter Configuration file must be created corresponding to the Aspen Plus backup file, which is located in
-   **examples/tutorial_files/Heat_Integration**. The simulation model is available in it.
+   :path:`examples/tutorial_files/Heat_Integration`. The simulation model is available in it.
    Note: Ensure that Aspen v10 is used for this example.
    Select the fresh feed flowrate and temperature as “input variables”, and inlet, outlet temperatures of the process streams
    passing through all heaters and coolers (F2,F3,RF1,RF2,RP2,RP3,B2,BY-PROD,P1,PROD), along with heat duty of each heater, cooler as

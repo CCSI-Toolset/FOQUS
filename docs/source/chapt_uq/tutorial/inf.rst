@@ -12,7 +12,7 @@ previously known (in the form of input prior distributions) and what was
 observed currently (in the form of noisy outputs).
 
 The file for this tutorial is **lptau5k_10inputs_4outputs.filtered**, and
-this file is located in: **examples/tutorial_files/UQ/Tutorial_5**
+this file is located in: :path:`examples/tutorial_files/UQ/Tutorial_5`
 
 .. note:: |examples_reminder_text|
 

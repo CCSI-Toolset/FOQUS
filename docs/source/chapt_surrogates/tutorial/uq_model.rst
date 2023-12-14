@@ -15,7 +15,7 @@ been re-associated with other executables (e.g. editors), please change
 the association back to python.exe.
 
 The FOQUS file for this tutorial is **Rosenbrock_no_vectors.foqus**, and
-this file is located in: **examples/tutorial_files/Surrogates**
+this file is located in: :path:`examples/tutorial_files/Surrogates`
 
 .. note:: |examples_reminder_text|
 

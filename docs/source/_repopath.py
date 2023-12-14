@@ -61,6 +61,16 @@ class Relpath(PathRoleBase):
 
 
 class Filename(PathRoleBase):
+    def validate(self, path: Path) -> None:
+        if not path.is_file():
+            _logger.warning(
+                "No file named %r in directory %r", path.name, os.fspath(path.parent)
+            )
+        if not path.stat().st_size > 0:
+            _logger.warning(
+                "File %r in %r exists but it's empty", path.name, os.fspath(path.parent)
+            )
+
     def display(self, path: Path, text="") -> str:
         return path.name
 

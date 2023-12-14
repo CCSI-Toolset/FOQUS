@@ -59,7 +59,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     # sphinxcontrib.jquery needed for search to work on some versions of RTD theme
     # see https://github.com/readthedocs/sphinx_rtd_theme/issues/1452
-    "sphinxcontrib.jquery", 
+    "sphinxcontrib.jquery",
     "_repopath",
     #    'sphinxarg.ext',
     #    'sphinx-jsonschema'

@@ -14,27 +14,46 @@
 #################################################################################
 import time
 from operator import gt, lt
+from typing import Optional, Tuple
 
 import numpy as np
+import pandas as pd
 
 from .distance import compute_dist
 
 
-def compute_min_dist(mat, scl, hist_xs=None):
+def compute_min_dist(
+    mat: np.ndarray, scl: np.ndarray, hist_xs: Optional[np.ndarray] = None
+) -> Tuple[np.ndarray, float]:
+    """
+    Computes minimum distance
+    args: mat, scl, hist_xs
+    returns: dmat, min_dist
+    """
     dmat = compute_dist(mat, scl=scl, hist_xs=hist_xs)
     min_dist = np.min(dmat, axis=0)
     return dmat, min_dist
 
 
 def criterion(
-    cand,  # candidates
-    args,  # scaling factors for included columns
-    nr,  # number of restarts (each restart uses a random set of <nd> points)
-    nd,  # design size <= len(candidates)
-    mode="maximin",
-    hist=None,
-):
+    cand: pd.DataFrame,
+    args: dict,
+    nr: int,
+    nd: int,
+    mode: str = "maximin",
+    hist: Optional[pd.DataFrame] = None,
+) -> dict:
+    """
+    args:
+    cand - candidates dataframe
+    args - scaling factors for included columns
+    nr - number of restarts (each restart uses a random set of <nd> points)
+    nd - design size <= len(candidates)
+    mode - maximin by default
+    hist - previous data dataframe
 
+    returns: dictionary with results
+    """
     mode = mode.lower()
     assert mode in ["maximin", "minimax"], "MODE {} not recognized.".format(mode)
     if mode == "maximin":

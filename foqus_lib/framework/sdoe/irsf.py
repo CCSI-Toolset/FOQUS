@@ -14,6 +14,7 @@
 #################################################################################
 import itertools
 import time
+from typing import Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -21,26 +22,38 @@ import pandas as pd
 from .distance import compute_dist, compute_min_params
 
 
-def unit_scale(xs):
+def unit_scale(xs: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    args: xs
+    returns: scaled, xmin, xmax
+    """
     xmin = np.min(xs, axis=0)
     xmax = np.max(xs, axis=0)
     scaled = (xs - xmin) / (xmax - xmin)
-
     return scaled, xmin, xmax
 
 
-def inv_unit_scale(scaled, xmin, xmax):
+def inv_unit_scale(
+    scaled: np.ndarray, xmin: np.ndarray, xmax: np.ndarray
+) -> np.ndarray:
+    """
+    args: scaled, xmin, xmax
+    returns: reversed scaled array
+    """
     return scaled * (xmax - xmin) + xmin
 
 
-# Pedro: this is almost identical to NUSF's compute_dmat; something to consider if code needs to be refactored
-def compute_dmat(cand, hist=None, val=np.inf):
-    # Inputs:
-    #  cand - numpy array of size (N, nx)
-    #  hist - numpy array of shape (nh, nx)
-    # Output:
-    #  dmat - numpy array of shape (N+nh, N+nh)
+def compute_dmat(
+    cand: np.ndarray, hist: np.ndarray = None, val: float = np.inf
+) -> np.ndarray:
+    """
+    args:
+    cand - numpy array of size (N, nx)
+    hist - numpy array of shape (nh, nx)
+    val - np.inf
 
+    returns:
+    dmat - numpy array of shape (N+nh, N+nh)"""
     if hist is None:
         dmat = compute_dist(cand, val=val, return_sqrt=True)
     else:
@@ -50,13 +63,33 @@ def compute_dmat(cand, hist=None, val=np.inf):
         dmat[-nhist:, -nhist:] = np.max(dmat)
 
     np.fill_diagonal(dmat, val)
-
     return dmat
 
 
-# Pedro: this is almost identical to NUSF's update_min_dist; something to consider if code needs to be refactored
-def update_min_dist(rcand, cand, md, mdpts, mties, dmat, hist=None, val=np.inf):
-    def update_dmat(row, rcand, dmat, k, val=np.inf):
+def update_min_dist(
+    rcand: np.ndarray,
+    cand: np.ndarray,
+    md: float,
+    mdpts: np.ndarray,
+    mties: int,
+    dmat: np.ndarray,
+    hist: Optional[np.ndarray] = None,
+    val: float = np.inf,
+) -> Tuple[
+    np.ndarray, float, np.ndarray, int, np.ndarray, Optional[int], Optional[int], bool
+]:
+    """
+    args: rcand, cand, md, mdpts, mties, dmat, hist, val
+    returns: rcand_, md_, mdpts_, mties_, dmat_, added_, removed_, update_
+    """
+
+    def update_dmat(
+        row: np.ndarray, rcand: np.ndarray, dmat: np.ndarray, k: int, val: float = val
+    ) -> np.ndarray:
+        """
+        args: row, rcand, dmat, k, val
+        returns: dmat_
+        """
         xs = rcand if hist is None else np.concatenate((rcand, hist))
 
         m = np.sqrt(np.sum(np.square(row - xs), axis=1))
@@ -64,10 +97,19 @@ def update_min_dist(rcand, cand, md, mdpts, mties, dmat, hist=None, val=np.inf):
 
         dmat_ = np.copy(dmat)
         dmat_[k, :] = dmat_[:, k] = m
-
         return dmat_
 
-    def step(pt, rcand, cand, mdpts, dmat):
+    def step(
+        pt: tuple,
+        rcand: np.ndarray,
+        cand: np.ndarray,
+        mdpts: np.ndarray,
+        dmat: np.ndarray,
+    ) -> Tuple[np.ndarray, float, np.ndarray, int, np.ndarray, int, int]:
+        """
+        args: pt, rcand, cand, mdpts, dmat
+        returns: rcand_, md_, mdpts_, mties_, dmat_, j, k
+        """
         i, j = pt  # i=mdpts index to remove from rcand; j=cand index to add to rcand
         rcand_ = np.copy(rcand)
         row = cand[j]
@@ -75,14 +117,12 @@ def update_min_dist(rcand, cand, md, mdpts, mties, dmat, hist=None, val=np.inf):
         rcand_[k] = row
         dmat_ = update_dmat(row, rcand_, dmat, k, val)
         md_, mdpts_, mties_ = compute_min_params(dmat_)
-
         return rcand_, md_, mdpts_, mties_, dmat_, j, k
 
     # exclude mdpts indices corresponding to history
     mdpts_cand = mdpts[mdpts < len(rcand)]
     n_mdpts = len(mdpts_cand)
 
-    # 02/28: removed ncand as input param; calculated below now
     n_cand = len(cand)
     # initialize d0 and mt0
     d0 = np.zeros((n_mdpts, n_cand))
@@ -121,12 +161,23 @@ def update_min_dist(rcand, cand, md, mdpts, mties, dmat, hist=None, val=np.inf):
         update_ = False
         added_ = None
         removed_ = None
-        return rcand, md, mdpts, mties, dmat, None, None, False
+        return rcand, md, mdpts, mties, dmat, added_, removed_, update_
 
     return rcand_, md_, mdpts_, mties_, dmat_, added_, removed_, update_
 
 
-def update_pareto_front(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
+def update_pareto_front(
+    newdesX: np.ndarray,
+    newdesY: np.ndarray,
+    newpt: np.ndarray,
+    curpfdesX: np.ndarray,
+    curpfdesY: np.ndarray,
+    curpf: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    args: newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf
+    returns: newpfdesX, newpfdesY, newpf
+    """
     g1 = newpt[0] > curpf[:, 0]
     g2 = newpt[1] > curpf[:, 1]
 
@@ -167,11 +218,15 @@ def update_pareto_front(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
         newpf = np.append(newpf, [newpt], axis=0)
         newpfdesX = np.append(newpfdesX, newdesX, axis=0)
         newpfdesY = np.append(newpfdesY, newdesY, axis=0)
+
     return newpfdesX, newpfdesY, newpf
 
 
-def CombPF(PFnew, PFcur=None):
-
+def CombPF(PFnew: list, PFcur: Optional[tuple] = None) -> Union[list, tuple]:
+    """
+    args: PFnew, PFcur
+    returns: combined_pf
+    """
     if PFcur is None:
         return PFnew
 
@@ -192,16 +247,18 @@ def CombPF(PFnew, PFcur=None):
     return combined_pf
 
 
-# Pedro: this is almost identical to NUSF's criterion; something to consider if code needs to be refactored
 def criterion_X(
-    cand,  # candidates
-    maxit,  # maximum iterations
-    nr,  # number of restarts (each restart uses a random set of <nd> points)
-    nd,  # design size <= len(candidates)
-    mode="maximin",
-    hist=None,
-):
-
+    cand: np.ndarray,  # candidates
+    maxit: int,  # maximum iterations
+    nr: int,  # number of restarts (each restart uses a random set of <nd> points)
+    nd: int,  # design size <= len(candidates)
+    mode: str = "maximin",
+    hist: Optional[np.ndarray] = None,
+) -> float:
+    """
+    args: cand, maxit, nr, nd, mode, hist
+    returns: best_md
+    """
     _mode = mode.lower()
 
     ncand = len(cand)
@@ -249,13 +306,23 @@ def criterion_X(
         if (md > best_md) or ((md == best_md) and (mties < best_mties)):
             best_md = md
             best_mties = mties
-
     return best_md
 
 
-def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np.inf):
-
-    # to do: add checks on hist_x, hist_y (both [don't] exist, same number of points)
+def XY_min_dist(
+    cand_x: np.ndarray,
+    cand_y: np.ndarray,
+    mpdx: float,
+    mpdy: float,
+    wt: float,
+    hist_x: Optional[np.ndarray] = None,
+    hist_y: Optional[np.ndarray] = None,
+    val: float = np.inf,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float, np.ndarray, int]:
+    """
+    args: cand_x, cand_y, mpdx, mpdy, wt, hist_x, hist_y, val
+    returns: dmat_xy, dmat_x, dmat_y, md, mdpts, mties
+    """
     dmat_x = compute_dmat(cand_x, hist_x, val)
     dmat_y = compute_dmat(cand_y, hist_y, val)
 
@@ -274,38 +341,67 @@ def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np
     # np.fill_diagonal(dmat_xy, val) #Pedro: check that this is not necessary
 
     md, mdpts, mties = compute_min_params(dmat_xy)
-
     return dmat_xy, dmat_x, dmat_y, md, mdpts, mties
 
 
 def update_min_xydist(
-    des_x,
-    des_y,
-    cand_x,
-    cand_y,
-    md,
-    mdpts,
-    mties,
-    dmat_xy,
-    dmat_x,
-    dmat_y,
-    mpdx,
-    mpdy,
-    wt,
-    PF_des_x,
-    PF_des_y,
-    PF_mat,
-    hist_x=None,
-    hist_y=None,
-    val=np.inf,
-):
-
-    # to do: check that hist_x and hist_y both (don't) exist
+    des_x: np.ndarray,
+    des_y: np.ndarray,
+    cand_x: np.ndarray,
+    cand_y: np.ndarray,
+    md: float,
+    mdpts: np.ndarray,
+    mties: int,
+    dmat_xy: np.ndarray,
+    dmat_x: np.ndarray,
+    dmat_y: np.ndarray,
+    mpdx: float,
+    mpdy: float,
+    wt: float,
+    PF_des_x: np.ndarray,
+    PF_des_y: np.ndarray,
+    PF_mat: np.ndarray,
+    hist_x: Optional[np.ndarray] = None,
+    hist_y: Optional[np.ndarray] = None,
+    val: float = np.inf,
+) -> Tuple[
+    np.ndarray,
+    np.ndarray,
+    float,
+    np.ndarray,
+    int,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    Optional[int],
+    Optional[int],
+    bool,
+]:
+    """
+    args: des_x, des_y, cand_x, cand_y, md, mdpts, mties, dmat_xy, dmat_x, dmat_y, mpdx, mpdy, wt, PF_des_x,
+    PF_des_y, PF_mat, hist_x, hist_y, val
+    returns: des_x_, des_y_, md_, mdpts_cand_, mties_, dmat_xy_, dmat_x_, dmat_y_, PF_des_x, PF_des_y, PF_mat,
+    added_, removed_, update_
+    """
 
     def update_dmat_xy(
-        row_x, row_y, des_x, des_y, dmat_xy, dmat_x, dmat_y, k, val=np.inf
-    ):
-
+        row_x: np.ndarray,
+        row_y: np.ndarray,
+        des_x: np.ndarray,
+        des_y: np.ndarray,
+        dmat_xy: np.ndarray,
+        dmat_x: np.ndarray,
+        dmat_y: np.ndarray,
+        k: int,
+        val: float = val,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        args: row_x, row_y, des_x, des_y, dmat_xy, dmat_x, dmat_y, k, val
+        returns: dmat_xy_, dmat_x_, dmat_y_
+        """
         xs = des_x if hist_x is None else np.concatenate((des_x, hist_x))
         m_x = np.sqrt(np.sum(np.square(row_x - xs), axis=1))
         m_x[k] = val
@@ -324,9 +420,32 @@ def update_min_xydist(
         return dmat_xy_, dmat_x_, dmat_y_
 
     def step(
-        pt, des_x, des_y, cand_x, cand_y, mdpts, dmat_xy, dmat_x, dmat_y, val=np.inf
-    ):
-
+        pt: tuple,
+        des_x: np.ndarray,
+        des_y: np.ndarray,
+        cand_x: np.ndarray,
+        cand_y: np.ndarray,
+        mdpts: np.ndarray,
+        dmat_xy: np.ndarray,
+        dmat_x: np.ndarray,
+        dmat_y: np.ndarray,
+        val: float = val,
+    ) -> Tuple[
+        np.ndarray,
+        np.ndarray,
+        float,
+        np.ndarray,
+        int,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        int,
+        int,
+    ]:
+        """
+        args: pt, des_x, des_y, cand_x, cand_y, mdpts, dmat_xy, dmat_x, dmat_y, val
+        returns: des_x_, des_y_, md_, mdpts_, mties_, dmat_xy_, dmat_x_, dmat_y_, j, k
+        """
         i, j = pt  # i=mdpts index to remove from rcand; j=cand index to add to rcand
 
         des_x_ = np.copy(des_x)
@@ -426,8 +545,6 @@ def update_min_xydist(
                 None,
                 False,
             )
-            # Pedro: if Monte Carlo sampling is used, then return True in the last index instead
-            # to allow for a longer search
     else:
         return (
             des_x,
@@ -445,8 +562,6 @@ def update_min_xydist(
             None,
             False,
         )
-        # Pedro: if Monte Carlo sampling is used, then return True in the last index instead
-        # to allow for a longer search
 
     return (
         des_x_,
@@ -467,17 +582,32 @@ def update_min_xydist(
 
 
 def irsf_tex(
-    cand_x,  # input space candidate
-    cand_y,  # response space candidate
-    mpdx,
-    mpdy,
-    wt,
-    maxit,
-    nd,  # number of points (design size N)
-    hist_x=None,
-    hist_y=None,
-):
-
+    cand_x: np.ndarray,  # input space candidate
+    cand_y: np.ndarray,  # response space candidate
+    mpdx: float,
+    mpdy: float,
+    wt: float,
+    maxit: int,
+    nd: int,  # number of points (design size N)
+    hist_x: Optional[np.ndarray] = None,
+    hist_y: Optional[np.ndarray] = None,
+) -> Tuple[
+    np.ndarray,
+    np.ndarray,
+    float,
+    np.ndarray,
+    int,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+]:
+    """
+    args: cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
+    returns: des_x, des_y, md, mdpts, mties, dmat_xy, dmat_x, dmat_y, PF_des_x, PF_des_y, PF_mat
+    """
     rand_index = np.random.choice(len(cand_x), nd)
 
     des_x = cand_x[rand_index]
@@ -556,19 +686,22 @@ def irsf_tex(
 
 
 def criterion_irsf(
-    cand_x,  # input space candidate
-    cand_y,  # response space candidate
-    mpdx,
-    mpdy,
-    wt,
-    maxit,  # maximum iteration
-    nr,  # number of random start (startnum)
-    nd,  # number of points (design size N)
-    mode,
-    hist_x,
-    hist_y,
-):
-
+    cand_x: np.ndarray,  # input space candidate
+    cand_y: np.ndarray,  # response space candidate
+    mpdx: float,
+    mpdy: float,
+    wt: float,
+    maxit: int,  # maximum iteration
+    nr: int,  # number of random start (startnum)
+    nd: int,  # number of points (design size N)
+    mode: str,
+    hist_x: Optional[np.ndarray],
+    hist_y: Optional[np.ndarray],
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    args: cand_x, cand_y, mpdx, mpdy, wt, maxit, nr, nd, mode, hist_x, hist_y
+    returns: PF_des_x, PF_des_y, PF_mat
+    """
     (
         _,
         _,
@@ -618,7 +751,19 @@ def criterion_irsf(
     return PF_des_x, PF_des_y, PF_mat
 
 
-def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
+def criterion(
+    cand: pd.DataFrame,
+    args: dict,
+    nr: int,
+    nd: int,
+    mode: str = "maximin",
+    hist: Optional[pd.DataFrame] = None,
+    test: bool = False,
+) -> dict:
+    """
+    args: cand, args, nr, nd, mode, hist, test
+    returns: results dictionary
+    """
     cand_x = cand[args["idx"]]
     xcols = list(cand_x.columns)
     cand_x = cand_x.to_numpy()

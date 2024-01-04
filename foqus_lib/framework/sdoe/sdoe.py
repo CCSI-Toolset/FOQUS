@@ -18,19 +18,18 @@ import platform
 import re
 import tempfile
 import time
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
 
 from foqus_lib.framework.uq.Common import Common
-from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
-from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 
 from .df_utils import load, write
 
 
-def save(fnames, results, elapsed_time, irsf=False):
+def save(fnames: dict, results: dict, elapsed_time: float, irsf: bool = False):
     if irsf:
         write(fnames["des"], results["des"])
         print("Designs saved to {}".format(fnames["des"]))
@@ -54,8 +53,7 @@ def save(fnames, results, elapsed_time, irsf=False):
         print("Candidate distances saved to {}".format(fnames["dmat"]))
 
 
-def run(config_file, nd, test=False):
-
+def run(config_file: str, nd: int, test: bool = False) -> Tuple[dict, dict, float]:
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
@@ -209,8 +207,11 @@ def run(config_file, nd, test=False):
     return fnames, results, elapsed_time
 
 
-def dataImputation(fname, y, rsMethodName, eval_fname):
-
+def dataImputation(fname: str, y: int, rsMethodName: str, eval_fname: str) -> str:
+    """
+    args: fname, y, rsMethodName, eval_fname
+    returns: outfile filename
+    """
     rsIndex = ResponseSurfaces.getEnumValue(rsMethodName)
 
     # write script
@@ -243,10 +244,15 @@ def dataImputation(fname, y, rsMethodName, eval_fname):
 
     outfile = "eval_sample"
     assert os.path.exists(outfile)
+
     return outfile
 
 
-def readEvalSample(fileName):
+def readEvalSample(fileName: str) -> Tuple[np.ndarray, np.ndarray, int, int]:
+    """
+    args: fileName
+    returns: inputArray, outputArray, numInputs, numOutputs
+    """
     f = open(fileName, "r")
     lines = f.readlines()
     f.close()

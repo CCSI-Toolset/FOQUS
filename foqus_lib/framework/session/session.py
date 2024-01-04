@@ -263,7 +263,7 @@ class session:
             except:
                 pass
         else:
-            # if not stoppoing consumers then reuse them
+            # if not stopping consumers then reuse them
             tc = self.flowsheet.turbConfig
         self.name = ""
         self.originalFileName = ""

@@ -18,7 +18,7 @@ import platform
 import re
 import tempfile
 import time
-from typing import Tuple
+from typing import Tuple, Dict
 
 import numpy as np
 import pandas as pd
@@ -29,7 +29,7 @@ from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 from .df_utils import load, write
 
 
-def save(fnames: dict, results: dict, elapsed_time: float, irsf: bool = False):
+def save(fnames: Dict, results: Dict, elapsed_time: float, irsf: bool = False):
     if irsf:
         write(fnames["des"], results["des"])
         print("Designs saved to {}".format(fnames["des"]))
@@ -53,7 +53,7 @@ def save(fnames: dict, results: dict, elapsed_time: float, irsf: bool = False):
         print("Candidate distances saved to {}".format(fnames["dmat"]))
 
 
-def run(config_file: str, nd: int, test: bool = False) -> Tuple[dict, dict, float]:
+def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, float]:
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)

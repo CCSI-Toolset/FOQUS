@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
 import pandas as pd
 
 
@@ -43,7 +43,7 @@ def load(fname: str, index: Optional[str] = None) -> pd.DataFrame:
     return df
 
 
-def merge(fnames: list) -> pd.DataFrame:
+def merge(fnames: List) -> pd.DataFrame:
     """
     Merges multiple files into single data frame
     args: fnames
@@ -63,8 +63,8 @@ def merge(fnames: list) -> pd.DataFrame:
 
 
 def check(
-    cfiles: list, hfiles: Optional[list]
-) -> Tuple[pd.DataFrame, Union[list, pd.DataFrame]]:
+    cfiles: List, hfiles: Optional[List]
+) -> Tuple[pd.DataFrame, Union[List, pd.DataFrame]]:
     """
     Aggregates files and ensure consistent columns
     args: cfiles, hfiles

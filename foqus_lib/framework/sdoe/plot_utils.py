@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List, Dict
 
 from matplotlib.axes._axes import Axes
 from matplotlib.figure import Figure
@@ -199,7 +199,7 @@ def remove_yticklabels(
 def plot_candidates(
     df: pd.DataFrame,
     hf: Optional[pd.DataFrame],
-    show: list,
+    show: List,
     title: str,
     scatter_label: str,
     cand: Optional[pd.DataFrame],
@@ -471,10 +471,10 @@ def plot(
     fname: str,
     scatter_label: str,
     hname: Optional[str] = None,
-    show: Optional[list] = None,
-    usf: Optional[dict] = None,
-    nusf: Optional[dict] = None,
-    irsf: Optional[dict] = None,
+    show: Optional[List] = None,
+    usf: Optional[Dict] = None,
+    nusf: Optional[Dict] = None,
+    irsf: Optional[Dict] = None,
     nImpPts: int = 0,
 ) -> Union[Figure, Tuple[Figure, Figure]]:
     """
@@ -519,7 +519,7 @@ def plot(
 
 
 def plot_pareto(
-    pf: pd.DataFrame, results: dict, cand: pd.DataFrame, hname: str
+    pf: pd.DataFrame, results: Dict, cand: pd.DataFrame, hname: str
 ) -> Figure:
     """
     Plot Pareto front with hovering labels and onclick event

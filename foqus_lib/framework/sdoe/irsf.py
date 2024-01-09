@@ -14,7 +14,7 @@
 #################################################################################
 import itertools
 import time
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, List, Dict
 
 import numpy as np
 import pandas as pd
@@ -222,7 +222,7 @@ def update_pareto_front(
     return newpfdesX, newpfdesY, newpf
 
 
-def CombPF(PFnew: list, PFcur: Optional[tuple] = None) -> Union[list, tuple]:
+def CombPF(PFnew: List, PFcur: Optional[tuple] = None) -> Union[List, tuple]:
     """
     args: PFnew, PFcur
     returns: combined_pf
@@ -753,13 +753,13 @@ def criterion_irsf(
 
 def criterion(
     cand: pd.DataFrame,
-    args: dict,
+    args: Dict,
     nr: int,
     nd: int,
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
     test: bool = False,
-) -> dict:
+) -> Dict:
     """
     args: cand, args, nr, nd, mode, hist, test
     returns: results dictionary

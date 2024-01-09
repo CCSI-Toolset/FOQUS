@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List, Dict
 
 import numpy as np
 import pandas as pd  # only used for the final output of criterion
@@ -23,7 +23,7 @@ from .distance import compute_dist, compute_min_params
 
 
 def compute_dmat(
-    weight_mat: np.ndarray, xcols: list, wcol: int, hist: Optional[np.ndarray] = None
+    weight_mat: np.ndarray, xcols: List, wcol: int, hist: Optional[np.ndarray] = None
 ) -> np.ndarray:
     """
     args:
@@ -53,7 +53,7 @@ def update_min_dist(
     rcand: np.ndarray,
     cand: np.ndarray,
     ncand: int,
-    xcols: list,
+    xcols: List,
     wcol: int,
     md: float,
     mdpts: np.ndarray,
@@ -171,7 +171,7 @@ def update_min_dist(
 
 
 def scale_xs(
-    mat_: np.ndarray, xcols: list
+    mat_: np.ndarray, xcols: List
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     args:
@@ -232,7 +232,9 @@ def scale_y(scale_method: str, mwr: int, mat_: np.ndarray, wcol: int) -> np.ndar
 
 
 # Not needed because we are using the index to look up the original rows
-def inv_scale_xs(mat_: np.ndarray, xmin: np.ndarray, xmax: np.ndarray, xcols: list):
+def inv_scale_xs(
+    mat_: np.ndarray, xmin: np.ndarray, xmax: np.ndarray, xcols: List
+) -> np.ndarray:
     """
     args:
     mat_ - numpy array of size (nd, nx+1) containing scaled inputs
@@ -255,12 +257,12 @@ def inv_scale_xs(mat_: np.ndarray, xmin: np.ndarray, xmax: np.ndarray, xcols: li
 
 def criterion(
     cand: pd.DataFrame,  # candidates
-    args: dict,  # maximum number of iterations, mwr values, scale method, index types
+    args: Dict,  # maximum number of iterations, mwr values, scale method, index types
     nr: int,  # number of restarts (each restart uses a random set of <nd> points)
     nd: int,  # design size <= len(candidates)
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
-) -> dict:
+) -> Dict:
     ncand = len(cand)
     if hist is not None:
         nhist = len(hist)
@@ -292,7 +294,7 @@ def criterion(
             np.concatenate((cand_np_, hist.to_numpy())), idx_np
         )
 
-    def step(mwr: int) -> dict:
+    def step(mwr: int) -> Dict:
         cand_np = scale_y(scale_method, mwr, cand_np_, idw_np)
 
         if hist is None:

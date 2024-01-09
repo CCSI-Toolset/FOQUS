@@ -14,7 +14,7 @@
 #################################################################################
 import time
 from operator import gt, lt
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict
 
 import numpy as np
 import pandas as pd
@@ -37,12 +37,12 @@ def compute_min_dist(
 
 def criterion(
     cand: pd.DataFrame,
-    args: dict,
+    args: Dict,
     nr: int,
     nd: int,
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
-) -> dict:
+) -> Dict:
     """
     args:
     cand - candidates dataframe

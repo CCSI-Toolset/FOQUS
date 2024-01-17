@@ -29,7 +29,7 @@ sample file.
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_3`.
 
-#. Under ‘Optimization Setup’, select the first objection function
+#. Under ‘Optimization Setup’, select the first objective function
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
@@ -60,7 +60,7 @@ sample of size :math:`200` for :math:`Z_4`.
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_4`.
 
-#. Under ‘Optimization Setup’, select the first objection function
+#. Under ‘Optimization Setup’, select the first objective function
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
@@ -85,7 +85,7 @@ from a large sample evaluated on the response surfaces).
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_4`.
 
-#. Under ‘Optimization Setup’, select the first objection function
+#. Under ‘Optimization Setup’, select the first objective function
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
@@ -113,7 +113,7 @@ will be generated for the continuous variables.
    :math:`5-8` as :math:`Z_2`, variable :math:`9` as :math:`Z_3`, and
    variable :math:`10-12` as :math:`Z_4`.
 
-#. Under ‘Optimization Setup’, select the first objection function
+#. Under ‘Optimization Setup’, select the first objective function
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
@@ -141,7 +141,7 @@ be used to estimate the means for the continuous uncertain variables.
    :math:`5-8` as :math:`Z_2`, variable :math:`9` as :math:`Z_3`, and
    variable :math:`10-12` as :math:`Z_4`.
 
-#. Under ‘Optimization Setup’, select the first objection function
+#. Under ‘Optimization Setup’, select the first objective function
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
@@ -173,7 +173,7 @@ generated internally).
    :math:`5-8` as :math:`Z_2`, variable :math:`9` as :math:`Z_3`, and
    variable :math:`10-12` as :math:`Z_4`.
 
-#. Under ‘Optimization Setup’, select the first objection function
+#. Under ‘Optimization Setup’, select the first objective function
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
@@ -200,7 +200,7 @@ This example is similar to Example 5 except that a sample for
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_4`.
 
-#. Under ‘Optimization Setup’, select the first objection function
+#. Under ‘Optimization Setup’, select the first objective function
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, check ‘Load

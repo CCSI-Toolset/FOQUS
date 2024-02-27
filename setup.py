@@ -91,9 +91,9 @@ dist = setup(
     install_requires=[
         "boto3",
         "cma",
-        "matplotlib<3.6; python_version < 3.11",
+        "matplotlib<3.6; python_version < '3.11'",
         # prebuilt wheels not available on 3.11 for: macos arm64, win32
-        "matplotlib==3.7.*; python_version >= 3.11",
+        "matplotlib==3.7.*; python_version >= '3.11'",
         "python-tsp==0.3.1",
         "joblib<1.3",  # CCSI-Toolset/FOQUS#1154
         "mplcursors",

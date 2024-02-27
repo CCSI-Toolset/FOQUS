@@ -21,7 +21,7 @@ on:
 defaults:
   run:
     # the -l flag is needed for the Conda environment to be activated properly
-    shell: bash -l {0}
+    shell: bash -l -eo pipefail {0}
 
 env:
   FOQUS_CONDA_ENV_NAME_DEV: ccsi-foqus-dev

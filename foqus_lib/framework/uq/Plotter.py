@@ -523,7 +523,7 @@ class Plotter:
 
             def update(self, value):
                 # remove last line
-                self.ax.lines.remove(self.yrange)
+                self.yrange.remove()
 
                 # draw new line
                 (k1,) = np.where(self.cdfL < value)

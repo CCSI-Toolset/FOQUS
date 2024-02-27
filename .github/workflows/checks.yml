@@ -72,18 +72,31 @@ jobs:
         os:
           - linux
           - win64
-          - macos
+          - macos-x86_64
+          - macos-arm64
         include:
-          - os: macos
+          - os: macos-x86_64
             os-version: macos-12
+          - os: macos-arm64
+            os-version: macos-14
           - os: linux
             os-version: ubuntu-20.04
           - os: win64
             os-version: windows-2019
+          - os: macos-arm64
+            python-version: '3.8'
+            unavailable: true
+          - os: macos-arm64
+            python-version: '3.9'
+            unavailable: true
+          - os: win64
+            python-version: '3.11'
+            unavailable: true
           - python-version: "3.8"  # avoid uploading coverage for full matrix
             use_coverage: true
           - python-version: "3.8"  # this is to avoid installing optional dependencies in all environments
             optional-dependencies: tensorflow sympy torch scikit-learn smt
+    if: ${{ !matrix.unavailable }}
     env:
       # uncomment this to debug Qt initialization errors
       # QT_DEBUG_PLUGINS: '1'

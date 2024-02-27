@@ -116,8 +116,9 @@ jobs:
           bash /tmp/miniconda.sh -b -u -p ~/miniconda3
           rm -rf /tmp/miniconda.sh
           ~/miniconda3/bin/conda init bash
+          source ~/.bash_profile
           conda create --name ${{ env.FOQUS_CONDA_ENV_NAME_DEV }} --yes python=${{ matrix.python-version }}
-          echo "conda activate ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}" >> ~/.bashrc
+          echo "conda activate ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}" >> ~/.bash_profile
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:

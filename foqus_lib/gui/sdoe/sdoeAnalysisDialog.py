@@ -754,7 +754,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.designInfo_dynamic.setText(
                 "d = %d, n = %d" % (nd, results["num_restarts"])
             )
-            self.SDOE_progressBar.setValue((100 / numIter) * (nd - min_size + 1))
+            self.SDOE_progressBar.setValue(int((100 / numIter) * (nd - min_size + 1)))
             QApplication.processEvents()
 
         self.unfreeze()

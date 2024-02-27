@@ -16,7 +16,7 @@ from typing import Optional, Union, Tuple, List
 import pandas as pd
 
 
-def write(fname: str, df: pd.DataFrame, index: bool = False):
+def write(fname: str, df: pd.DataFrame, index: bool = False) -> None:
     """
     Writes data frame as csv file
     args: fname, df, index
@@ -49,8 +49,6 @@ def merge(fnames: List) -> pd.DataFrame:
     args: fnames
     returns: df
     """
-    if not fnames:
-        return []
 
     dfs = [load(fname) for fname in fnames]
 

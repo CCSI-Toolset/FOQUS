@@ -21,6 +21,7 @@ import time
 
 import numpy as np
 import pandas as pd
+from python_tsp.exact import solve_tsp_dynamic_programming
 
 from foqus_lib.framework.uq.Common import Common
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
@@ -71,6 +72,10 @@ def run(config_file, nd, test=False):
     min_vals = [float(s) for s in config["INPUT"]["min_vals"].split(",")]
 
     types = [s.strip() for s in config["INPUT"]["types"].split(",")]
+    difficulty = [s.strip() for s in config["INPUT"]["difficulty"].split(",")]
+    type_idx = types.index("Index")
+    diff_no_idx = difficulty.copy()
+    del diff_no_idx[type_idx]
     # 'Input' columns
     idx = [x for x, t in zip(include, types) if t == "Input"]
     # 'Index' column (should only be one)
@@ -181,6 +186,10 @@ def run(config_file, nd, test=False):
                 "dmat": os.path.join(outdir, "nusf_dmat_{}.npy".format(suffix)),
             }
             save(fnames[mwr], results[mwr], elapsed_time)
+            if all(x == "Hard" for x in diff_no_idx):
+                rank(fnames[mwr])
+            elif any(x == "Hard" for x in diff_no_idx):
+                order_blocks(fnames[mwr], difficulty)
 
     if sf_method == "usf":
         suffix = "d{}_n{}_{}".format(nd, nr, "+".join(include))
@@ -189,6 +198,10 @@ def run(config_file, nd, test=False):
             "dmat": os.path.join(outdir, "usf_dmat_{}.npy".format(suffix)),
         }
         save(fnames, results, elapsed_time)
+        if all(x == "Hard" for x in diff_no_idx):
+            rank(fnames)
+        elif any(x == "Hard" for x in diff_no_idx):
+            order_blocks(fnames, difficulty)
 
     if sf_method == "irsf":
         fnames = {}
@@ -207,6 +220,53 @@ def run(config_file, nd, test=False):
             save(fnames[design], sub_results, elapsed_time, irsf=True)
 
     return fnames, results, elapsed_time
+
+
+def rank(fnames):
+    """return fnames ranked"""
+    dist_mat = np.load(fnames["dmat"])
+
+    permutation, _distance = solve_tsp_dynamic_programming(dist_mat)
+
+    # retrieve ranked list
+    cand = load(fnames["cand"])
+    ranked_cand = cand.loc[permutation]
+
+    # save the output
+    fname, ext = os.path.splitext(fnames["cand"])
+    fname_ranked = fname + "_ranked" + ext
+
+    # fname_ranked = fnames["cand"]
+
+    write(fname_ranked, ranked_cand)
+
+    return fname_ranked
+
+
+def order_blocks(fnames, difficulty):
+    # load candidate set
+    cand = load(fnames["cand"])
+    cols = list(cand.columns)
+
+    diff_arr = np.array(difficulty)
+    diff_idx_arr = np.where(diff_arr == "Hard")[0]
+    diff_idx = list(diff_idx_arr)
+
+    col_order = []
+    for i in diff_idx:
+        col_order.append(cols[i])
+
+    sorted_cand = cand.sort_values(col_order)
+
+    # save the output
+    fname, ext = os.path.splitext(fnames["cand"])
+    fname_blocks = fname + "_blocks" + ext
+
+    # fname_blocks = fnames["cand"]
+
+    write(fname_blocks, sorted_cand)
+
+    return fname_blocks
 
 
 def dataImputation(fname, y, rsMethodName, eval_fname):

@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
 )
 
-from foqus_lib.framework.sdoe import order, sdoe
+from foqus_lib.framework.sdoe import sdoe
 from foqus_lib.framework.sdoe.df_utils import load
 from foqus_lib.framework.sdoe.plot_utils import plot_pareto
 
@@ -53,8 +53,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     includeCol = 0
     nameCol = 1
     typeCol = 2
-    minCol = 3
-    maxCol = 4
+    difficultyCol = 3
+    minCol = 4
+    maxCol = 5
 
     # Analysis table
     methodCol = 0
@@ -126,7 +127,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Connections here
         self.loadAnalysisButton.clicked.connect(self.populateAnalysis)
-        self.orderAnalysisButton.clicked.connect(self.orderDesign)
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
         self.testSdoeButton.setEnabled(False)
         self.analysisTableGroup.setEnabled(False)
@@ -462,6 +462,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         combo.currentTextChanged.connect(self.on_combobox_changed)
         combo.setMinimumContentsLength(7)
 
+        # create comboboxes for difficulty column
+        combo = QComboBox()
+        combo.addItems(["Easy", "Hard"])
+        self.inputSdoeTable.setCellWidget(row, self.difficultyCol, combo)
+
         # Min column
         minValue = round(min(self.candidateData.getInputData()[:, row]), 2)
         item = self.inputSdoeTable.item(row, self.minCol)
@@ -481,15 +486,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def analysisSelected(self):
         selectedIndexes = self.analysisTable.selectedIndexes()
         if not selectedIndexes:
-            # self.loadAnalysisButton.setEnabled(False)
-            self.orderAnalysisButton.setEnabled(False)
             self.deleteAnalysisButton.setEnabled(False)
             return
-        # self.loadAnalysisButton.setEnabled(True)
-        self.orderAnalysisButton.setEnabled(True)
         if self.type == "IRSF":
-            self.orderAnalysisButton.setEnabled(False)
-        self.deleteAnalysisButton.setEnabled(True)
+            self.deleteAnalysisButton.setEnabled(True)
 
     def updateAnalysisTable(self):
         numAnalysis = len(self.analysis)
@@ -590,6 +590,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         max_vals = []
         include_list = []
         type_list = []
+        difficulty_list = []
         for row in range(numInputs):
             if self.inputSdoeTable.cellWidget(row, self.includeCol).isChecked():
                 min_vals.append(self.inputSdoeTable.item(row, self.minCol).text())
@@ -598,7 +599,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 type_list.append(
                     str(self.inputSdoeTable.cellWidget(row, self.typeCol).currentText())
                 )
-        return min_vals, max_vals, include_list, type_list
+                difficulty_list.append(
+                    str(
+                        self.inputSdoeTable.cellWidget(
+                            row, self.difficultyCol
+                        ).currentText()
+                    )
+                )
+        return min_vals, max_vals, include_list, type_list, difficulty_list
 
     def writeConfigFile(self, test=False):
         timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
@@ -654,11 +662,18 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             "candidate_file = %s\n"
             % os.path.join(self.dname, self.candidateData.getModelName())
         )
-        min_vals, max_vals, include_list, type_list = self.checkInclude()
+        (
+            min_vals,
+            max_vals,
+            include_list,
+            type_list,
+            difficulty_list,
+        ) = self.checkInclude()
         f.write("min_vals = %s\n" % ",".join(min_vals))
         f.write("max_vals = %s\n" % ",".join(max_vals))
         f.write("include = %s\n" % ",".join(include_list))
         f.write("types = %s\n" % ",".join(type_list))
+        f.write("difficulty = %s\n" % ",".join(difficulty_list))
         f.write("\n")
 
         # USF ONLY
@@ -714,15 +729,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return configFile
 
     def runSdoe(self):
-        # if self.hasNoIndex():
-        #     reply = self.showIndexWarning()
-        #     if reply == QMessageBox.Yes:
-        #         pass
-        #     else:
-        #         return
-        # if self.hasIndex():
-        #     self.showIndexBlock()
-        #     return
         self.runSdoeButton.setText("Stop SDOE")
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
@@ -745,8 +751,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.analysis.append(new_analysis)
             self.analysisTableGroup.setEnabled(True)
             self.analysisGroup.setEnabled(False)
-            # self.loadAnalysisButton.setEnabled(False)
-            self.orderAnalysisButton.setEnabled(False)
             self.deleteAnalysisButton.setEnabled(False)
             self.updateAnalysisTable()
             self.designInfo_dynamic.setText(
@@ -817,8 +821,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         fnames, results, elapsed_time = sdoe.run(config_file, size)
         self.analysisTableGroup.setEnabled(True)
         self.analysisGroup.setEnabled(False)
-        # self.loadAnalysisButton.setEnabled(False)
-        self.orderAnalysisButton.setEnabled(False)
         self.deleteAnalysisButton.setEnabled(False)
 
         count = 0
@@ -916,8 +918,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         self.analysisTableGroup.setEnabled(True)
         self.analysisGroup.setEnabled(False)
-        # self.loadAnalysisButton.setEnabled(False)
-        self.orderAnalysisButton.setEnabled(False)
         self.deleteAnalysisButton.setEnabled(False)
 
         self.SDOE2_progressBar.setValue(0)
@@ -1050,8 +1050,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText())
                 == "Index"
             ):
+                self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(False)
                 self.clearMinMax(i)
             else:
+                self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(True)
+                if self.type == "IRSF":  # no ranking in IRSF, no distance matrix
+                    self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(
+                        False
+                    )
                 self.activateMinMax(i)
 
     def clearMinMax(self, row):
@@ -1494,26 +1500,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         )
 
         QApplication.processEvents()
-
-    def showOrderFileLoc(self, fname):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Warning)
-        msg.setWindowTitle("Order design completed.")
-        msg.setText("Ordered candidates saved to \n{}".format(fname))
-        msg.setInformativeText("Continue?")
-        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        reply = msg.exec_()
-        return reply
-
-    def orderDesign(self):
-        self.freeze()
-        row = self.analysisTable.selectedIndexes()[0].row()
-        outfiles = self.analysis[row].fnames
-        fname = order.rank(outfiles)
-        if fname:
-            self.showOrderFileLoc(fname)
-
-        self.unfreeze()
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

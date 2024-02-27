@@ -24,18 +24,11 @@ import sys
 import numpy as np
 import pandas as pd
 
-from foqus_lib.framework.sdoe import df_utils, order
-
-
-def test_mat2tuples():
-    """Test mat2tuples"""
-    arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    lte = order.mat2tuples(arr)
-    assert lte == [(1, 0, 4), (2, 0, 7), (2, 1, 8)]
+from foqus_lib.framework.sdoe import df_utils, sdoe
 
 
 def test_rank():
-    """Call to order.rank() using hard-coded data written to temp files"""
+    """Call to sdoe.rank() using hard-coded data written to temp files"""
 
     # candidate dataframe to write to cand file
     cand_df = pd.DataFrame(
@@ -141,7 +134,7 @@ def test_rank():
     fnames = {"cand": str(cand_fn), "dmat": str(dmat_fn)}
 
     # Make the actual call
-    fname_ranked = order.rank(fnames)
+    fname_ranked = sdoe.rank(fnames)
 
     # Ranked results as a dataframe
     ret_ranked_df = df_utils.load(fname_ranked)

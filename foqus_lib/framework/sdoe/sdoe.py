@@ -233,10 +233,7 @@ def rank(fnames):
     ranked_cand = cand.loc[permutation]
 
     # save the output
-    fname, ext = os.path.splitext(fnames["cand"])
-    fname_ranked = fname + "_ranked" + ext
-
-    # fname_ranked = fnames["cand"]
+    fname_ranked = fnames["cand"]
 
     write(fname_ranked, ranked_cand)
 
@@ -259,10 +256,7 @@ def order_blocks(fnames, difficulty):
     sorted_cand = cand.sort_values(col_order)
 
     # save the output
-    fname, ext = os.path.splitext(fnames["cand"])
-    fname_blocks = fname + "_blocks" + ext
-
-    # fname_blocks = fnames["cand"]
+    fname_blocks = fnames["cand"]
 
     write(fname_blocks, sorted_cand)
 

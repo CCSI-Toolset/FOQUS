@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
-from typing import Optional, Tuple, List, Dict
+from typing import Optional, Tuple, List, Dict, TypedDict
 
 import numpy as np
 import pandas as pd  # only used for the final output of criterion
@@ -257,7 +257,17 @@ def inv_scale_xs(
 
 def criterion(
     cand: pd.DataFrame,  # candidates
-    args: Dict,  # maximum number of iterations, mwr values, scale method, index types
+    args: TypedDict(
+        "args",
+        {
+            "icol": str,
+            "xcols": List,
+            "wcol": str,
+            "max_iterations": int,
+            "mwr_values": List,
+            "scale_method": str,
+        },
+    ),  # maximum number of iterations, mwr values, scale method, index types
     nr: int,  # number of restarts (each restart uses a random set of <nd> points)
     nd: int,  # design size <= len(candidates)
     mode: str = "maximin",

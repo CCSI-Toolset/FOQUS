@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from typing import Optional, Union, Tuple, List, Dict
+from typing import Optional, Union, Tuple, List, Dict, TypedDict
 
 from matplotlib.axes._axes import Axes
 from matplotlib.figure import Figure
@@ -419,7 +419,7 @@ def plot_candidates(
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
     for lh in leg.legendHandles:
         lh.set_alpha(1)
-    fig.canvas.manager.set_window_title(title)
+    fig.suptitle(title)
 
     return fig
 
@@ -462,7 +462,7 @@ def plot_weights(xs: np.ndarray, wt: np.ndarray, wts: np.ndarray, title: str) ->
     ax2.set_title("Histogram of weights from the candidate set (N={})".format(N))
     ax2.set_xlabel("Candidate weight")
 
-    fig.canvas.manager.set_window_title(title)
+    fig.suptitle(title)
 
     return fig
 
@@ -472,8 +472,18 @@ def plot(
     scatter_label: str,
     hname: Optional[str] = None,
     show: Optional[List] = None,
-    usf: Optional[Dict] = None,
-    nusf: Optional[Dict] = None,
+    usf: Optional[TypedDict("usf", {"cand": pd.DataFrame})] = None,
+    nusf: Optional[
+        TypedDict(
+            "nusf",
+            {
+                "cand": pd.DataFrame,
+                "wcol": str,
+                "scale_method": str,
+                "results": Dict,
+            },
+        )
+    ] = None,
     irsf: Optional[Dict] = None,
     nImpPts: int = 0,
 ) -> Union[Figure, Tuple[Figure, Figure]]:
@@ -519,7 +529,21 @@ def plot(
 
 
 def plot_pareto(
-    pf: pd.DataFrame, results: Dict, cand: pd.DataFrame, hname: str
+    pf: pd.DataFrame,
+    results: TypedDict(
+        "results",
+        {
+            "pareto_front": pd.DataFrame,
+            "design_id": Dict,
+            "des": Dict,
+            "mode": str,
+            "design_size": int,
+            "num_restarts": int,
+            "num_designs": int,
+        },
+    ),
+    cand: pd.DataFrame,
+    hname: str,
 ) -> Figure:
     """
     Plot Pareto front with hovering labels and onclick event
@@ -590,7 +614,7 @@ def plot_pareto(
         ),
     )
 
-    fig.canvas.manager.set_window_title("Pareto Front")
+    fig.suptitle("SDoE (IRSF) Pareto Front")
     fig.canvas.mpl_connect("pick_event", onpick)
 
     return fig

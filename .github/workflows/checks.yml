@@ -138,7 +138,7 @@ jobs:
           retention-days: 7
       - name: Upload coverage report to Codecov
         if: matrix.use_coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
 
   pylint:
     name: pylint (py${{ matrix.python-version }})

@@ -14,7 +14,7 @@
 #################################################################################
 import itertools
 import time
-from typing import Optional, Tuple, Union, List, Dict
+from typing import Optional, Tuple, Union, List, Dict, TypedDict
 
 import numpy as np
 import pandas as pd
@@ -44,7 +44,7 @@ def inv_unit_scale(
 
 
 def compute_dmat(
-    cand: np.ndarray, hist: np.ndarray = None, val: float = np.inf
+    cand: np.ndarray, hist: Optional[np.ndarray] = None, val: float = np.inf
 ) -> np.ndarray:
     """
     args:
@@ -100,7 +100,7 @@ def update_min_dist(
         return dmat_
 
     def step(
-        pt: tuple,
+        pt: Tuple,
         rcand: np.ndarray,
         cand: np.ndarray,
         mdpts: np.ndarray,
@@ -222,7 +222,7 @@ def update_pareto_front(
     return newpfdesX, newpfdesY, newpf
 
 
-def CombPF(PFnew: List, PFcur: Optional[tuple] = None) -> Union[List, tuple]:
+def CombPF(PFnew: List, PFcur: Optional[Tuple] = None) -> Union[List, Tuple]:
     """
     args: PFnew, PFcur
     returns: combined_pf
@@ -420,7 +420,7 @@ def update_min_xydist(
         return dmat_xy_, dmat_x_, dmat_y_
 
     def step(
-        pt: tuple,
+        pt: Tuple,
         des_x: np.ndarray,
         des_y: np.ndarray,
         cand_x: np.ndarray,
@@ -753,13 +753,36 @@ def criterion_irsf(
 
 def criterion(
     cand: pd.DataFrame,
-    args: Dict,
+    args: TypedDict(
+        "args",
+        {
+            "max_iterations": int,
+            "ws": np.ndarray,
+            "icol": str,
+            "idx": List,
+            "idy": List,
+        },
+    ),
     nr: int,
     nd: int,
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
     test: bool = False,
-) -> Dict:
+) -> Union[
+    TypedDict("results", {"t1": float, "t2": float}),
+    TypedDict(
+        "results",
+        {
+            "pareto_front": pd.DataFrame,
+            "design_id": Dict,
+            "des": Dict,
+            "mode": str,
+            "design_size": int,
+            "num_restarts": int,
+            "num_designs": int,
+        },
+    ),
+]:
     """
     args: cand, args, nr, nd, mode, hist, test
     returns: results dictionary
@@ -817,7 +840,8 @@ def criterion(
         )
         t2 = time.time() - t0
 
-        return {"t1": t1, "t2": t2}
+        results = {"t1": t1, "t2": t2}
+        return results
 
     # Otherwise IRSF for real
     # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function

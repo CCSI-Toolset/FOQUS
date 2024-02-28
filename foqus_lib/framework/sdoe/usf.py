@@ -14,7 +14,7 @@
 #################################################################################
 import time
 from operator import gt, lt
-from typing import Optional, Tuple, Dict
+from typing import Optional, Tuple, List, TypedDict
 
 import numpy as np
 import pandas as pd
@@ -37,12 +37,25 @@ def compute_min_dist(
 
 def criterion(
     cand: pd.DataFrame,
-    args: Dict,
+    args: TypedDict("args", {"icol": str, "xcols": List, "scale_factors": pd.Series}),
     nr: int,
     nd: int,
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
-) -> Dict:
+) -> TypedDict(
+    "results",
+    {
+        "best_cand": pd.DataFrame,
+        "best_index": np.ndarray,
+        "best_val": float,
+        "best_dmat": np.ndarray,
+        "dmat_cols": List,
+        "mode": str,
+        "design_size": int,
+        "num_restarts": int,
+        "elapsed_time": float,
+    },
+):
     """
     args:
     cand - candidates dataframe

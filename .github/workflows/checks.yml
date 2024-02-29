@@ -95,21 +95,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v3
-        if: matrix.os != 'macos-arm64'
         with:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
-      - name: Set up Conda (manual)
-        if: matrix.os-version == 'macos-14'
-        run: |
-          mkdir -p ~/miniconda3
-          curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o /tmp/miniconda.sh
-          bash /tmp/miniconda.sh -b -u -p ~/miniconda3
-          rm -rf /tmp/miniconda.sh
-          ~/miniconda3/bin/conda init bash
-          source ~/.bash_profile
-          conda create --name ${{ env.FOQUS_CONDA_ENV_NAME_DEV }} --yes python=${{ matrix.python-version }}
-          echo "conda activate ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}" >> ~/.bash_profile
+          miniconda-version: latest
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:

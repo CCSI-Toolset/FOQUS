@@ -154,7 +154,6 @@ def test_rank():
     # Clean up tmp files
     cand_fn.unlink()
     dmat_fn.unlink()
-    pl.Path(fname_ranked).unlink()
 
     assert test_results
 
@@ -200,6 +199,5 @@ def test_order_blocks():
 
     # Clean up tmp files
     cand_fn.unlink()
-    pl.Path(fname_blocks).unlink()
 
     assert test_results

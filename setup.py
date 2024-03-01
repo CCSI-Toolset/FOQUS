@@ -94,7 +94,6 @@ dist = setup(
         # prebuilt wheels not available on 3.11 for matplotlib<3.6 on: macos arm64, win32
         "matplotlib==3.*",
         "python-tsp==0.3.1",
-        "joblib<1.3",  # CCSI-Toolset/FOQUS#1154
         "mplcursors",
         "numpy",
         "pandas",

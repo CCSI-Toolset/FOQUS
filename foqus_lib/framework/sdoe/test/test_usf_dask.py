@@ -67,3 +67,12 @@ def test_same_result_as_usf():
         cand, args, nr, nd, mode=mode, hist=hist, rand_gen=rand_gen_dask
     )
     assert results["best_cand"].equals(dask_results["best_cand"])
+
+    mode = "minimax"
+    rand_gen = np.random.default_rng(23112209280756322351382740501499295435)
+    rand_gen_dask = np.random.default_rng(23112209280756322351382740501499295435)
+    results = usf.criterion(cand, args, nr, nd, mode=mode, hist=hist, rand_gen=rand_gen)
+    dask_results = usf_dask.criterion(
+        cand, args, nr, nd, mode=mode, hist=hist, rand_gen=rand_gen_dask
+    )
+    assert results["best_cand"].equals(dask_results["best_cand"])

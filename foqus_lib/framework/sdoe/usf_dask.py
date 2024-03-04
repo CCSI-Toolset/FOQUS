@@ -16,14 +16,9 @@ import time
 from operator import gt, lt
 
 import numpy as np
+import dask.bag as db
 
-from .distance import compute_dist
-
-
-def compute_min_dist(mat, scl, hist_xs=None):
-    dmat = compute_dist(mat, scl=scl, hist_xs=hist_xs)
-    min_dist = np.min(dmat, axis=0)
-    return dmat, min_dist
+from .usf import compute_min_dist
 
 
 def criterion(
@@ -48,7 +43,6 @@ def criterion(
         cond = lt
 
     # indices of type ...
-    _id_ = args["icol"]  # Index
     idx = args["xcols"]  # Input
 
     # scaling factors
@@ -61,33 +55,28 @@ def criterion(
     else:
         hist_xs = None
 
-    best_cand = []
-    _best_rand_sample = []
-
     t0 = time.time()
-    for i in range(nr):
-        # sample without replacement <nd> indices
-        rand_index = rand_gen.choice(cand.index, nd, replace=False)
-        # extract the <nd> rows
-        rand_cand = cand.loc[rand_index]
-        # extract the relevant columns (of type 'Input' only) for dist computations
-        dmat, min_dist = compute_min_dist(rand_cand[idx].values, scl, hist_xs=hist_xs)
-        dist = fcn(min_dist)
+    choices = []
+    for i in range(nr):  # create all the choices upfront
+        choices.append(rand_gen.choice(cand.index, nd, replace=False))
+    nrs = db.from_sequence(choices, npartitions=(nr // 1000) + 1)
+    part_choices = nrs.map_partitions(
+        choose_from_partition, best_val, cand, idx, scl, hist_xs, fcn, cond
+    ).to_dataframe()
+    if mode == "maximin":
+        best_val = part_choices["val"].max()
+    else:
+        best_val = part_choices["val"].min()
 
-        if cond(dist, best_val):
-            best_cand = rand_cand
-            best_index = rand_index  # for debugging
-            best_val = dist  # for debugging
-            best_dmat = dmat  # used for ranking candidates
+    best = part_choices[part_choices.val == best_val].compute()
 
-        elapsed_time = time.time() - t0
-    # best_cand.insert(loc=0, column=id_, value=best_cand.index)
+    elapsed_time = time.time() - t0
 
     results = {
-        "best_cand": best_cand,
-        "best_index": best_index,
-        "best_val": best_val,
-        "best_dmat": best_dmat,
+        "best_cand": best["cand"].iloc[0],
+        "best_index": best["index"].iloc[0],
+        "best_val": best["val"].iloc[0],
+        "best_dmat": best["dmat"].iloc[0],
         "dmat_cols": idx,
         "mode": mode,
         "design_size": nd,
@@ -96,3 +85,25 @@ def criterion(
     }
 
     return results
+
+
+def choose_from_partition(nums, starting_val, cand, idx, scl, hist_xs, fcn, cond):
+    best_cand, best_val = None, starting_val
+    for i in nums:
+        rand_cand = choose(i, cand, idx, scl, hist_xs, fcn)
+        if cond(rand_cand["val"], best_val):
+            best_cand = rand_cand
+    return [best_cand]
+
+
+def choose(choice, cand, idx, scl, hist_xs, fcn):
+    rand_cand = cand.loc[choice]
+    # extract the relevant columns (of type 'Input' only) for dist computations
+    dmat, min_dist = compute_min_dist(rand_cand[idx].values, scl, hist_xs=hist_xs)
+    dist = fcn(min_dist)
+    return {
+        "cand": rand_cand,
+        "index": choice,
+        "val": dist,
+        "dmat": dmat,
+    }

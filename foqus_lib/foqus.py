@@ -348,7 +348,18 @@ def main(args_to_parse=None):
     parser.add_argument(
         "-s", "--runUITestScript", help="Load and run a user interface test script"
     )
+    parser.add_argument(
+        "--sdoe_use_dask",
+        action="store_true",
+        help="Use Dask for parallelizing SDoE calculations",
+    )
+
     args = parser.parse_args(args=args_to_parse)
+    if args.sdoe_use_dask:
+        from dask.distributed import Client
+
+        Client()  # n_workers=4, threads_per_worker=1)
+
     # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead
     # or relative to the working dir

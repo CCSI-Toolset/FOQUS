@@ -89,8 +89,10 @@ dist = setup(
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")
     install_requires=[
+        "bokeh!=3.0.*,>=2.4.2",
         "boto3",
         "cma",
+        "dask[distributed]",
         "matplotlib<3.6",
         "python-tsp==0.3.1",
         "joblib<1.3",  # CCSI-Toolset/FOQUS#1154

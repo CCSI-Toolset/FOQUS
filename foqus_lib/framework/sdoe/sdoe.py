@@ -19,6 +19,7 @@ import re
 import tempfile
 import time
 
+from dask.distributed import get_client
 import numpy as np
 import pandas as pd
 
@@ -87,6 +88,14 @@ def run(config_file, nd, test=False):
 
     sf_method = config["SF"]["sf_method"]
 
+    # check whether to use dask version of algorithms
+    use_dask = False
+    try:
+        get_client()
+        use_dask = True
+    except ValueError:
+        pass
+
     if sf_method == "nusf":
         # 'Weight' column (should only be one)
         idw = [x for x, t in zip(include, types) if t == "Weight"]
@@ -122,7 +131,10 @@ def run(config_file, nd, test=False):
             "xcols": idx,
             "scale_factors": pd.Series(scl, index=include),
         }
-        from .usf import criterion
+        if use_dask:
+            from .usf_dask import criterion
+        else:
+            from .usf import criterion
 
     if sf_method == "irsf":
         args = {
@@ -161,10 +173,12 @@ def run(config_file, nd, test=False):
             # pylint: enable=unexpected-keyword-arg
             return results["t1"], results["t2"]
         else:
-            t0 = time.time()
-            _results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
-            elapsed_time = time.time() - t0
-            return elapsed_time
+            results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+            if use_dask:
+                return (
+                    results["elapsed_time"] - 1.4
+                )  # Dask startup skews the test results so remove that
+            return results["elapsed_time"]
 
     # otherwise, run sdoe for real
     t0 = time.time()

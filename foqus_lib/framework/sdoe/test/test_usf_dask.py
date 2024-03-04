@@ -17,7 +17,7 @@ from unittest import result
 import numpy as np
 import pandas as pd
 
-from foqus_lib.framework.sdoe import df_utils, usf, usf_dask, usf_scalesci
+from foqus_lib.framework.sdoe import df_utils, usf, usf_dask
 
 
 def test_criterion():

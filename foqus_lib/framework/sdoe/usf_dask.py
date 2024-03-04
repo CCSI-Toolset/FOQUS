@@ -93,6 +93,7 @@ def choose_from_partition(nums, starting_val, cand, idx, scl, hist_xs, fcn, cond
         rand_cand = choose(i, cand, idx, scl, hist_xs, fcn)
         if cond(rand_cand["val"], best_val):
             best_cand = rand_cand
+            best_val = rand_cand["val"]
     return [best_cand]
 
 

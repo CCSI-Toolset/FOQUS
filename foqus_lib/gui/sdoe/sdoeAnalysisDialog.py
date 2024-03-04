@@ -41,6 +41,8 @@ _sdoeAnalysisDialogUI, _sdoeAnalysisDialog = uic.loadUiType(
 )
 
 USF_SAMPLES = 4000
+
+
 class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     # Info table

@@ -15,6 +15,7 @@
 #################################################################################
 import numpy as np
 import pandas as pd
+import time
 from dask.distributed import Client
 
 from foqus_lib.framework.sdoe import df_utils, usf, usf_dask
@@ -56,20 +57,21 @@ def main():
     print(f"sample sizes: {sample_sizes}")
 
     for i in sample_sizes:
+        t0 = time.time()
         results = usf.criterion(
             cand, args, i, nd, mode=mode, hist=hist, rand_gen=rand_gen
         )
+        df.loc[df["Random Starts"] == i, "Original Time"] = time.time() - t0
+        print(client)
+        t0 = time.time()
         dask_results = usf_dask.criterion(
             cand, args, i, nd, mode=mode, hist=hist, rand_gen=rand_gen_dask
         )
         # assert results["best_cand"].equals(dask_results["best_cand"])
-        df.loc[df["Random Starts"] == i, "Original Time"] = results["elapsed_time"]
-        df.loc[df["Random Starts"] == i, "Using Dask Time"] = dask_results[
-            "elapsed_time"
-        ]
+        df.loc[df["Random Starts"] == i, "Using Dask Time"] = time.time() - t0
         print(f"Random start num = {i}\n{df.loc[df['Random Starts'] == i]}")
 
-    df.to_csv("test_times.csv", index=False)
+    df.to_csv("usf_test_times.csv", index=False)
     print(df)
 
 

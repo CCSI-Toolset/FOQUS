@@ -13,9 +13,10 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import time
+
 import numpy as np
 import pandas as pd
-import time
 from dask.distributed import Client
 
 from foqus_lib.framework.sdoe import df_utils, usf, usf_dask

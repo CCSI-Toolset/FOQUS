@@ -56,12 +56,13 @@ from foqus_lib.framework.surrogate.scaling import (
     BaseScaler,
     LinearScaler,
     LogScaler,
-    LogScaler2, 
-    PowerScaler, 
+    LogScaler2,
+    PowerScaler,
     PowerScaler2,
     map_name_to_scaler,
-    scale_dataframe
+    scale_dataframe,
 )
+
 
 def validate_training_data(xdata: np.ndarray, zdata: np.ndarray):
     number_columns_in_xdata = xdata.shape[1]

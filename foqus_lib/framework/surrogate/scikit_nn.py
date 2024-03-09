@@ -52,6 +52,16 @@ from foqus_lib.framework.session.session import exePath
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
+from foqus_lib.framework.surrogate.scaling import (
+    BaseScaler,
+    LinearScaler,
+    LogScaler,
+    LogScaler2, 
+    PowerScaler, 
+    PowerScaler2,
+    map_name_to_scaler,
+    scale_dataframe
+)
 
 def validate_training_data(xdata: np.ndarray, zdata: np.ndarray):
     number_columns_in_xdata = xdata.shape[1]
@@ -250,6 +260,14 @@ class surrogateMethod(surrogate):
             hint="Enter a custom file name if desired",
         )
 
+        self.options.add(
+            name="scaling_function",
+            default="Linear",
+            dtype=str,
+            desc="Scaling/normalization function for input data",
+            validValues=["Linear", "Log", "Log2", "Power", "Power2"],
+        )
+
     def run(self):
         """
         This function overloads the Thread class function,
@@ -300,22 +318,13 @@ class surrogateMethod(surrogate):
         xdata = input_data
         zdata = output_data
 
-        xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
-        zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
+        scaling_func_option = self.options["scaling_function"].value
 
-        # normalize data using Linear form, pass as custom string and parse with SymPy
-        # users can normalize with any allowed form # manually, and then pass the
-        # appropriate flag to FOQUS from the allowed list:
-        # ["Linear", "Log", "Power", "Log 2", "Power 2", "Custom] - see the
-        # documentation for details on the scaling formulations
-        xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
-        zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
-        xdata, zdata = np.array(xdata), np.array(zdata)
-        for i in range(len(xdata)):
-            for j in range(len(xlabels)):
-                xdata[i, j] = (xdata[i, j] - xmin[j]) / (xmax[j] - xmin[j])
-            for j in range(len(zlabels)):
-                zdata[i, j] = (zdata[i, j] - zmin[j]) / (zmax[j] - zmin[j])
+        scaler_instance = map_name_to_scaler[scaling_func_option]
+        xdata, xdata_bounds = scale_dataframe(xdata, scaler_instance)
+        zdata, zdata_bounds = scale_dataframe(zdata, scaler_instance)
+
+        print(f"using scaling function: {scaling_func_option}")
 
         model_data = np.concatenate(
             (xdata, zdata), axis=1

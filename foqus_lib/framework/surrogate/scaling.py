@@ -5,6 +5,8 @@ import math
 from collections import OrderedDict
 
 import numpy as np
+import pandas as pd
+from typing import Tuple
 
 
 def validate_for_scaling(array_in, lo, hi) -> None:
@@ -130,6 +132,10 @@ def unscale_power2(array_in, lo, hi):
     return result
 
 class BaseScaler:
+    # def __init__(self, data_array: np.ndarray):
+    #     self.data = data_array
+    #     self.lo_ = np.min(data_array)
+    #     self.hi_ = np.max(data_array)
 
     def fit(self, X: np.ndarray):
         self.lo_ = np.min(X)
@@ -184,4 +190,24 @@ class PowerScaler2(BaseScaler):
 
     def inverse_transform(self, X: np.ndarray) -> np.ndarray:
         return unscale_power2(X, self.lo_, self.hi_)
-    
+
+map_name_to_scaler = {
+    "Linear": LinearScaler(),
+    "Log": LogScaler(),
+    "Log2": LogScaler2(),
+    "Power": PowerScaler(),
+    "Power2": PowerScaler2(),
+    #...
+}
+
+def scale_dataframe(df: pd.DataFrame, scaler: BaseScaler) -> Tuple[pd.DataFrame, dict]:
+    scaled_df = pd.DataFrame(np.nan, columns=df.columns, index=df.index)
+    bounds = {}
+
+    for col_name in df:
+        unscaled_col_data = df[col_name]
+        scaled_col_data = scaler.fit_transform(unscaled_col_data)
+        bounds[col_name] = scaler.lo_, scaler.hi_
+        scaled_df.loc[:, col_name] = scaled_col_data
+
+    return scaled_df, bounds

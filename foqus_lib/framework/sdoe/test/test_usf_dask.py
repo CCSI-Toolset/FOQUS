@@ -12,8 +12,6 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from unittest import result
-
 import numpy as np
 import pandas as pd
 
@@ -59,8 +57,10 @@ def test_same_result_as_usf():
         "xcols": inputs,
         "scale_factors": pd.Series(scl, index=include),
     }
-    rand_gen = np.random.default_rng(23112209280756322351382740501499295435)
-    rand_gen_dask = np.random.default_rng(23112209280756322351382740501499295435)
+    rand_seed = 23112209280756322351382740501499295435
+
+    rand_gen = np.random.default_rng(rand_seed)
+    rand_gen_dask = np.random.default_rng(rand_seed)
 
     results = usf.criterion(cand, args, nr, nd, mode=mode, hist=hist, rand_gen=rand_gen)
     dask_results = usf_dask.criterion(
@@ -69,8 +69,8 @@ def test_same_result_as_usf():
     assert results["best_cand"].equals(dask_results["best_cand"])
 
     mode = "minimax"
-    rand_gen = np.random.default_rng(23112209280756322351382740501499295435)
-    rand_gen_dask = np.random.default_rng(23112209280756322351382740501499295435)
+    rand_gen = np.random.default_rng(rand_seed)
+    rand_gen_dask = np.random.default_rng(rand_seed)
     results = usf.criterion(cand, args, nr, nd, mode=mode, hist=hist, rand_gen=rand_gen)
     dask_results = usf_dask.criterion(
         cand, args, nr, nd, mode=mode, hist=hist, rand_gen=rand_gen_dask

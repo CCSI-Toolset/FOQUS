@@ -43,8 +43,9 @@ def main():
         "xcols": inputs,
         "scale_factors": pd.Series(scl, index=include),
     }
-    rand_gen = np.random.default_rng(23112209280756322351382740501499295435)
-    rand_gen_dask = np.random.default_rng(23112209280756322351382740501499295435)
+    rand_seed = 23112209280756322351382740501499295435
+    rand_gen = np.random.default_rng(rand_seed)
+    rand_gen_dask = np.random.default_rng(rand_seed)
 
     # run across range of 10^1 to 10^6 for both types
     sample_sizes = [10**x for x in range(1, 7)]
@@ -68,7 +69,7 @@ def main():
         dask_results = usf_dask.criterion(
             cand, args, i, nd, mode=mode, hist=hist, rand_gen=rand_gen_dask
         )
-        # assert results["best_cand"].equals(dask_results["best_cand"])
+        assert results["best_cand"].equals(dask_results["best_cand"])
         df.loc[df["Random Starts"] == i, "Using Dask Time"] = time.time() - t0
         print(f"Random start num = {i}\n{df.loc[df['Random Starts'] == i]}")
 

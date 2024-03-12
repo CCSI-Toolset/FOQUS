@@ -92,7 +92,7 @@ dist = setup(
         "bokeh!=3.0.*,>=2.4.2",
         "boto3",
         "cma",
-        "dask[distributed]",
+        "dask[dataframe,distributed]<2024.3",
         "matplotlib<3.6",
         "python-tsp==0.3.1",
         "joblib<1.3",  # CCSI-Toolset/FOQUS#1154

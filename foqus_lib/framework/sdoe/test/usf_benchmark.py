@@ -15,6 +15,7 @@
 #################################################################################
 import time
 
+import dask.config as dconf
 import numpy as np
 import pandas as pd
 from dask.distributed import Client
@@ -23,6 +24,8 @@ from foqus_lib.framework.sdoe import df_utils, usf, usf_dask
 
 
 def main():
+    dconf.set({"dataframe.convert-string": False})
+
     client = Client()
 
     ## USF set up

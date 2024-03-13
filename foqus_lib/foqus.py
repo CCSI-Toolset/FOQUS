@@ -356,9 +356,11 @@ def main(args_to_parse=None):
 
     args = parser.parse_args(args=args_to_parse)
     if args.sdoe_use_dask:
+        import dask.config as dconf
         from dask.distributed import Client
 
         Client()  # n_workers=4, threads_per_worker=1)
+        dconf.set({"dataframe.convert-string": False})
 
     # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead

@@ -12,6 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import dask.config as dconf
 import numpy as np
 import pandas as pd
 
@@ -19,6 +20,7 @@ from foqus_lib.framework.sdoe import df_utils, usf, usf_dask
 
 
 def test_criterion():
+    dconf.set({"dataframe.convert-string": False})
 
     cand = pd.DataFrame([(1, 1), (2, 2), (3, 3), (4, 4)])
     args = {
@@ -39,6 +41,7 @@ def test_criterion():
 
 
 def test_same_result_as_usf():
+    dconf.set({"dataframe.convert-string": False})
     index = "__id"
     inputs = ["w", "G", "lldg", "L"]
     min_vals = [0.0, 0.12, 1000.0, 0.1, 3020.0]

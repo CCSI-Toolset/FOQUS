@@ -26,6 +26,7 @@ defaults:
 env:
   FOQUS_CONDA_ENV_NAME_DEV: ccsi-foqus-dev
   PYTEST_BASETEMP: .pytest
+  DEFAULT_PYTHON_VERSION: '3.10'
 
 jobs:
   code-formatting:
@@ -34,8 +35,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.8'
       - name: Install Black
         # unlike the other jobs, we don't need to install FOQUS and/or all the dev dependencies,
         # but we still want to specify the Black version to use in requirements-dev.txt for local development
@@ -84,9 +83,9 @@ jobs:
             os-version: ubuntu-20.04
           - os: win64
             os-version: windows-2019
-          - python-version: "3.8"  # avoid uploading coverage for full matrix
+          - python-version: ${{ env.DEFAULT_PYTHON_VERSION }}  # avoid uploading coverage for full matrix
             use_coverage: true
-          - python-version: "3.8"  # this is to avoid installing optional dependencies in all environments
+          - python-version: ${{ env.DEFAULT_PYTHON_VERSION }}  # this is to avoid installing optional dependencies in all environments
             optional-dependencies: tensorflow sympy torch scikit-learn smt
     env:
       # uncomment this to debug Qt initialization errors

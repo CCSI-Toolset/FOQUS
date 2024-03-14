@@ -68,4 +68,21 @@ The following are known unresolved issues:
    TurbineLite port is changed the configuration file that FOQUS uses to
    connect to TurbineLite, must also be changed.
 
+Turbine Configuration
+---------------------
+
+Turbine Lite uses a configuration file to set many runtime options for
+submitted jobs, most of which are pre-set server information based on the
+software version. However, there are a few options which control the run
+behavior that users can modify to suit their needs. The "User Settings"
+section of the file passes timeout values which cap how many minutes
+Turbine will let a certain action occur before force-stopping.
+
+On a local machine, the file is located at "C:\Program Files (x86)\Turbine\Lite\Clients\AspenSinterConsumerConsole.exe.config" and
+requires administrative access to save edits. FOQUS and Aspen need to
+be closed when you save the file so Turbine can update its config for
+new instances. Lines 93-108 set the "User Settings", which include the
+timeout for the total run, the timeout for the run setup, and the timeout
+for the post initialization run. These values are all in minutes.
+
 .. include:: ../contact.rst

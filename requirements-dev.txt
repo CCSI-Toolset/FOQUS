@@ -7,7 +7,7 @@ pylint==2.14.1
 # since there can be significant differences between (non-major) versions,
 # both in terms of behavior and performance
 astroid==2.11.6
-pytest
+pytest<8.1
 ### coverage
 coverage
 pytest-cov

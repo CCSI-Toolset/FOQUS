@@ -122,7 +122,10 @@ def run(config_file, nd, test=False):
             "mwr_values": mwr_values,
             "scale_method": scale_method,
         }
-        from .nusf import criterion
+        if use_dask:
+            from .nusf_dask import criterion
+        else:
+            from .nusf import criterion
 
     if sf_method == "usf":
         scl = np.array([ub - lb for ub, lb in zip(max_vals, min_vals)])
@@ -173,12 +176,14 @@ def run(config_file, nd, test=False):
             # pylint: enable=unexpected-keyword-arg
             return results["t1"], results["t2"]
         else:
-            results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+            t0 = time.time()
+            criterion(cand, args, nr, nd, mode=mode, hist=hist)
+            elapsed_time = time.time() - t0
             if use_dask:
                 return (
-                    results["elapsed_time"] - 1.4
+                    elapsed_time - 1.4
                 )  # Dask startup skews the test results so remove that
-            return results["elapsed_time"]
+            return elapsed_time
 
     # otherwise, run sdoe for real
     t0 = time.time()

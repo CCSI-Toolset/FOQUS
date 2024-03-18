@@ -14,6 +14,7 @@
 #################################################################################
 import time
 
+import dask.bag as db
 import numpy as np
 import pandas as pd  # only used for the final output of criterion
 from scipy.stats import rankdata
@@ -265,14 +266,8 @@ def criterion(
 
     rand_gen = np.random.default_rng(rand_seed)
 
-    def step(mwr):
-        cand_np = scale_y(scale_method, mwr, cand_np_, idw_np)
-
-        if hist is None:
-            hist_np = None
-        else:
-            hist_np = cand_np[-nhist:]
-            cand_np = cand_np[:ncand]
+    def step(mwr_tuple):
+        mwr, rands, cand_np, hist_np = mwr_tuple
 
         best_cand = []
         best_md = 0
@@ -281,16 +276,7 @@ def criterion(
 
         t0 = time.time()
 
-        for i in range(nr):
-
-            print("Random start {}".format(i))
-
-            # sample without replacement <nd> indices
-            wts = cand_np[:, idw_np]
-            wts_sum = np.sum(wts)
-            prob = wts / wts_sum
-            rand_index = rand_gen.choice(ncand, nd, replace=False, p=prob)
-
+        def choose(rand_index):
             # extract the <nd> rows
             rcand = cand_np[rand_index]
             dmat = compute_dmat(rcand, idx_np, idw_np, hist=hist_np)
@@ -334,17 +320,28 @@ def criterion(
                         rand_index[removed_] = added_
 
                 t += 1
+            return {
+                "index": rand_index,
+                "cand": rcand,
+                "md": md,
+                "mdpts": mdpts,
+                "mties": mties,
+                "dmat": dmat,
+            }
 
-            if (md > best_md) or ((md == best_md) and (mties < best_mties)):
-                best_index = rand_index  #
-                best_cand = rcand
-                best_md = md
-                best_mdpts = mdpts
-                best_mties = mties
-                best_dmat = dmat
-
-            elapsed_time = time.time() - t0
+        for x in db.from_sequence(rands).map(choose):
+            if (x["md"] > best_md) or (
+                (x["md"] == best_md) and (x["mties"] < best_mties)
+            ):
+                best_index = x["index"]
+                best_cand = x["cand"]
+                best_md = x["md"]
+                best_mdpts = x["mdpts"]
+                best_mties = x["mties"]
+                best_dmat = x["dmat"]
             print("Best minimum distance for this random start: {}".format(best_md))
+
+        elapsed_time = time.time() - t0
 
         # no need to inverse-scale; can just use the indices to look up original rows in cand_
         best_cand_unscaled = cand_np_unscaled[best_index]
@@ -371,14 +368,26 @@ def criterion(
 
         return results
 
-    results = {}
+    rands, cand_nps, hist_nps = [], [], []
     for mwr in mwr_vals:
-        print(">>>>>> mwr={} <<<<<<".format(mwr))
-        res = step(mwr)
-        print("Best NUSF Design in Scaled Coordinates:\n", res["best_cand_scaled"])
-        print("Best NUSF Design in Original Coordinates:\n", res["best_cand"])
-        print("Best value in Normalized Scale:", res["best_val"])
-        print("Elapsed time:", res["elapsed_time"])
-        results[mwr] = res
+        cand_np = scale_y(scale_method, mwr, cand_np_, idw_np)
 
-    return results
+        if hist is None:
+            hist_np = None
+        else:
+            hist_np = cand_np[-nhist:]
+            cand_np = cand_np[:ncand]
+
+        wts = cand_np[:, idw_np]
+        wts_sum = np.sum(wts)
+        prob = wts / wts_sum
+        rand = []
+        for i in range(nr):
+            # sample without replacement <nd> indices
+            rand.append(rand_gen.choice(ncand, nd, replace=False, p=prob))
+        rands.append(rand)
+        cand_nps.append(cand_np)
+        hist_nps.append(hist_np)
+
+    results = db.from_sequence(zip(mwr_vals, rands, cand_nps, hist_nps)).map(step)
+    return dict(zip(mwr_vals, results.compute()))

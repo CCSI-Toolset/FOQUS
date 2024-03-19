@@ -88,7 +88,7 @@ jobs:
           - python-version: '3.10'  # avoid uploading coverage for full matrix
             use_coverage: true
           - python-version: '3.10'  # this is to avoid installing optional dependencies in all environments
-            optional-dependencies: '"tensorflow<2.16.1" sympy torch scikit-learn smt'
+            optional-dependencies: -r requirements-mlai.txt
     env:
       # uncomment this to debug Qt initialization errors
       # QT_DEBUG_PLUGINS: '1'

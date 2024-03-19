@@ -1053,6 +1053,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         from .sdoeAnalysisDialog import sdoeAnalysisDialog
 
         dialog = self._analysis_dialog = sdoeAnalysisDialog(
+            # PYLINT-WHY: used-before-assignment for type
+            # is a false positive that only occurs in Pylint 2
+            # pylint: disable-next=used-before-assignment
             candidateData, dname, analysis, historyData, type, self
         )
         dialog.open()

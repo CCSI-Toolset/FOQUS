@@ -1145,6 +1145,9 @@ class Plotter:
                     znew = interpolate.bisplev(xnew[:, 0], ynew[0, :], tck)
                     # ...... display heatmap such that x variable is on y-axis
                     if show_cbar:  # use global colormap for each off-diagonal subplots
+                        # PYLINT-WHY: used-before-assignment for norm_global
+                        # is a false positive that only occurs in Pylint 2
+                        # pylint: disable-next=used-before-assignment
                         ax.pcolormesh(ynew, xnew, znew, cmap=cmap, norm=norm_global)
                     else:  # use local colormap for each off-diagonal subplots
                         znewf = znew.flatten()

@@ -465,7 +465,9 @@ class fsScene(QGraphicsScene):
         elif self.mode == self.MODE_ADDEDGE:
             if self.selectedNodes == []:
                 if itemType == "node":
-                    self.node1 = self.selectedNodes.append(itemIndex)
+                    # PYLINT-WHY: assignment-from-no-return
+                    # self.node1 = self.selectedNodes.append(itemIndex)
+                    self.selectedNodes.append(itemIndex)
             else:
                 if len(self.selectedNodes) == 1 and itemType == "node":
                     self.selectedNodes.append(itemIndex)

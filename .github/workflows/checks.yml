@@ -21,21 +21,22 @@ on:
 defaults:
   run:
     # the -l flag is needed for the Conda environment to be activated properly
-    shell: bash -l {0}
+    shell: bash -l -eo pipefail {0}
 
 env:
   FOQUS_CONDA_ENV_NAME_DEV: ccsi-foqus-dev
   PYTEST_BASETEMP: .pytest
+  DEFAULT_PYTHON_VERSION: '3.10'
 
 jobs:
   code-formatting:
     name: Code formatting (Black)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.8'
+          python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
       - name: Install Black
         # unlike the other jobs, we don't need to install FOQUS and/or all the dev dependencies,
         # but we still want to specify the Black version to use in requirements-dev.txt for local development
@@ -52,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run Spell Checker
         uses: crate-ci/typos@master
         with: 
@@ -67,54 +68,59 @@ jobs:
         python-version:
           - '3.8'
           - '3.9'
-          # - '3.10'
+          - '3.10'
+          - '3.11'
+          - '3.12'
         os:
           - linux
           - win64
+          - macos-x86_64
           - macos
         include:
+          - os: macos-x86_64
+            os-version: macos-13
           - os: macos
-            os-version: macos-12
+            os-version: macos-14
           - os: linux
             os-version: ubuntu-20.04
           - os: win64
             os-version: windows-2019
-          - python-version: "3.8"  # avoid uploading coverage for full matrix
+          - python-version: '3.10'  # avoid uploading coverage for full matrix
             use_coverage: true
-          - python-version: "3.8"  # this is to avoid installing optional dependencies in all environments
-            optional-dependencies: tensorflow sympy torch scikit-learn smt
+          - python-version: '3.10'  # this is to avoid installing optional dependencies in all environments
+            optional-dependencies: -r requirements-mlai.txt
     env:
       # uncomment this to debug Qt initialization errors
       # QT_DEBUG_PLUGINS: '1'
       MPLBACKEND: AGG
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Conda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
+          miniconda-version: latest
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:
           pip-install-target: -r requirements-dev.txt ${{ matrix.optional-dependencies }}
-      - name: Set common pytest flags
-        run:
-          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
       - name: Set up GUI test environment (Linux)
         if: contains(matrix.os, 'linux')
         run: |
           echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
-      - name: Run pytest (default options)
-        if: "! matrix.use_coverage"
+      - name: Set common pytest flags
+        run:
+          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
+      - name: Add pytest coverage flags
+        if: matrix.use_coverage
+        run:
+          echo "PYTEST_ADDOPTS=$PYTEST_ADDOPTS --cov=./ --cov-report=xml --cov-report=term" >> $GITHUB_ENV
+      - name: Run pytest
         run: |
           pytest foqus_lib/
-      - name: Run pytest (coverage)
-        if: matrix.use_coverage
-        run: |
-          pytest foqus_lib/ --cov=./ --cov-report=xml --cov-report=term
       - name: Upload pytest artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           # TODO decide if we need a separate upload for each Python version
@@ -123,7 +129,7 @@ jobs:
           retention-days: 7
       - name: Upload coverage report to Codecov
         if: matrix.use_coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
 
   pylint:
     name: pylint (py${{ matrix.python-version }})
@@ -134,11 +140,13 @@ jobs:
         python-version:
           - '3.8'
           - '3.9'
-          # - '3.10'
+          - '3.10'
+          - '3.11'
+          - '3.12'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Conda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
@@ -154,9 +162,9 @@ jobs:
     name: Build docs
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Conda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}

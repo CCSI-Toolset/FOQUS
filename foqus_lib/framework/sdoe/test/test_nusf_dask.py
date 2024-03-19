@@ -12,13 +12,16 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import numpy as np
+import os
+
+import dask.config as dconf
 import pandas as pd
 
 from foqus_lib.framework.sdoe import df_utils, nusf, nusf_dask
 
 
 def test_criterion():
+    dconf.set({"dataframe.convert-string": False})
 
     cand = pd.DataFrame([(1, 1, 1), (2, 2, 1), (3, 3, 1), (4, 4, 1)])
     args = {
@@ -44,6 +47,8 @@ def test_criterion():
 
 
 def test_same_results_as_nusf():
+    dconf.set({"dataframe.convert-string": False})
+
     index = "__id"
     inputs = ["L", "G", "w", "lldg"]
     weight = "CI Width Prior"
@@ -54,7 +59,9 @@ def test_same_results_as_nusf():
     scale_method = "direct_mwr"
     mwr_values = [5, 10, 20, 40, 60]
 
-    cand = df_utils.load(fname="candidates_nusf.csv", index=index)
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    csv_file_path = os.path.join(dir_path, "candidates_nusf.csv")
+    cand = df_utils.load(fname=csv_file_path, index=index)
     args = {
         "icol": index,
         "xcols": inputs,

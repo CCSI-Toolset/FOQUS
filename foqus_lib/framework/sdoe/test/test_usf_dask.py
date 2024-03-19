@@ -12,6 +12,8 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import os
+
 import dask.config as dconf
 import numpy as np
 import pandas as pd
@@ -51,10 +53,12 @@ def test_same_result_as_usf():
     mode = "maximin"
     hist = None
 
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    csv_file_path = os.path.join(dir_path, "candidates_usf.csv")
+    cand = df_utils.load(fname=csv_file_path, index=index)
     include = inputs.copy()
     include.append(index)
     scl = np.array([ub - lb for ub, lb in zip(max_vals, min_vals)])
-    cand = df_utils.load(fname="candidates_usf.csv", index=index)
     args = {
         "icol": index,
         "xcols": inputs,

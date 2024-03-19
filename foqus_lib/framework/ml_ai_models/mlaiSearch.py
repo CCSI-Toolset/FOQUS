@@ -20,7 +20,6 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import imp
 import importlib
 import logging
 import os

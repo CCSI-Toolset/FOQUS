@@ -35,6 +35,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON_VERSION }}
       - name: Install Black
         # unlike the other jobs, we don't need to install FOQUS and/or all the dev dependencies,
         # but we still want to specify the Black version to use in requirements-dev.txt for local development

@@ -50,6 +50,9 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
                 text = '%s["%s"]' % (mode, vkey)
             elif self.format == "optimization":
                 text = '%s["%s"]["%s"]' % (mode, nkey, vkey)
+            # PYLINT-WHY: used-before-assignment for text
+            # is a false positive that only occurs in Pylint 2
+            # pylint: disable-next=used-before-assignment
             self.varText.setText(text)
 
     def refreshVars(self):

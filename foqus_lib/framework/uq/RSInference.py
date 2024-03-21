@@ -711,9 +711,9 @@ class RSInferencer(
         zlim = [zmin, zmax]
         ylabel = ["Probabilities"] * len(xlabel)
         sb_indices = np.reshape(np.arange(1, nshow**2 + 1), [nshow, nshow])
-        sb_indices[
-            np.tril(sb_indices, -1) > 0
-        ] = -1  # set lower triangular elements to -1
+        sb_indices[np.tril(sb_indices, -1) > 0] = (
+            -1
+        )  # set lower triangular elements to -1
 
         return (xdat, ydat, zdat, xlabel, ylabel, xlim, ylim, zlim, sb_indices, loglik)
 

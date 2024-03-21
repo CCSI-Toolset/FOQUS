@@ -267,9 +267,9 @@ class NodeEx(foqusException):
         self.codeString[27] = "Can't read variable in results (see log)"
         self.codeString[50] = "Node script interrupt exception"
         self.codeString[61] = "Unknow type string"
-        self.codeString[
-            self.ERROR_CONFIGURATION_MISSING
-        ] = "Model Missing Configuration"
+        self.codeString[self.ERROR_CONFIGURATION_MISSING] = (
+            "Model Missing Configuration"
+        )
         self.codeString[self.ERROR_NODE_FLOWSHEET] = "Node cannot be set to a flowsheet"
 
 

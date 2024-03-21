@@ -1015,9 +1015,9 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                     Nrs = (
                         self.z4SubsetSize_spin.value()
                     )  # add spinbox to get number of samples to generate RS
-                    x4sample[
-                        "nsamplesRS"
-                    ] = Nrs  # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
+                    x4sample["nsamplesRS"] = (
+                        Nrs  # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
+                    )
 
             #  TODO: Get rid of usebobyqa option. Behavior should be as if usebobyqa is always false
             # TODO: Change GUI to display optimizer and optimizing with bobyqa

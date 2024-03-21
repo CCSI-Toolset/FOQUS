@@ -349,9 +349,10 @@ def main(args_to_parse=None):
         "-s", "--runUITestScript", help="Load and run a user interface test script"
     )
     parser.add_argument(
-        "--sdoe_use_dask",
+        "--sdoe-use-dask",
         action="store_true",
         help="Use Dask for parallelizing SDoE calculations",
+        dest="sdoe_use_dask",
     )
 
     args = parser.parse_args(args=args_to_parse)

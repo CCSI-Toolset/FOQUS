@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
-from typing import Optional, Tuple, List, Dict, TypedDict
+from typing import Dict, List, Optional, Tuple, TypedDict, Union
 
 import numpy as np
 import pandas as pd  # only used for the final output of criterion
@@ -60,6 +60,7 @@ def update_min_dist(
     mties: int,
     dmat: np.ndarray,
     hist: np.ndarray,
+    rand_seed: Union[int, None],
 ) -> Tuple[
     np.ndarray, float, np.ndarray, int, np.ndarray, Optional[int], Optional[int], bool
 ]:
@@ -145,10 +146,11 @@ def update_min_dist(
     update = True
     added = None
     removed = None
+    rand_gen = np.random.default_rng(rand_seed)
 
     if d0_max > md:  # if maximin increased
         _md = d0_max
-        k = np.random.randint(pts.shape[0])
+        k = rand_gen.integers(low=0, high=pts.shape[0])
         pt = pts[k]
         rcand, md, mdpts, mties, dmat, added, removed = step(
             pt, rcand, cand, mdpts_cand, dmat
@@ -157,7 +159,7 @@ def update_min_dist(
         nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
             pt = pts[
-                np.random.choice(nselect)
+                rand_gen.choice(nselect)
             ]  # take the subset of pts where the corresponding ties is less than mties
             rcand, md, mdpts, mties, dmat, added, removed = step(
                 pt, rcand, cand, mdpts_cand, dmat
@@ -272,6 +274,7 @@ def criterion(
     nd: int,  # design size <= len(candidates)
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
+    rand_seed: Union[int, None] = None,
 ) -> Dict:
     ncand = len(cand)
     if hist is not None:
@@ -304,6 +307,8 @@ def criterion(
             np.concatenate((cand_np_, hist.to_numpy())), idx_np
         )
 
+    rand_gen = np.random.default_rng(rand_seed)
+
     def step(mwr: int) -> Dict:
         cand_np = scale_y(scale_method, mwr, cand_np_, idw_np)
 
@@ -328,7 +333,7 @@ def criterion(
             wts = cand_np[:, idw_np]
             wts_sum = np.sum(wts)
             prob = wts / wts_sum
-            rand_index = np.random.choice(ncand, nd, replace=False, p=prob)
+            rand_index = rand_gen.choice(ncand, nd, replace=False, p=prob)
 
             # extract the <nd> rows
             rcand = cand_np[rand_index]
@@ -360,6 +365,7 @@ def criterion(
                     mties,
                     dmat,
                     hist=hist_np,
+                    rand_seed=rand_seed + rand_index if rand_seed is not None else None,
                 )
 
                 if update_:

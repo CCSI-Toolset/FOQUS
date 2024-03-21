@@ -40,6 +40,8 @@ _sdoeAnalysisDialogUI, _sdoeAnalysisDialog = uic.loadUiType(
     os.path.join(mypath, "sdoeAnalysisDialog_UI.ui")
 )
 
+USF_SAMPLES = 4000
+
 
 class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
@@ -627,7 +629,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         if test:
             if self.type == "USF":
-                f.write("number_random_starts = 200\n")
+                f.write("number_random_starts = %d\n" % USF_SAMPLES)
             else:
                 f.write("number_random_starts = 2\n")
         else:
@@ -1219,7 +1221,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return reply
 
     def updateRunTime(self, runtime):
-        delta = runtime / 200
+        print(f"reported runtime={runtime}")
+        delta = (runtime) / USF_SAMPLES
         estimateTime = int(
             delta
             * (10 ** int(self.sampleSize_spin.value()))

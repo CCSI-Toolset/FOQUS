@@ -13,6 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
+from typing import Optional, Tuple, List, Dict, TypedDict
 
 import dask.bag as db
 import numpy as np
@@ -20,218 +21,28 @@ import pandas as pd  # only used for the final output of criterion
 from scipy.stats import rankdata
 
 from .distance import compute_dist, compute_min_params
-
-
-def compute_dmat(weight_mat, xcols, wcol, hist=None):
-    # Inputs:
-    #  weight_mat - numpy array of size (N, nx+1) containing scaled weights
-    #       xcols - list of integers corresponding to column indices for inputs
-    #        wcol - integer corresponding to the index of the weight column
-    #        hist - numpy array of shape (nh, nx+1)
-    # Output:
-    #        dmat - numpy array of shape (N+nh, N+nh)
-
-    xs = weight_mat[:, xcols]
-    wt = weight_mat[:, wcol]
-
-    if hist is None:
-        dmat = compute_dist(xs, wt=wt)
-    else:
-        dmat = compute_dist(xs, wt=wt, hist_xs=hist[:, xcols], hist_wt=hist[:, wcol])
-        # for compatibility with compute_min_params,
-        # if history exists, set history-history distances to some large value
-        nhist = len(hist)
-        dmat[-nhist:, -nhist:] = np.max(dmat)
-
-    return dmat
-
-
-def update_min_dist(
-    rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, hist, rand_seed
-):
-    # Inputs:
-    #   rcand - numpy array of size (nd, nx+1) containing currently subset of scaled weights
-    #    cand - numpy array of size (ncand, nx+1) containing scaled weights, nd < ncand
-    #   ncand - number of candidates to choose <nd> best design from, i.e., cand.shape[0]
-    #   xcols - list of integers corresponding to column indices for inputs
-    #    wcol - integer corresponding to the index of the weight column
-    #      md - scalar representing min(dmat)
-    #   mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
-    #   mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
-    #    dmat - numpy array of shape (M, M) where M = nd+nh
-    #    hist - numpy array of shape (nh, nx+1) containing scaled weights
-    # Output:
-    #   rcand - numpy array of size (nd, nx+1) containing scaled weights
-    #      md - scalar representing min(dmat)
-    #   mdpts - numpy array of shape (K, 2) representing indices where 'md' occurs
-    #   mties - scalar representing number of 'mdpts'
-    #    dmat - numpy array of shape (M, M) where M = nx+nh
-    #  update - boolean representing whether an update should occur
-
-    def update_dmat(row, rcand, dmat, k, val=9999):
-        xs = (
-            rcand[:, xcols]
-            if hist is None
-            else np.concatenate((rcand[:, xcols], hist[:, xcols]))
-        )
-        weights = (
-            rcand[:, wcol]
-            if hist is None
-            else np.concatenate((rcand[:, wcol], hist[:, wcol]))
-        )
-
-        m = np.sum(np.square(row[xcols] - xs), axis=1)
-        m = m * row[wcol] * weights
-        m[k] = val
-
-        dmat_ = np.copy(dmat)
-        dmat_[k, :] = dmat_[:, k] = m
-
-        return dmat_
-
-    def step(pt, rcand, cand, mdpts, dmat):
-        i, j = pt  # i=mdpts index to remove from rcand; j=cand index to add to rcand
-        rcand_ = rcand.copy()
-        row = cand[j]
-        k = mdpts[i]
-        rcand_[k] = row
-        dmat_ = update_dmat(row, rcand_, dmat, k)
-        md_, mdpts_, mties_ = compute_min_params(dmat_)
-
-        return rcand_, md_, mdpts_, mties_, dmat_, j, k
-
-    # exclude mdpts indices corresponding to history
-    mdpts_cand = mdpts[mdpts < len(rcand)]
-    n_mdpts = len(mdpts_cand)
-
-    # initialize d0 and mt0
-    d0 = np.zeros(
-        (n_mdpts, ncand)
-    )  # min dist when the ith point to remove is replaced with the jth candidate to add
-    mt0 = np.zeros(
-        (n_mdpts, ncand)
-    )  # number of ties when the ith point to remove is replaced with the jth candidate to add
-
-    for pt in np.ndindex(n_mdpts, ncand):
-        i, j = pt
-        _, d0[i, j], _, mt0[i, j], _, _, _ = step(pt, rcand, cand, mdpts_cand, dmat)
-
-    d0_max = np.max(d0)
-    pts = np.argwhere(d0 == d0_max)
-    update = True
-    added = None
-    removed = None
-    rand_gen = np.random.default_rng(rand_seed)
-
-    if d0_max > md:  # if maximin increased
-        _md = d0_max
-        k = rand_gen.integers(low=0, high=pts.shape[0])
-        pt = pts[k]
-        rcand, md, mdpts, mties, dmat, added, removed = step(
-            pt, rcand, cand, mdpts_cand, dmat
-        )
-    elif d0_max == md:
-        nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
-        if nselect.size > 0:
-            pt = pts[
-                rand_gen.choice(nselect)
-            ]  # take the subset of pts where the corresponding ties is less than mties
-            rcand, md, mdpts, mties, dmat, added, removed = step(
-                pt, rcand, cand, mdpts_cand, dmat
-            )
-    else:
-        update = False
-        added = None
-        removed = None
-
-    return rcand, md, mdpts, mties, dmat, added, removed, update
-
-
-def scale_xs(mat_, xcols):
-    # Inputs:
-    #   mat_ - numpy array of size (nd, nx+1) containing original inputs
-    #  xcols - list of integers corresponding to column indices for inputs
-    # Output:
-    #    mat - numpy array of size (nd, nx+1) containing the scaled inputs
-    #   xmin - numpy array of shape (1, nx)
-    #   xmax - numpy array of shape (1, nx)
-
-    mat = mat_.copy()
-    xs = mat[:, xcols]
-
-    # scale the inputs
-    # save xmin, xmax for inverse scaling later
-    xmin = np.min(xs, axis=0)
-    xmax = np.max(xs, axis=0)
-    # -1 to 1 scaling:
-    # mat[:, xcols] = (xs - xmin) / (xmax - xmin) * 2 - 1
-    # 0 to 1 scaling:
-    mat[:, xcols] = (xs - xmin) / (xmax - xmin)
-
-    return mat, xmin, xmax
-
-
-def scale_y(scale_method, mwr, mat_, wcol):
-    # Inputs:
-    #  scale_method - string that denotes the scaling method
-    #           mwr - scalar used in scaling
-    #          mat_ - numpy array of size (nd, nx+1) containing original weights
-    #          wcol - integer corresponding to the index of the weight column
-    # Output:
-    #           mat - numpy array of size (nd, nx+1) containing the scaled weights
-
-    mat = mat_.copy()
-
-    def direct_mwr(mwr, mat, wcol):
-        wts = mat[:, wcol]
-        wmin = np.min(wts)
-        wmax = np.max(wts)
-
-        # equal weights:
-        if wmin != wmax:
-            mat[:, wcol] = 1 + (mwr - 1) * (wts - wmin) / (wmax - wmin)
-        return mat
-
-    def ranked_mwr(mwr, mat, wcol):
-        mat[:, wcol] = rankdata(mat[:, wcol], method="dense")
-        return direct_mwr(mwr, mat, wcol)
-
-    # equivalent to if-else statements, but easier to maintain
-    methods = {"direct_mwr": direct_mwr, "ranked_mwr": ranked_mwr}
-
-    return methods[scale_method](mwr, mat, wcol)
-
-
-# Not needed because we are using the index to look up the original rows
-def inv_scale_xs(mat_, xmin, xmax, xcols):
-    # Inputs:
-    #   mat_ - numpy array of size (nd, nx+1) containing scaled inputs
-    #   xmin - numpy array of shape (1, nx) from before scaling
-    #   xmax - numpy array of shape (1, nx) from before scaling
-    #  xcols - list of integers corresponding to column indices for inputs
-    # Output:
-    #    mat - numpy array of size (nd, nx+1) containing the original inputs
-
-    # inverse-scale the inputs
-    mat = mat_.copy()
-    xs = mat[:, xcols]
-    # -1 to 1 scaling
-    # mat[:, xcols] = (xs + 1) / 2 * (xmax - xmin) + xmin
-    # 0 to 1 scaling
-    mat[:, xcols] = xs * (xmax - xmin) + xmin
-
-    return mat
+from .nusf import compute_dmat, scale_xs, scale_y, update_min_dist
 
 
 def criterion(
-    cand,  # candidates
-    args,  # maximum number of iterations, mwr values, scale method, index types
-    nr,  # number of restarts (each restart uses a random set of <nd> points)
-    nd,  # design size <= len(candidates)
-    mode="maximin",
-    hist=None,
-    rand_seed=None,
-):
+    cand: pd.DataFrame,  # candidates
+    args: TypedDict(
+        "args",
+        {
+            "icol": str,
+            "xcols": List,
+            "wcol": str,
+            "max_iterations": int,
+            "mwr_values": List,
+            "scale_method": str,
+        },
+    ),  # maximum number of iterations, mwr values, scale method, index types
+    nr: int,  # number of restarts (each restart uses a random set of <nd> points)
+    nd: int,  # design size <= len(candidates)
+    mode: str = "maximin",
+    hist: Optional[pd.DataFrame] = None,
+    rand_seed: int | None = None,
+) -> Dict:
 
     ncand = len(cand)
     if hist is not None:
@@ -266,7 +77,7 @@ def criterion(
 
     rand_gen = np.random.default_rng(rand_seed)
 
-    def step(mwr_tuple):
+    def step(mwr_tuple: Tuple[int, [int], np.ndarray, np.ndarray | None]) -> Dict:
         mwr, rands, cand_np, hist_np = mwr_tuple
 
         best_cand = []

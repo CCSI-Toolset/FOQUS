@@ -14,21 +14,38 @@
 #################################################################################
 import time
 from operator import gt, lt
+from typing import Callable, List, Optional, TypedDict
 
-import numpy as np
 import dask.bag as db
+import numpy as np
+import pandas as pd
 
 from .usf import compute_min_dist
 
 
 def criterion(
-    cand,  # candidates
-    args,  # scaling factors for included columns
-    nr,  # number of restarts (each restart uses a random set of <nd> points)
-    nd,  # design size <= len(candidates)
-    mode="maximin",
-    hist=None,
-    rand_gen=np.random.default_rng(),
+    cand: pd.DataFrame,  # candidates
+    args: TypedDict(
+        "args", {"icol": str, "xcols": List, "scale_factors": pd.Series}
+    ),  # scaling factors for included columns
+    nr: int,  # number of restarts (each restart uses a random set of <nd> points)
+    nd: int,  # design size <= len(candidates)
+    mode: str = "maximin",
+    hist: Optional[pd.DataFrame] = None,
+    rand_gen: np.random.Generator = np.random.default_rng(),
+) -> TypedDict(
+    "results",
+    {
+        "best_cand": pd.DataFrame,
+        "best_index": np.ndarray,
+        "best_val": float,
+        "best_dmat": np.ndarray,
+        "dmat_cols": List,
+        "mode": str,
+        "design_size": int,
+        "num_restarts": int,
+        "elapsed_time": float,
+    },
 ):
 
     mode = mode.lower()
@@ -87,7 +104,16 @@ def criterion(
     return results
 
 
-def choose_from_partition(nums, starting_val, cand, idx, scl, hist_xs, fcn, cond):
+def choose_from_partition(
+    nums: [int],
+    starting_val: int,
+    cand: pd.DataFrame,
+    idx: List,
+    scl: np.ndarray,
+    hist_xs: np.ndarray,
+    fcn: Callable[[float], float],
+    cond: Callable[[int, int], bool],
+):
     best_cand, best_val = None, starting_val
     for i in nums:
         rand_cand = choose(i, cand, idx, scl, hist_xs, fcn)
@@ -97,7 +123,14 @@ def choose_from_partition(nums, starting_val, cand, idx, scl, hist_xs, fcn, cond
     return [best_cand]
 
 
-def choose(choice, cand, idx, scl, hist_xs, fcn):
+def choose(
+    choice: int,
+    cand: pd.DataFrame,
+    idx: List,
+    scl: np.ndarray,
+    hist_xs: np.ndarray,
+    fcn: Callable[[float], float],
+):
     rand_cand = cand.loc[choice]
     # extract the relevant columns (of type 'Input' only) for dist computations
     dmat, min_dist = compute_min_dist(rand_cand[idx].values, scl, hist_xs=hist_xs)

@@ -42,7 +42,7 @@ def criterion(
     nd: int,
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
-    rand_gen=np.random.default_rng(),
+    rand_gen: np.random.Generator = np.random.default_rng(),
 ) -> TypedDict(
     "results",
     {

@@ -60,7 +60,7 @@ def update_min_dist(
     mties: int,
     dmat: np.ndarray,
     hist: np.ndarray,
-    rand_seed,
+    rand_seed: int | None,
 ) -> Tuple[
     np.ndarray, float, np.ndarray, int, np.ndarray, Optional[int], Optional[int], bool
 ]:
@@ -274,7 +274,7 @@ def criterion(
     nd: int,  # design size <= len(candidates)
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
-    rand_seed=None,
+    rand_seed: int | None = None,
 ) -> Dict:
     ncand = len(cand)
     if hist is not None:

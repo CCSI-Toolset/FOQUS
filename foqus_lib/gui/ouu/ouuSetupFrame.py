@@ -671,7 +671,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.objXPoints = []
         self.objYPoints = []
         if "objFigAx" in self.__dict__ and len(self.objFigAx.lines) > 0:
-            self.objFigAx.lines.clear()
+            for line in self.objFigAx.lines:
+                line.remove()
             self.objFigAx.relim()
             # self.objFigAx.set_xlim([0.0, 1.0])
             self.objCanvas.draw()
@@ -680,7 +681,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.inputPoints = [[] for i in range(len(self.inputPoints))]
             for i in range(1, len(self.inputPoints)):
                 if len(self.inputPlots[i - 1]["ax"].lines) > 0:
-                    self.inputPlots[i - 1]["ax"].lines = []
+                    for line in self.inputPlots[i - 1]["ax"].lines:
+                        line.remove()
                     self.inputPlots[i - 1]["canvas"].draw()
 
     def scrollProgressPlots(self, value):

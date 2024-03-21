@@ -13,6 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
+from typing import Optional, Tuple, List, Dict, TypedDict
 
 import numpy as np
 import pandas as pd  # only used for the final output of criterion
@@ -21,15 +22,19 @@ from scipy.stats import rankdata
 from .distance import compute_dist, compute_min_params
 
 
-def compute_dmat(weight_mat, xcols, wcol, hist=None):
-    # Inputs:
-    #  weight_mat - numpy array of size (N, nx+1) containing scaled weights
-    #       xcols - list of integers corresponding to column indices for inputs
-    #        wcol - integer corresponding to the index of the weight column
-    #        hist - numpy array of shape (nh, nx+1)
-    # Output:
-    #        dmat - numpy array of shape (N+nh, N+nh)
+def compute_dmat(
+    weight_mat: np.ndarray, xcols: List, wcol: int, hist: Optional[np.ndarray] = None
+) -> np.ndarray:
+    """
+    args:
+    weight_mat - numpy array of size (N, nx+1) containing scaled weights
+    xcols - list of integers corresponding to column indices for inputs
+    wcol - integer corresponding to the index of the weight column
+    hist - numpy array of shape (nh, nx+1)
 
+    returns:
+    dmat - numpy array of shape (N+nh, N+nh)
+    """
     xs = weight_mat[:, xcols]
     wt = weight_mat[:, wcol]
 
@@ -41,33 +46,49 @@ def compute_dmat(weight_mat, xcols, wcol, hist=None):
         # if history exists, set history-history distances to some large value
         nhist = len(hist)
         dmat[-nhist:, -nhist:] = np.max(dmat)
-
     return dmat
 
 
 def update_min_dist(
-    rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, hist, rand_seed
-):
-    # Inputs:
-    #   rcand - numpy array of size (nd, nx+1) containing currently subset of scaled weights
-    #    cand - numpy array of size (ncand, nx+1) containing scaled weights, nd < ncand
-    #   ncand - number of candidates to choose <nd> best design from, i.e., cand.shape[0]
-    #   xcols - list of integers corresponding to column indices for inputs
-    #    wcol - integer corresponding to the index of the weight column
-    #      md - scalar representing min(dmat)
-    #   mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
-    #   mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
-    #    dmat - numpy array of shape (M, M) where M = nd+nh
-    #    hist - numpy array of shape (nh, nx+1) containing scaled weights
-    # Output:
-    #   rcand - numpy array of size (nd, nx+1) containing scaled weights
-    #      md - scalar representing min(dmat)
-    #   mdpts - numpy array of shape (K, 2) representing indices where 'md' occurs
-    #   mties - scalar representing number of 'mdpts'
-    #    dmat - numpy array of shape (M, M) where M = nx+nh
-    #  update - boolean representing whether an update should occur
+    rcand: np.ndarray,
+    cand: np.ndarray,
+    ncand: int,
+    xcols: List,
+    wcol: int,
+    md: float,
+    mdpts: np.ndarray,
+    mties: int,
+    dmat: np.ndarray,
+    hist: np.ndarray,
+    rand_seed,
+) -> Tuple[
+    np.ndarray, float, np.ndarray, int, np.ndarray, Optional[int], Optional[int], bool
+]:
+    """
+    args:
+    rcand - numpy array of size (nd, nx+1) containing currently subset of scaled weights
+    cand - numpy array of size (ncand, nx+1) containing scaled weights, nd < ncand
+    ncand - number of candidates to choose <nd> best design from, i.e., cand.shape[0]
+    xcols - list of integers corresponding to column indices for inputs
+    wcol - integer corresponding to the index of the weight column
+    md - scalar representing min(dmat)
+    mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
+    mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
+    dmat - numpy array of shape (M, M) where M = nd+nh
+    hist - numpy array of shape (nh, nx+1) containing scaled weights
 
-    def update_dmat(row, rcand, dmat, k, val=9999):
+    returns:
+    rcand - numpy array of size (nd, nx+1) containing scaled weights
+    md - scalar representing min(dmat)
+    mdpts - numpy array of shape (K, 2) representing indices where 'md' occurs
+    mties - scalar representing number of 'mdpts'
+    dmat - numpy array of shape (M, M) where M = nx+nh
+    update - boolean representing whether an update should occur
+    """
+
+    def update_dmat(
+        row: np.ndarray, rcand: np.ndarray, dmat: np.ndarray, k: int, val: int = 9999
+    ) -> np.ndarray:
         xs = (
             rcand[:, xcols]
             if hist is None
@@ -85,10 +106,15 @@ def update_min_dist(
 
         dmat_ = np.copy(dmat)
         dmat_[k, :] = dmat_[:, k] = m
-
         return dmat_
 
-    def step(pt, rcand, cand, mdpts, dmat):
+    def step(
+        pt: tuple,
+        rcand: np.ndarray,
+        cand: np.ndarray,
+        mdpts: np.ndarray,
+        dmat: np.ndarray,
+    ) -> Tuple[np.ndarray, float, np.ndarray, int, np.ndarray, int, int]:
         i, j = pt  # i=mdpts index to remove from rcand; j=cand index to add to rcand
         rcand_ = rcand.copy()
         row = cand[j]
@@ -146,15 +172,19 @@ def update_min_dist(
     return rcand, md, mdpts, mties, dmat, added, removed, update
 
 
-def scale_xs(mat_, xcols):
-    # Inputs:
-    #   mat_ - numpy array of size (nd, nx+1) containing original inputs
-    #  xcols - list of integers corresponding to column indices for inputs
-    # Output:
-    #    mat - numpy array of size (nd, nx+1) containing the scaled inputs
-    #   xmin - numpy array of shape (1, nx)
-    #   xmax - numpy array of shape (1, nx)
+def scale_xs(
+    mat_: np.ndarray, xcols: List
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    args:
+    mat_ - numpy array of size (nd, nx+1) containing original inputs
+    xcols - list of integers corresponding to column indices for inputs
 
+    returns:
+    mat - numpy array of size (nd, nx+1) containing the scaled inputs
+    xmin - numpy array of shape (1, nx)
+    xmax - numpy array of shape (1, nx)
+    """
     mat = mat_.copy()
     xs = mat[:, xcols]
 
@@ -170,18 +200,20 @@ def scale_xs(mat_, xcols):
     return mat, xmin, xmax
 
 
-def scale_y(scale_method, mwr, mat_, wcol):
-    # Inputs:
-    #  scale_method - string that denotes the scaling method
-    #           mwr - scalar used in scaling
-    #          mat_ - numpy array of size (nd, nx+1) containing original weights
-    #          wcol - integer corresponding to the index of the weight column
-    # Output:
-    #           mat - numpy array of size (nd, nx+1) containing the scaled weights
+def scale_y(scale_method: str, mwr: int, mat_: np.ndarray, wcol: int) -> np.ndarray:
+    """
+    args:
+    scale_method - string that denotes the scaling method
+    mwr - scalar used in scaling
+    mat_ - numpy array of size (nd, nx+1) containing original weights
+    wcol - integer corresponding to the index of the weight column
 
+    returns:
+    mat - numpy array of size (nd, nx+1) containing the scaled weights
+    """
     mat = mat_.copy()
 
-    def direct_mwr(mwr, mat, wcol):
+    def direct_mwr(mwr: int, mat: np.ndarray, wcol: int) -> np.ndarray:
         wts = mat[:, wcol]
         wmin = np.min(wts)
         wmax = np.max(wts)
@@ -191,7 +223,7 @@ def scale_y(scale_method, mwr, mat_, wcol):
             mat[:, wcol] = 1 + (mwr - 1) * (wts - wmin) / (wmax - wmin)
         return mat
 
-    def ranked_mwr(mwr, mat, wcol):
+    def ranked_mwr(mwr: int, mat: np.ndarray, wcol: int) -> np.ndarray:
         mat[:, wcol] = rankdata(mat[:, wcol], method="dense")
         return direct_mwr(mwr, mat, wcol)
 
@@ -202,15 +234,19 @@ def scale_y(scale_method, mwr, mat_, wcol):
 
 
 # Not needed because we are using the index to look up the original rows
-def inv_scale_xs(mat_, xmin, xmax, xcols):
-    # Inputs:
-    #   mat_ - numpy array of size (nd, nx+1) containing scaled inputs
-    #   xmin - numpy array of shape (1, nx) from before scaling
-    #   xmax - numpy array of shape (1, nx) from before scaling
-    #  xcols - list of integers corresponding to column indices for inputs
-    # Output:
-    #    mat - numpy array of size (nd, nx+1) containing the original inputs
+def inv_scale_xs(
+    mat_: np.ndarray, xmin: np.ndarray, xmax: np.ndarray, xcols: List
+) -> np.ndarray:
+    """
+    args:
+    mat_ - numpy array of size (nd, nx+1) containing scaled inputs
+    xmin - numpy array of shape (1, nx) from before scaling
+    xmax - numpy array of shape (1, nx) from before scaling
+    xcols - list of integers corresponding to column indices for inputs
 
+    returns:
+    mat - numpy array of size (nd, nx+1) containing the original inputs
+    """
     # inverse-scale the inputs
     mat = mat_.copy()
     xs = mat[:, xcols]
@@ -218,20 +254,28 @@ def inv_scale_xs(mat_, xmin, xmax, xcols):
     # mat[:, xcols] = (xs + 1) / 2 * (xmax - xmin) + xmin
     # 0 to 1 scaling
     mat[:, xcols] = xs * (xmax - xmin) + xmin
-
     return mat
 
 
 def criterion(
-    cand,  # candidates
-    args,  # maximum number of iterations, mwr values, scale method, index types
-    nr,  # number of restarts (each restart uses a random set of <nd> points)
-    nd,  # design size <= len(candidates)
-    mode="maximin",
-    hist=None,
+    cand: pd.DataFrame,  # candidates
+    args: TypedDict(
+        "args",
+        {
+            "icol": str,
+            "xcols": List,
+            "wcol": str,
+            "max_iterations": int,
+            "mwr_values": List,
+            "scale_method": str,
+        },
+    ),  # maximum number of iterations, mwr values, scale method, index types
+    nr: int,  # number of restarts (each restart uses a random set of <nd> points)
+    nd: int,  # design size <= len(candidates)
+    mode: str = "maximin",
+    hist: Optional[pd.DataFrame] = None,
     rand_seed=None,
-):
-
+) -> Dict:
     ncand = len(cand)
     if hist is not None:
         nhist = len(hist)
@@ -263,9 +307,10 @@ def criterion(
             np.concatenate((cand_np_, hist.to_numpy())), idx_np
         )
 
+
     rand_gen = np.random.default_rng(rand_seed)
 
-    def step(mwr):
+    def step(mwr: int) -> Dict:
         cand_np = scale_y(scale_method, mwr, cand_np_, idw_np)
 
         if hist is None:

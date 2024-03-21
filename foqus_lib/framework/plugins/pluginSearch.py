@@ -23,7 +23,6 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import imp
 import importlib
 import logging
 import os
@@ -80,7 +79,7 @@ class plugins:
                                         os.path.join(p, fname)
                                     )
                                 )
-                                self.plugins[mname[0]] = imp.reload(
+                                self.plugins[mname[0]] = importlib.reload(
                                     self.plugins[mname[0]]
                                 )
                             else:

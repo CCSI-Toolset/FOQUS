@@ -183,7 +183,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()))
         self.ncand_samplesIRSF_spin.setRange(1, len(candidateData.getInputData()))
-        self.ncand_samplesIRSF_spin.setValue(0.1 * len(candidateData.getInputData()))
+        self.ncand_samplesIRSF_spin.setValue(
+            int(0.1 * len(candidateData.getInputData()))
+        )
 
         # If Monte Carlo sampling is not used, we hide ncand_samples spinBox and its label
         self.ncand_samplesIRSF_spin.hide()
@@ -754,7 +756,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.designInfo_dynamic.setText(
                 "d = %d, n = %d" % (nd, results["num_restarts"])
             )
-            self.SDOE_progressBar.setValue((100 / numIter) * (nd - min_size + 1))
+            self.SDOE_progressBar.setValue(int((100 / numIter) * (nd - min_size + 1)))
             QApplication.processEvents()
 
         self.unfreeze()

@@ -22,7 +22,7 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import configparser
-import imp
+import importlib
 import json
 import logging
 import os
@@ -499,7 +499,7 @@ class TurbineConfiguration:
         try again this reloads turbine so it doesn't store anything
         and you can change the configuration.
         """
-        imp.reload(turbine.commands)
+        importlib.reload(turbine.commands)
         # make sure turbine doesn't change my log settings by telling it
         # the log settings have already been done and not to change them
         turbine.commands._setup_logging.done = True

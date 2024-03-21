@@ -242,7 +242,7 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
 
     return fnames, results, elapsed_time
 
- 
+
 def rank(fnames):
     """return fnames ranked"""
     dist_mat = np.load(fnames["dmat"])

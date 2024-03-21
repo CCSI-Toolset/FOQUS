@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
-from typing import Optional, Tuple, List, Dict, TypedDict
+from typing import Dict, List, Optional, Tuple, TypedDict, Union
 
 import dask.bag as db
 import numpy as np
@@ -41,7 +41,7 @@ def criterion(
     nd: int,  # design size <= len(candidates)
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
-    rand_seed: int | None = None,
+    rand_seed: Union[int, None] = None,
 ) -> Dict:
 
     ncand = len(cand)
@@ -77,7 +77,7 @@ def criterion(
 
     rand_gen = np.random.default_rng(rand_seed)
 
-    def step(mwr_tuple: Tuple[int, [int], np.ndarray, np.ndarray | None]) -> Dict:
+    def step(mwr_tuple: Tuple[int, [int], np.ndarray, Union[np.ndarray, None]]) -> Dict:
         mwr, rands, cand_np, hist_np = mwr_tuple
 
         best_cand = []

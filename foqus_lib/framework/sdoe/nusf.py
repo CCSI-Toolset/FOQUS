@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
-from typing import Optional, Tuple, List, Dict, TypedDict
+from typing import Dict, List, Optional, Tuple, TypedDict, Union
 
 import numpy as np
 import pandas as pd  # only used for the final output of criterion
@@ -60,7 +60,7 @@ def update_min_dist(
     mties: int,
     dmat: np.ndarray,
     hist: np.ndarray,
-    rand_seed: int | None,
+    rand_seed: Union[int, None],
 ) -> Tuple[
     np.ndarray, float, np.ndarray, int, np.ndarray, Optional[int], Optional[int], bool
 ]:
@@ -274,7 +274,7 @@ def criterion(
     nd: int,  # design size <= len(candidates)
     mode: str = "maximin",
     hist: Optional[pd.DataFrame] = None,
-    rand_seed: int | None = None,
+    rand_seed: Union[int, None] = None,
 ) -> Dict:
     ncand = len(cand)
     if hist is not None:

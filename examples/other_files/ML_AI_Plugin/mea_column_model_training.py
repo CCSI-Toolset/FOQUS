@@ -20,9 +20,9 @@ import tensorflow as tf
 
 # set seed values for reproducibility
 os.environ["PYTHONHASHSEED"] = "0"
-os.environ[
-    "CUDA_VISIBLE_DEVICES"
-] = ""  # changing "" to "0" or "-1" may solve import issues
+os.environ["CUDA_VISIBLE_DEVICES"] = (
+    ""  # changing "" to "0" or "-1" may solve import issues
+)
 np.random.seed(46)
 rn.seed(1342)
 tf.random.set_seed(62)
@@ -35,6 +35,7 @@ tf.random.set_seed(62)
 #    attributes to CustomLayer class object
 # 4) Back to create_model() to compile and train model
 # 5) Back to code at end of file to save, load and test model
+
 
 # custom class to define Keras NN layers
 @tf.keras.utils.register_keras_serializable()

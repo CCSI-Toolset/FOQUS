@@ -34,6 +34,7 @@ import string
 import math
 import json
 
+
 # ==================================================
 # Function to get input data for interpolation
 # ==================================================
@@ -81,6 +82,8 @@ in_indexes = [3, 4, 14, 15, 16, 17]
 indexes = [5, 6, 1]
 nInputs = 6
 nOutputs = 3
+
+
 # ==================================================
 # Interpolate function for ALAMO
 # ==================================================

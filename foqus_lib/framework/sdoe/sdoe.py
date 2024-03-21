@@ -13,6 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import configparser
+import logging
 import os
 import platform
 import re
@@ -92,6 +93,9 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
         get_client()
         use_dask = True
     except ValueError:
+        logging.getLogger("foqus." + __name__).exception(
+            "Unable to load Dask client, continuing without it using original algorithms"
+        )
         pass
 
     if sf_method == "nusf":

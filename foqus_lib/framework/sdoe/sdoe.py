@@ -13,25 +13,26 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import configparser
+import logging
 import os
 import platform
 import re
 import tempfile
 import time
+from typing import Tuple, Dict
 
+from dask.distributed import get_client
 import numpy as np
 import pandas as pd
 from python_tsp.exact import solve_tsp_dynamic_programming
 
 from foqus_lib.framework.uq.Common import Common
-from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
-from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 
 from .df_utils import load, write
 
 
-def save(fnames, results, elapsed_time, irsf=False):
+def save(fnames: Dict, results: Dict, elapsed_time: float, irsf: bool = False):
     if irsf:
         write(fnames["des"], results["des"])
         print("Designs saved to {}".format(fnames["des"]))
@@ -55,8 +56,7 @@ def save(fnames, results, elapsed_time, irsf=False):
         print("Candidate distances saved to {}".format(fnames["dmat"]))
 
 
-def run(config_file, nd, test=False):
-
+def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, float]:
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
@@ -92,6 +92,17 @@ def run(config_file, nd, test=False):
 
     sf_method = config["SF"]["sf_method"]
 
+    # check whether to use dask version of algorithms
+    use_dask = False
+    try:
+        get_client()
+        use_dask = True
+    except ValueError:
+        logging.getLogger("foqus." + __name__).exception(
+            "Unable to load Dask client, continuing without it using original algorithms"
+        )
+        pass
+
     if sf_method == "nusf":
         # 'Weight' column (should only be one)
         idw = [x for x, t in zip(include, types) if t == "Weight"]
@@ -118,7 +129,10 @@ def run(config_file, nd, test=False):
             "mwr_values": mwr_values,
             "scale_method": scale_method,
         }
-        from .nusf import criterion
+        if use_dask:
+            from .nusf_dask import criterion
+        else:
+            from .nusf import criterion
 
     if sf_method == "usf":
         scl = np.array([ub - lb for ub, lb in zip(max_vals, min_vals)])
@@ -127,7 +141,10 @@ def run(config_file, nd, test=False):
             "xcols": idx,
             "scale_factors": pd.Series(scl, index=include),
         }
-        from .usf import criterion
+        if use_dask:
+            from .usf_dask import criterion
+        else:
+            from .usf import criterion
 
     if sf_method == "irsf":
         args = {
@@ -167,8 +184,12 @@ def run(config_file, nd, test=False):
             return results["t1"], results["t2"]
         else:
             t0 = time.time()
-            _results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+            criterion(cand, args, nr, nd, mode=mode, hist=hist)
             elapsed_time = time.time() - t0
+            if use_dask:
+                return (
+                    elapsed_time - 1.4
+                )  # Dask startup skews the test results so remove that
             return elapsed_time
 
     # otherwise, run sdoe for real
@@ -221,7 +242,7 @@ def run(config_file, nd, test=False):
 
     return fnames, results, elapsed_time
 
-
+ 
 def rank(fnames):
     """return fnames ranked"""
     dist_mat = np.load(fnames["dmat"])
@@ -263,8 +284,11 @@ def order_blocks(fnames, difficulty):
     return fname_blocks
 
 
-def dataImputation(fname, y, rsMethodName, eval_fname):
-
+def dataImputation(fname: str, y: int, rsMethodName: str, eval_fname: str) -> str:
+    """
+    args: fname, y, rsMethodName, eval_fname
+    returns: outfile filename
+    """
     rsIndex = ResponseSurfaces.getEnumValue(rsMethodName)
 
     # write script
@@ -297,10 +321,15 @@ def dataImputation(fname, y, rsMethodName, eval_fname):
 
     outfile = "eval_sample"
     assert os.path.exists(outfile)
+
     return outfile
 
 
-def readEvalSample(fileName):
+def readEvalSample(fileName: str) -> Tuple[np.ndarray, np.ndarray, int, int]:
+    """
+    args: fileName
+    returns: inputArray, outputArray, numInputs, numOutputs
+    """
     f = open(fileName, "r")
     lines = f.readlines()
     f.close()

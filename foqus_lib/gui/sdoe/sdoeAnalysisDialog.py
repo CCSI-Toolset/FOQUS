@@ -40,6 +40,8 @@ _sdoeAnalysisDialogUI, _sdoeAnalysisDialog = uic.loadUiType(
     os.path.join(mypath, "sdoeAnalysisDialog_UI.ui")
 )
 
+USF_SAMPLES = 4000
+
 
 class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
@@ -181,7 +183,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()))
         self.ncand_samplesIRSF_spin.setRange(1, len(candidateData.getInputData()))
-        self.ncand_samplesIRSF_spin.setValue(0.1 * len(candidateData.getInputData()))
+        self.ncand_samplesIRSF_spin.setValue(
+            int(0.1 * len(candidateData.getInputData()))
+        )
 
         # If Monte Carlo sampling is not used, we hide ncand_samples spinBox and its label
         self.ncand_samplesIRSF_spin.hide()
@@ -633,7 +637,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         if test:
             if self.type == "USF":
-                f.write("number_random_starts = 200\n")
+                f.write("number_random_starts = %d\n" % USF_SAMPLES)
             else:
                 f.write("number_random_starts = 2\n")
         else:
@@ -756,7 +760,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.designInfo_dynamic.setText(
                 "d = %d, n = %d" % (nd, results["num_restarts"])
             )
-            self.SDOE_progressBar.setValue((100 / numIter) * (nd - min_size + 1))
+            self.SDOE_progressBar.setValue(int((100 / numIter) * (nd - min_size + 1)))
             QApplication.processEvents()
 
         self.unfreeze()
@@ -1223,7 +1227,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return reply
 
     def updateRunTime(self, runtime):
-        delta = runtime / 200
+        print(f"reported runtime={runtime}")
+        delta = (runtime) / USF_SAMPLES
         estimateTime = int(
             delta
             * (10 ** int(self.sampleSize_spin.value()))

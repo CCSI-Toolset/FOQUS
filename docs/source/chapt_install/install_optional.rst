@@ -51,6 +51,17 @@ Install Turbine and SimSinter (Windows Only)
     4. right-click "Turbine Web API Service" from the list, and
     5. click "Start"
 
+* Configure the location of the executables in FOQUS
+
+  * SimSinter
+
+    1. In "Settings" (see Figure 1 below) go to the "FOQUS" tab
+    2. Modify the "SimSinter Home" field to point to the directory you installed SimSinter
+
+  * TurbineLite
+
+    1. In "Settings" (see Figure 1 below) go to the "Turbine" tab
+    2. In the "TurbineLite (local)" section modify the "TurbineLite Home" field to point to the directory you installed TurbineLite
 
 Install ALAMO
 ^^^^^^^^^^^^^

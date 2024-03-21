@@ -307,7 +307,6 @@ def criterion(
             np.concatenate((cand_np_, hist.to_numpy())), idx_np
         )
 
-
     rand_gen = np.random.default_rng(rand_seed)
 
     def step(mwr: int) -> Dict:

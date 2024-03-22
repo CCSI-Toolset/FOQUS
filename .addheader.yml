@@ -1,5 +1,5 @@
 # Usage:
-# addheader -c addheader.yml
+# addheader -c .addheader.yml -P ""
 root: .
 text: header_text.txt
 patterns:

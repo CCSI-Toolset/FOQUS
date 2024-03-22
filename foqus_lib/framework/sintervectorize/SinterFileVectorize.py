@@ -11,7 +11,6 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
 #################################################################################
 """SinterFileVectorize.py
 * Contains a function to modify and extend an existing json file, \

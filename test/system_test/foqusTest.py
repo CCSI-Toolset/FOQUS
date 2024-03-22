@@ -11,7 +11,6 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
 #################################################################################
 import unittest
 from foqus_lib.unit_test.nodeVarsTest import *

@@ -13,7 +13,6 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
 #################################################################################
 # Converted from VPC_With_VPN_Connection.template located at:
 # http://aws.amazon.com/cloudformation/aws-cloudformation-templates

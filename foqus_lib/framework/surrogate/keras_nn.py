@@ -301,9 +301,9 @@ class surrogateMethod(surrogate):
         """
         # set seed values for reproducibility
         os.environ["PYTHONHASHSEED"] = "0"
-        os.environ[
-            "CUDA_VISIBLE_DEVICES"
-        ] = ""  # changing "" to "0" or "-1" may solve import issues
+        os.environ["CUDA_VISIBLE_DEVICES"] = (
+            ""  # changing "" to "0" or "-1" may solve import issues
+        )
         np_seed = self.options["numpy_seed"].value
         rn_seed = self.options["random_seed"].value
         tf_seed = self.options["tensorflow_seed"].value

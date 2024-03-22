@@ -206,8 +206,7 @@ def instrument(target, signal_begin=None, signal_end=None):
     assert callable(func), f"{func} must be callable"
     _logger.debug(dict(target=target, name=name, owner=owner, func=func))
 
-    def _do_nothing(*args, **kwargs):
-        ...
+    def _do_nothing(*args, **kwargs): ...
 
     _patched_callable = _wrap_callable(
         func,

@@ -124,9 +124,9 @@ class TurbineInterfaceEx(foqusException):
         self.codeString[5] = "Gateway SSL error (probably wrong address)"
         self.codeString[7] = "Unknown Socket Error"
         self.codeString[10] = "Gateway unknown http error"
-        self.codeString[
-            11
-        ] = "Gateway 401 authentication error (bad user name or password)"
+        self.codeString[11] = (
+            "Gateway 401 authentication error (bad user name or password)"
+        )
         self.codeString[12] = "Gateway 404 page not found error"
         self.codeString[13] = "Gateway 403 access forbidden"
         self.codeString[14] = "Gateway 400 bad request"
@@ -177,9 +177,9 @@ class TurbineInterfaceEx(foqusException):
         )
         self.codeString[310] = "Could not update simulation, it does not exist"
         self.codeString[350] = "Job failed"
-        self.codeString[
-            351
-        ] = "Job failed to converge (may have also been another error)"
+        self.codeString[351] = (
+            "Job failed to converge (may have also been another error)"
+        )
         self.codeString[352] = "Job failed due to run timeout"
         self.codeString[353] = "Job failed due to max wait timeout"
         self.codeString[354] = "Job failed could not get status"

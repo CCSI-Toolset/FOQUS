@@ -70,9 +70,6 @@ def scale_log2(array_in, lo=None, hi=None):
     return result
 
 
-# fix expected values in test
-
-
 def scale_power(array_in, lo=None, hi=None):
     if lo is None:
         lo = np.min(array_in)
@@ -102,31 +99,15 @@ def unscale_linear(array_in, lo, hi):
 
 def unscale_log(array_in, lo, hi):
     result = lo * np.power(hi / lo, array_in)
-
-    # result = ((np.log10(array_in) - np.log10(lo))
-    #              / (np.log10(hi) - np.log10(lo)))
-    # out = math.pow(lo * (hi / lo), (array_in / 10.0))
-    #                 out = (
-    #                     10
-    #                     * (math.log10(array_in) - math.log10(lo))
-    #                     / (math.log10(hi) - math.log10(lo))
-    #                 )
     return result
 
 
 def unscale_log2(array_in, lo=None, hi=None):
     result = (np.power(10, array_in / 1.0) - 1) * (hi - lo) / 9.0 + lo
-    # out = (math.pow(10, array_in / 10.0) - 1) * (
-    #     hi - lo
-    # ) / 9.0 + lo
-
     return result
 
 
 def unscale_power(array_in, lo, hi):
-    # check if lo and hi were provided
-    # result = np.log10((array_in / 10.0) * (np.power(10, hi) - np.power(10, lo))
-    #                 + np.power(10, lo))
     result = np.log10(
         (array_in / 1.0) * (np.power(10, hi) - np.power(10, lo)) + np.power(10, lo)
     )
@@ -139,10 +120,9 @@ def unscale_power2(array_in, lo, hi):
 
 
 class BaseScaler:
-    # def __init__(self, data_array: np.ndarray):
-    #     self.data = data_array
-    #     self.lo_ = np.min(data_array)
-    #     self.hi_ = np.max(data_array)
+    """BaseScaler is the base class for the scaler classes defined
+    below. It exposes the transformer interface from scikit-learn,
+    and is not supposed to be instantiated directly."""
 
     def fit(self, X: np.ndarray):
         self.lo_ = np.min(X)
@@ -205,7 +185,6 @@ map_name_to_scaler = {
     "Log2": LogScaler2(),
     "Power": PowerScaler(),
     "Power2": PowerScaler2(),
-    # ...
 }
 
 

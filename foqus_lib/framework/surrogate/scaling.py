@@ -16,7 +16,7 @@ def validate_for_scaling(array_in, lo, hi) -> None:
         raise ValueError("Only 1D arrays supported")
     if array_in.size < 2:
         raise ValueError("Array must have at least 2 values")
-    if lo == hi:
+    if np.allclose(lo, hi):
         raise ValueError("Array must contain non-identical values")
     if not check_under_or_overflow(array_in):
         raise ValueError("Array contains under/overflow values for dtype")

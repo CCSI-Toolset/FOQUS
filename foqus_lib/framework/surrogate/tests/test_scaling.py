@@ -12,9 +12,16 @@ from foqus_lib.framework.surrogate.scaling import (
     scale_power2,
     unscale_power2,
     validate_for_scaling,
+    map_name_to_scaler,
+    BaseScaler,
+    LinearScaler,
+    LogScaler,
+    LogScaler2,
+    PowerScaler,
+    PowerScaler2,
 )
 
-from hypothesis.extra.numpy import arrays as arrays_strat, array_shapes
+from hypothesis.extra import numpy as hypothesis_np
 from hypothesis import given, example, assume
 from contextlib import contextmanager
 
@@ -47,13 +54,6 @@ def test_scale_linear():
     assert np.all(scaled_array >= 0)
     assert np.all(scaled_array <= 1)
     assert np.allclose(scaled_array, [0.0, 0.5, 1.0])
-
-    # Test case 4: Scaling with repeated values
-    input_array = np.array([2, 2, 2, 2])
-    scaled_array = scale_linear(input_array)
-    assert np.all(scaled_array >= 0)
-    assert np.all(scaled_array <= 1)
-    assert np.allclose(scaled_array, [0.0, 0.0, 0.0, 0.0])
 
 
 def test_unscale_linear():
@@ -189,9 +189,15 @@ def test_unscale_power2():
     assert np.allclose(unscaled_array, [1.0, 4.7, 4.8, 4.999, 5.0])
 
 
-# fill in with more cases, parameters, functions
-@pytest.mark.parametrize("x", [np.array([1, 2, 3, 4, 5]), np.array([0, 7, 9, 10, 12])])
-# @given(x=arrays_strat(np.float32, array_shapes()))
+@given(
+    x=hypothesis_np.arrays(
+        np.float64,
+        hypothesis_np.array_shapes(),
+        # TODO: see if these bounds can be relaxed
+        # larger values cause failures in scale_power
+        elements={"min_value": -5, "max_value": 5},
+    )
+)
 @pytest.mark.parametrize(
     "scale,unscale",
     [
@@ -216,6 +222,63 @@ def test_roundtrip(x, scale, unscale):
         scaled = scale(x, lo=lo, hi=hi)
         unscaled = unscale(scaled, lo=lo, hi=hi)
         assert np.allclose(x, unscaled)
+
+
+# parametrize with list of scalar objects
+def test_object_testing():
+    array_one = np.array([1, 3, 5, 6, 8, 9, 10])
+
+    scaler_variant_1 = "Linear"
+
+    # actual test content
+    scaler_instance_1 = map_name_to_scaler[scaler_variant_1]
+
+    linear_arr_one = scaler_instance_1.fit_transform(array_one)
+
+    print(linear_arr_one)
+    assert np.all(linear_arr_one >= 0)
+    assert np.all(linear_arr_one <= 1)
+    # actual test content
+
+    scaler_variant_2 = "Log"
+
+    scaler_instance_2 = map_name_to_scaler[scaler_variant_2]
+
+    linear_arr_two = scaler_instance_2.fit_transform(array_one)
+
+    print(linear_arr_two)
+    assert np.all(linear_arr_two >= 0)
+    assert np.all(linear_arr_two <= 1)
+
+    scaler_variant_3 = "Power"
+
+    scaler_instance_3 = map_name_to_scaler[scaler_variant_3]
+
+    linear_arr_three = scaler_instance_3.fit_transform(array_one)
+
+    print(linear_arr_three)
+    assert np.all(linear_arr_one >= 0)
+    assert np.all(linear_arr_one <= 1)
+
+    scaler_variant_four = "Log2"
+
+    scaler_instance_four = map_name_to_scaler[scaler_variant_four]
+
+    linear_arr_four = scaler_instance_four.fit_transform(array_one)
+
+    print(linear_arr_four)
+    assert np.all(linear_arr_four >= 0)
+    assert np.all(linear_arr_four <= 1)
+
+    scaler_variant_five = "Power2"
+
+    scaler_instance_five = map_name_to_scaler[scaler_variant_five]
+
+    linear_arr_five = scaler_instance_five.fit_transform(array_one)
+
+    print(linear_arr_five)
+    assert np.all(linear_arr_one >= 0)
+    assert np.all(linear_arr_one <= 1)
 
 
 def passes_validation(array_in, lo, hi):

@@ -224,61 +224,25 @@ def test_roundtrip(x, scale, unscale):
         assert np.allclose(x, unscaled)
 
 
-# parametrize with list of scalar objects
-def test_object_testing():
-    array_one = np.array([1, 3, 5, 6, 8, 9, 10])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        "Linear",
+        "Log",
+        "Log2",
+        "Power",
+        "Power2",
+    ],
+)
+def test_use_scaler_objects(variant):
+    input_array = np.array([1, 3, 5, 6, 8, 9, 10])
+    scaler_instance = map_name_to_scaler[variant]
 
-    scaler_variant_1 = "Linear"
+    result_arr = scaler_instance.fit_transform(input_array)
 
-    # actual test content
-    scaler_instance_1 = map_name_to_scaler[scaler_variant_1]
-
-    linear_arr_one = scaler_instance_1.fit_transform(array_one)
-
-    print(linear_arr_one)
-    assert np.all(linear_arr_one >= 0)
-    assert np.all(linear_arr_one <= 1)
-    # actual test content
-
-    scaler_variant_2 = "Log"
-
-    scaler_instance_2 = map_name_to_scaler[scaler_variant_2]
-
-    linear_arr_two = scaler_instance_2.fit_transform(array_one)
-
-    print(linear_arr_two)
-    assert np.all(linear_arr_two >= 0)
-    assert np.all(linear_arr_two <= 1)
-
-    scaler_variant_3 = "Power"
-
-    scaler_instance_3 = map_name_to_scaler[scaler_variant_3]
-
-    linear_arr_three = scaler_instance_3.fit_transform(array_one)
-
-    print(linear_arr_three)
-    assert np.all(linear_arr_one >= 0)
-    assert np.all(linear_arr_one <= 1)
-
-    scaler_variant_four = "Log2"
-
-    scaler_instance_four = map_name_to_scaler[scaler_variant_four]
-
-    linear_arr_four = scaler_instance_four.fit_transform(array_one)
-
-    print(linear_arr_four)
-    assert np.all(linear_arr_four >= 0)
-    assert np.all(linear_arr_four <= 1)
-
-    scaler_variant_five = "Power2"
-
-    scaler_instance_five = map_name_to_scaler[scaler_variant_five]
-
-    linear_arr_five = scaler_instance_five.fit_transform(array_one)
-
-    print(linear_arr_five)
-    assert np.all(linear_arr_one >= 0)
-    assert np.all(linear_arr_one <= 1)
+    print(result_arr)
+    assert np.all(result_arr >= 0)
+    assert np.all(result_arr <= 1)
 
 
 def passes_validation(array_in, lo, hi):

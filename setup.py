@@ -94,7 +94,8 @@ dist = setup(
         "cma",
         "dask[dataframe,distributed]",  # <2024.3",
         # prebuilt wheels not available on 3.11 for matplotlib<3.6 on: macos arm64, win32
-        "matplotlib==3.*",
+        # matplotlib>=3.8 has API incompatibilities with SDoE plots
+        "matplotlib >= 3.6.0, <= 3.7.5",
         "python-tsp==0.3.1",
         "mplcursors",
         "numpy",

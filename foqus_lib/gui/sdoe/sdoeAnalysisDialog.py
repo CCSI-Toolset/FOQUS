@@ -849,7 +849,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 "mwr = %d, n = %d" % (mwr, results[mwr]["num_restarts"])
             )
             count += 1
-            self.SDOE2_progressBar.setValue((100 / len(mwr_list)) * count)
+            self.SDOE2_progressBar.setValue(int((100 / len(mwr_list)) * count))
             QApplication.processEvents()
 
         self.unfreeze()

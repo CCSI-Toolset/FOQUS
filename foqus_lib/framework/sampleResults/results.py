@@ -422,13 +422,14 @@ class Results(pd.DataFrame):
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
         row = self.count_rows(filtered=False)
+        self["set"] = self["set"].astype(str)
         self.loc[row, "set"] = set_name
+        self["result"] = self["result"].astype(str)
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
-                # if type(dat[i])==list:
-                #     self.loc[row, col] = str(dat[i])
-                # else:
+                self["time"] = pd.to_datetime(self["time"])
+                self[columns[-1]] = self[columns[-1]].astype(str)
                 self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 
@@ -445,7 +446,9 @@ class Results(pd.DataFrame):
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
         for row in range(data.getNumSamples()):
+            self["set"] = self["set"].astype(str)
             self.loc[row, "set"] = set_name
+            self["result"] = self["result"].astype(str)
             self.loc[row, "result"] = result_name
             for i, col in enumerate(columns):
                 self.loc[row, col] = dat[row][i]

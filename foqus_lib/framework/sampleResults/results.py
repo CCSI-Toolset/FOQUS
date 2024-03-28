@@ -428,7 +428,7 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
-                self["time"] = pd.to_datetime(self["time"])
+                self["time"] = self["time"].astype(str)
                 self[columns[-1]] = self[columns[-1]].astype(str)
                 self.loc[row, col] = dat[i]
         self.update_filter_indexes()

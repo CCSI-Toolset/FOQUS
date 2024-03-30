@@ -49,8 +49,9 @@ def scale_linear(array_in, lo=None, hi=None):
 
 def scale_log(array_in, lo=None, hi=None):
     # need to account for log domain
-    if np.any(array_in <= 0):
-        raise ValueError("All values must be > 0 to use scale_log")
+    epsilon = 1e-8
+    if np.any(array_in < epsilon):
+        raise ValueError(f"All values must be greater than {epsilon}")
     if lo is None:
         lo = np.min(array_in)
     if hi is None:

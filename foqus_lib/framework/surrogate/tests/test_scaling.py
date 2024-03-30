@@ -214,8 +214,10 @@ def test_roundtrip(x, scale, unscale):
     hi = np.max(x)
     if not passes_validation(x, lo, hi):
         expected_failure = pytest.raises(ValueError)
-    elif lo <= 0 and scale in POSITIVE_VALS_ONLY:
-        expected_failure = pytest.raises(ValueError, match="All values must be > 0.*")
+    elif lo < 1e-08 and scale in POSITIVE_VALS_ONLY:
+        expected_failure = pytest.raises(
+            ValueError, match="All values must be greater than 1e-08"
+        )
     else:
         expected_failure = does_not_raise()
     with expected_failure:

@@ -17,6 +17,7 @@ import pytest
 
 from foqus_lib.gui.main.mainWindow import mainWindow
 from foqus_lib.gui.surrogate.surrogateFrame import surrogateFrame
+from PyQt5.QtWidgets import QComboBox
 
 pytestmark = pytest.mark.gui
 
@@ -56,6 +57,7 @@ class TestFrame:
             # "ACOSSO",
         ],
     )
+    
     def test_run_surrogate(
         self,
         qtbot,
@@ -81,6 +83,10 @@ class TestFrame:
             qtbot.click(button="Select All")
         with qtbot.focusing_on(group_box="Output Variables"):
             qtbot.click(button="Select All")
+        qtbot.select_tab("Method Settings")
+        with qtbot.focusing_on(table=any):
+            qtbot.select_row(12)
+            qtbot.using(column="Value").set_option("Linear")
         qtbot.select_tab("Execution")
         run_button, stop_button = qtbot.locate(button=any, index=[0, 1])
         run_button.click()

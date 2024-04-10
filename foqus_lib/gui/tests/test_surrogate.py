@@ -57,7 +57,6 @@ class TestFrame:
             # "ACOSSO",
         ],
     )
-    
     def test_run_surrogate(
         self,
         qtbot,

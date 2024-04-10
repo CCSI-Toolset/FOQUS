@@ -67,6 +67,7 @@ from foqus_lib.framework.surrogate.scaling import (
 # mapping between the human-readable name for the scaling variant
 # and an instance of the corresponding scaler class
 
+
 # custom class to define Keras NN layers
 @tf.keras.utils.register_keras_serializable()
 class keras_nn(tf.keras.layers.Layer):

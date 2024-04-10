@@ -2,4 +2,5 @@ tensorflow<2.16.1
 sympy
 torch
 scikit-learn
-smt<2.5.0
+smt
+jenn

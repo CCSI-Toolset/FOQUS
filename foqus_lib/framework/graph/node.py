@@ -188,15 +188,39 @@ def attempt_load_smt(try_imports=True):
     return smt_pickle_load
 
 
+def attempt_load_jenn(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # jenn should be installed, but not required for non ML/AI models
+        import pickle
+
+        import jenn
+
+        jenn_pickle_load = pickle.load
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if jenn is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def jenn_pickle_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `jenn` is not available"
+            )
+
+    return jenn_pickle_load
+
+
 # attempt to load optional dependencies for node script
 
-# pickle is loaded identically twice so that sklearn and smt can load or fail
-# independently of each other
+# pickle is loaded identically twice so that sklearn, smt, and jenn can load
+# or fail independently of each other
 load, json_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 torch_load, torch_tensor, torch_float = attempt_load_pytorch()
 skl_pickle_load = attempt_load_sklearn()
 smt_pickle_load = attempt_load_smt()
+jenn_pickle_load = attempt_load_jenn()
 
 # pylint: enable=import-error
 
@@ -328,8 +352,15 @@ class pymodel_ml_ai(pymodel):
             # set the custom layer object
             custom_layer = self.model.custom
             # set the model input and output sizes
-            model_input_size = self.model._n_x
-            model_output_size = self.model._n_y
+            model_input_size = self.model.nx
+            model_output_size = self.model.ny
+
+        elif self.trainer == "jenn":
+            # set the custom layer object
+            custom_layer = self.model.custom
+            # set the model input and output sizes
+            model_input_size = self.model.parameters.n_x
+            model_output_size = self.model.parameters.n_y
 
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
@@ -337,8 +368,8 @@ class pymodel_ml_ai(pymodel):
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
                 "trainer should be set internally to `keras`, `torch`, "
-                "`sklearn` or `smt` and should not be able to take any other "
-                "value."
+                "`sklearn`, `smt`, or `jenn` and should not be able to take "
+                "any other value."
             )
 
         self.custom_layer = (
@@ -652,8 +683,17 @@ class pymodel_ml_ai(pymodel):
                 np.array(self.scaled_inputs, ndmin=2)
             )[0]
         elif self.trainer == "smt":
-            self.scaled_outputs = self.model.evaluate(
-                np.reshape(np.array(self.scaled_inputs, ndmin=2), (self.model._n_x, 1))
+            self.scaled_outputs = np.reshape(
+                self.model.predict_values(
+                    np.reshape(np.array(self.scaled_inputs, ndmin=2),
+                               (1, self.model.nx)
+                               )
+                    ),
+                (self.model.ny, 1)
+            )
+        elif self.trainer == "jenn":
+            self.scaled_outputs = self.model.predict(
+                np.reshape(np.array(self.scaled_inputs, ndmin=2), (self.model.parameters.n_x, 1))
             )
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
@@ -661,8 +701,8 @@ class pymodel_ml_ai(pymodel):
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
                 "trainer should be set internally to `keras`, `torch`, "
-                "`sklearn` or `smt` and should not be able to take any other "
-                "value."
+                "`sklearn`, `smt`, or `jenn` and should not be able to take "
+                "any other value."
             )
 
         outidx = 0
@@ -1214,7 +1254,7 @@ class Node:
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
             ):
-                extension = ".pkl"  # this is for Sci Kit Learn and SMT models
+                extension = ".pkl"  # this is for Sci Kit Learn, SMT, and JENN models
             else:  # assume it's a folder with no extension
                 extension = ""
 
@@ -1246,7 +1286,17 @@ class Node:
                 except ModuleNotFoundError as e:
                     _logger.info(
                         e
-                    )  # will print that sklearn is not installed but won't just fail
+                    )  # will print that smt is not installed but won't just fail
+
+                try:  # try JENN next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = jenn_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that jenn is not installed but won't just fail
 
                 # now check which model type was unpickled
                 model_type_name = str(type(self.model))
@@ -1254,10 +1304,12 @@ class Node:
                     trainer = "sklearn"
                 elif "smt" in model_type_name:
                     trainer = "smt"
+                elif "jenn" in model_type_name:
+                    trainer = "jenn"
                 else:  # unsupported model type was unpickled
                     raise AttributeError(
                         f"Unknown model type: {model_type_name!r}. Only "
-                        "sklearn MLPRegressor and smt GENN (Model) objects are "
+                        "sklearn MLPRegressor, smt GENN, and JENN objects are "
                         "currently supported."
                     )
             elif extension != ".json":  # use standard Keras load method
@@ -1820,7 +1872,17 @@ class Node:
                 except ModuleNotFoundError as e:
                     _logger.info(
                         e
-                    )  # will print that sklearn is not installed but won't just fail
+                    )  # will print that smt is not installed but won't just fail
+
+                try:  # try JENN next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = jenn_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that jenn is not installed but won't just fail
 
                 # now check which model type was unpickled
                 model_type_name = str(type(self.model))
@@ -1828,10 +1890,12 @@ class Node:
                     trainer = "sklearn"
                 elif "smt" in model_type_name:
                     trainer = "smt"
+                elif "jenn" in model_type_name:
+                    trainer = "jenn"
                 else:  # unsupported model type was unpickled
                     raise AttributeError(
                         f"Unknown model type: {model_type_name!r}. Only "
-                        "sklearn MLPRegressor and smt GENN (Model) objects are "
+                        "sklearn MLPRegressor, smt GENN, and JENN objects are "
                         "currently supported."
                     )
             elif extension != ".json":  # use standard Keras load method

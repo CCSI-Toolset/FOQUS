@@ -262,7 +262,7 @@ class surrogate(threading.Thread):
 
     def writePluginTop(self, method="Generic", comments=[], importLines=[]):
         """
-        Write the code for the top protion of a flowsheet plugin
+        Write the code for the top portion of a flowsheet plugin
         that does the standard imports and variable definitions in
         the class init.  Returns string.
         """
@@ -270,7 +270,7 @@ class surrogate(threading.Thread):
         # The first comment is needed for FOQUS to identify file as
         # a Python flowsheet model plugin.
         lines.append("# FOQUS_PYMODEL_PLUGIN")
-        # Some comments just for users lookin into the file
+        # Some comments just for users looking into the file
         lines.append("#")
         lines.append("# {0} surrogate export".format(method))
         lines.append("# THIS FILE WAS AUTOMATICALLY GENERATED.")

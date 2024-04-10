@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -1574,7 +1574,7 @@ class mainWindow(QMainWindow):
             self.dat.foqusSettings.addRecentlyOpenedFile(self.dat.currentFile)
         self.openRecentMainMenu.clear()
         self.openRecentAction = []
-        for i, f in enumerate(self.dat.foqusSettings.getRecentlyOpendFiles()):
+        for i, f in enumerate(self.dat.foqusSettings.getRecentlyOpenedFiles()):
             self.openRecentAction.append(QAction(f, self))
             self.openRecentAction[i].setIcon(QIcon())
             self.openRecentAction[i].triggered.connect(

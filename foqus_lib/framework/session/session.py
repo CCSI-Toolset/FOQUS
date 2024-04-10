@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -415,7 +415,7 @@ class session:
         updateCurrentFile == True: changes the current FOQUS session
             file to filename (only if filenale != None)
         changeLogMsg: A change log entry
-        confidence: Confidence in the qulity of the session
+        confidence: Confidence in the quality of the session
         bkp: save two files so you have a backup to keep tarck of
             all saved versions.
         """
@@ -862,7 +862,7 @@ class generalSettings:
         self.recentlyOpenedFiles = files
         return files
 
-    def getRecentlyOpendFiles(self):
+    def getRecentlyOpenedFiles(self):
         """
         Just returns the list of files.  This is here in case
         we decide to add some validation step.

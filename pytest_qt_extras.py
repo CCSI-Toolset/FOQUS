@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -206,8 +206,7 @@ def instrument(target, signal_begin=None, signal_end=None):
     assert callable(func), f"{func} must be callable"
     _logger.debug(dict(target=target, name=name, owner=owner, func=func))
 
-    def _do_nothing(*args, **kwargs):
-        ...
+    def _do_nothing(*args, **kwargs): ...
 
     _patched_callable = _wrap_callable(
         func,

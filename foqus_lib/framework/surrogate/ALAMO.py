@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -847,11 +847,11 @@ class surrogateMethod(surrogate):
                 ignore.extend(np.array(val).flatten())
             af.write("ignore {0}\n".format(" ".join(map(str, ignore))))
             # TOLMEANERROR
-            tme = []
+            tolmeanerror = []
             for x in self.output:
                 val = self.getOutputVarOption("TOLMEANERROR", x)
-                tme.extend(np.array(val).flatten())
-            af.write("tolmeanerror {0}\n".format(" ".join(map(str, tme))))
+                tolmeanerror.extend(np.array(val).flatten())
+            af.write("tolmeanerror {0}\n".format(" ".join(map(str, tolmeanerror))))
             # TOLRELMETRIC
             trm = []
             for x in self.output:

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -1015,9 +1015,9 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                     Nrs = (
                         self.z4SubsetSize_spin.value()
                     )  # add spinbox to get number of samples to generate RS
-                    x4sample[
-                        "nsamplesRS"
-                    ] = Nrs  # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
+                    x4sample["nsamplesRS"] = (
+                        Nrs  # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
+                    )
 
             #  TODO: Get rid of usebobyqa option. Behavior should be as if usebobyqa is always false
             # TODO: Change GUI to display optimizer and optimizing with bobyqa

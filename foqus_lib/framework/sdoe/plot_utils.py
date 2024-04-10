@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,10 +12,15 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+from typing import Optional, Union, Tuple, List, Dict, TypedDict
+
+from matplotlib.axes._axes import Axes
+from matplotlib.figure import Figure
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import mplcursors
 import numpy as np
+import pandas as pd
 from matplotlib.ticker import MaxNLocator
 
 from .df_utils import load
@@ -33,18 +38,23 @@ fc = {
 
 
 def plot_hist(
-    ax,
-    xs,
-    xname,
-    nbins=20,
-    show_grids=True,  # set to True to show grid lines
-    linewidth=1,  # set to nonzero to show border around bars
-    hbars=False,  # set to True for horizontal bars
+    ax: Axes,
+    xs: pd.Series,
+    xname: str,
+    nbins: int = 20,
+    show_grids: bool = True,  # set to True to show grid lines
+    linewidth: int = 1,  # set to nonzero to show border around bars
+    hbars: bool = False,  # set to True for horizontal bars
     cand_rgba=None,
-    hist=None,
-    x_limit=None,
-    design=False,
-):
+    hist: Optional[pd.Series] = None,
+    x_limit: Optional[int] = None,
+    design: bool = False,
+) -> Axes:
+    """
+    Plots histogram
+    args: ax, xs, xname, nbins, show_grids, linewidth, hbars, cand_rgba, hist, x_limit, design
+    return: ax
+    """
     if cand_rgba is not None:
         fc["design"] = cand_rgba
 
@@ -137,8 +147,14 @@ def plot_hist(
     return ax
 
 
-def load_data(fname, hname):
-    # load results
+def load_data(
+    fname: str, hname: Optional[str]
+) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
+    """
+    Loads results
+    args: fname, hname
+    returns: df, hf
+    """
     df = load(fname)
     names = list(df)
     # load history
@@ -150,7 +166,14 @@ def load_data(fname, hname):
     return df, hf
 
 
-def remove_xticklabels(ax):
+def remove_xticklabels(
+    ax: Axes,
+) -> Axes:
+    """
+    Removes x tick labels
+    args: ax
+    returns: ax
+    """
     ticks_loc = ax.get_xticks().tolist()
     no_labels = [""] * len(ticks_loc)
     ax.set_xticks(ticks_loc)
@@ -158,7 +181,14 @@ def remove_xticklabels(ax):
     return ax
 
 
-def remove_yticklabels(ax):
+def remove_yticklabels(
+    ax: Axes,
+) -> Axes:
+    """
+    Removes y tick labels
+    args: ax
+    returns: ax
+    """
     ticks_loc = ax.get_yticks().tolist()
     no_labels = [""] * len(ticks_loc)
     ax.set_yticks(ticks_loc)
@@ -167,8 +197,21 @@ def remove_yticklabels(ax):
 
 
 def plot_candidates(
-    df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None, nImpPts=0
-):
+    df: pd.DataFrame,
+    hf: Optional[pd.DataFrame],
+    show: List,
+    title: str,
+    scatter_label: str,
+    cand: Optional[pd.DataFrame],
+    cand_rgba: Optional[np.ndarray] = None,
+    wcol: Optional[str] = None,
+    nImpPts: int = 0,
+) -> Figure:
+    """
+    Plots candidates
+    args: df, hf, show, title, scatter_label, cand, cand_rgba, wcol, nImpPts
+    returns: fig
+    """
     if cand is not None:
         design = True
     else:
@@ -376,12 +419,22 @@ def plot_candidates(
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
     for lh in leg.legendHandles:
         lh.set_alpha(1)
-    fig.canvas.manager.set_window_title(title)
+    fig.suptitle(title)
 
     return fig
 
 
-def plot_weights(xs, wt, wts, title):
+def plot_weights(xs: np.ndarray, wt: np.ndarray, wts: np.ndarray, title: str) -> Figure:
+    """
+    Plots weights
+    args:
+    xs - numpy array of shape (nd, nx) containing inputs from best designs
+    wt - numpy array of shape (nd, 1) containing weights from best designs
+    wts - numpy array of shape (N,) containing weights from all candidates
+    title - figure title
+
+    returns: fig
+    """
     # Inputs:
     #    xs - numpy array of shape (nd, nx) containing inputs from best designs
     #    wt - numpy array of shape (nd, 1) containing weights from best designs
@@ -409,21 +462,36 @@ def plot_weights(xs, wt, wts, title):
     ax2.set_title("Histogram of weights from the candidate set (N={})".format(N))
     ax2.set_xlabel("Candidate weight")
 
-    fig.canvas.manager.set_window_title(title)
+    fig.suptitle(title)
 
     return fig
 
 
 def plot(
-    fname,
-    scatter_label,
-    hname=None,
-    show=None,
-    usf=None,
-    nusf=None,
-    irsf=None,
-    nImpPts=0,
-):
+    fname: str,
+    scatter_label: str,
+    hname: Optional[str] = None,
+    show: Optional[List] = None,
+    usf: Optional[TypedDict("usf", {"cand": pd.DataFrame})] = None,
+    nusf: Optional[
+        TypedDict(
+            "nusf",
+            {
+                "cand": pd.DataFrame,
+                "wcol": str,
+                "scale_method": str,
+                "results": Dict,
+            },
+        )
+    ] = None,
+    irsf: Optional[Dict] = None,
+    nImpPts: int = 0,
+) -> Union[Figure, Tuple[Figure, Figure]]:
+    """
+    General plotting function
+    args: fname, scatter_label, hname, show, usf, nusf, irsf, nImpPts
+    returns: fig
+    """
     df, hf = load_data(fname, hname)
     title = "SDOE Candidates Visualization"
     if usf:
@@ -460,7 +528,28 @@ def plot(
         return fig1
 
 
-def plot_pareto(pf, results, cand, hname):  # Plot Pareto front with hovering labels
+def plot_pareto(
+    pf: pd.DataFrame,
+    results: TypedDict(
+        "results",
+        {
+            "pareto_front": pd.DataFrame,
+            "design_id": Dict,
+            "des": Dict,
+            "mode": str,
+            "design_size": int,
+            "num_restarts": int,
+            "num_designs": int,
+        },
+    ),
+    cand: pd.DataFrame,
+    hname: str,
+) -> Figure:
+    """
+    Plot Pareto front with hovering labels and onclick event
+    args: pf, results, cand, hname
+    returns: fig
+    """
     if hname:
         hf = load(hname)
     else:
@@ -525,7 +614,7 @@ def plot_pareto(pf, results, cand, hname):  # Plot Pareto front with hovering la
         ),
     )
 
-    fig.canvas.manager.set_window_title("Pareto Front")
+    fig.suptitle("SDoE (IRSF) Pareto Front")
     fig.canvas.mpl_connect("pick_event", onpick)
 
     return fig

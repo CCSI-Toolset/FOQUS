@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -660,7 +660,7 @@ class Graph(threading.Thread):
             one time, for a large number of jobs the amount of input
             can get to large for Turbine to receive all at once.
         sid = A turbine session ID to reconnect to.  If a previous
-            run was disconnected this will hook back up and contiune
+            run was disconnected this will hook back up and continue
             to receive results until the session is done.
         """
         ######
@@ -2045,9 +2045,9 @@ class Graph(threading.Thread):
         done = False
         for i in range(len(sccNodes)):
             for j in range(len(sccNodes)):
-                for ine in ie[i]:
-                    for oute in oe[j]:
-                        if ine == oute:
+                for in_edge in ie[i]:
+                    for out_edge in oe[j]:
+                        if in_edge == out_edge:
                             adjlist[j].append(i)
                             adjlistR[i].append(j)
                             done = True

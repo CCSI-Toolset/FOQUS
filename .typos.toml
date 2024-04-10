@@ -30,6 +30,7 @@ astroid = "astroid"  # Python package name
 Gess = "Gess"
 # false positives
 strat = "strat"  # abbreviation of "strategy" used by Hypothesis
+arange = "arange"  # from numpy.arange function
 
 [default.extend-identifiers]
 # false positives

@@ -195,11 +195,11 @@ def update_pareto_front(
 
     cond1 = (
         np.multiply(g1, ge2) + np.multiply(g2, ge1)
-    ) == 0  # PN: should be able to simplify this
+    ) == 0  # P.N.: should be able to simplify this
     cond1 = cond1.flatten()
     cond2 = np.sum(
         np.multiply(l1, le2) + np.multiply(l2, le1) + np.multiply(eq1, eq2)
-    )  # PN: and this
+    )  # P.N.: and this
 
     if np.any(cond1):
         n_desX = len(newdesX)

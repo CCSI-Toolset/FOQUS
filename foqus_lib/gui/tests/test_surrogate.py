@@ -86,7 +86,7 @@ class TestFrame:
         qtbot.select_tab("Method Settings")
         with qtbot.focusing_on(table=any):
             qtbot.select_row("scaling_function")
-            qtbot.using(column="Value").set_option("Linear")
+            qtbot.using(column="Value").set_option('"Linear"')
         qtbot.select_tab("Execution")
         run_button, stop_button = qtbot.locate(button=any, index=[0, 1])
         run_button.click()

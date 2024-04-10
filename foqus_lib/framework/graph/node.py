@@ -685,15 +685,18 @@ class pymodel_ml_ai(pymodel):
         elif self.trainer == "smt":
             self.scaled_outputs = np.reshape(
                 self.model.predict_values(
-                    np.reshape(np.array(self.scaled_inputs, ndmin=2),
-                               (1, self.model.nx)
-                               )
-                    ),
-                (self.model.ny, 1)
+                    np.reshape(
+                        np.array(self.scaled_inputs, ndmin=2), (1, self.model.nx)
+                    )
+                ),
+                (self.model.ny, 1),
             )
         elif self.trainer == "jenn":
             self.scaled_outputs = self.model.predict(
-                np.reshape(np.array(self.scaled_inputs, ndmin=2), (self.model.parameters.n_x, 1))
+                np.reshape(
+                    np.array(self.scaled_inputs, ndmin=2),
+                    (self.model.parameters.n_x, 1),
+                )
             )
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(

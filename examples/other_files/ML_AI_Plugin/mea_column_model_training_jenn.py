@@ -14,7 +14,8 @@
 #################################################################################
 import numpy as np
 import pandas as pd
-#from smt.utils.neural_net.model import Model
+
+# from smt.utils.neural_net.model import Model
 from jenn.model import NeuralNet
 import pickle
 from types import SimpleNamespace
@@ -53,13 +54,15 @@ def create_model(x_train, y_train, grad_train):
     runs = 20000  # reduce number of runs to reduce runtime
     for i in range(runs):
         idx += 1
-    
+
         hidden_layer_sizes = [6, 6]
-        model = NeuralNet([X.shape[0]] + hidden_layer_sizes + [Y.shape[0]],
-                          hidden_activation="relu",
-                          output_activation="linear")
+        model = NeuralNet(
+            [X.shape[0]] + hidden_layer_sizes + [Y.shape[0]],
+            hidden_activation="relu",
+            output_activation="linear",
+        )
         model.parameters.initialize()
-    
+
         model.fit(
             x=X,  # input data
             y=Y,  # output data
@@ -77,21 +80,23 @@ def create_model(x_train, y_train, grad_train):
             random_state=None,
             is_backtracking=False,
             is_verbose=False,
-            )
-    
+        )
+
         y_pred = np.transpose(model.predict(np.transpose(x_train)))
-        SSE = sum((y_pred-y_train)**2)
+        SSE = sum((y_pred - y_train) ** 2)
 
         # y0 is 2.1 orders of magnitude larger than y1, so adjust the SSE check
         # CO2 capture rate and SRD should both be positive for all predictions
         # SSE =  [75589.3371621  13214.64474031] from running 1000
         # SSE =  [39801.73811642  436.51381078] from running 20000
-        if (SSE[0]/21 + SSE[1]) < (best_SSE[0]/21 + best_SSE[1]) and np.all(y_pred) > 0:
+        if (SSE[0] / 21 + SSE[1]) < (best_SSE[0] / 21 + best_SSE[1]) and np.all(
+            y_pred
+        ) > 0:
             best_SSE = SSE
             best_model = model
             best_y_pred = y_pred
 
-        print(np.round(idx/runs*100, 3), " % complete")
+        print(np.round(idx / runs * 100, 3), " % complete")
 
     best_model.custom = SimpleNamespace(
         input_labels=xlabels,

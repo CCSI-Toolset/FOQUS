@@ -14,7 +14,8 @@
 #################################################################################
 import numpy as np
 import pandas as pd
-#from smt.utils.neural_net.model import Model
+
+# from smt.utils.neural_net.model import Model
 from jenn.model import NeuralNet
 from smt.surrogate_models import GENN
 import pickle
@@ -50,42 +51,44 @@ def create_model(x_train, y_train):
     runs = 20000  # reduce number of runs to reduce runtime
     for i in range(runs):
         idx += 1
-    
+
         model = GENN()
-    
+
         options = {
             "hidden_layer_sizes": [6, 6],  # 2 layer with 6 nodes each
             "num_iterations": 200,  # number of optimizer iterations per mini-batch
-            #"mini_batch_size": None,  # used to divide data into training batches (use for large data sets)
+            # "mini_batch_size": None,  # used to divide data into training batches (use for large data sets)
             "num_epochs": 1,  # number of passes through data
             "alpha": 0.500,  # learning rate that controls optimizer step size
             "beta1": 0.900,  # tuning parameter to control ADAM optimization
             "beta2": 0.990,  # tuning parameter to control ADAM optimization
             "lambd": 0.000,  # lambd = 0. = no regularization, lambd > 0 = regularization
             "gamma": 0.000,  # gamma = 0. = no grad-enhancement, gamma > 0 = grad-enhancement
-            #"seed": None,  # set to value for reproducibility
+            # "seed": None,  # set to value for reproducibility
             "is_print": False,  # set to False to suppress training output
-            }
+        }
 
         for key in options:
             model.options[key] = options[key]
 
         model.load_data(X, Y)
         model.train()
-        
+
         y_pred = model.predict_values(X)
-        SSE = sum((y_pred-Y)**2)
+        SSE = sum((y_pred - Y) ** 2)
 
         # y0 is 2.1 orders of magnitude larger than y1, so adjust the SSE check
         # CO2 capture rate and SRD should both be positive for all predictions
         # SSE =  [26344.00972484    65.81581468] from running 1000
         # SSE =  [23809.9512858  64.66887398] from running 20000
-        if (SSE[0]/21 + SSE[1]) < (best_SSE[0]/21 + best_SSE[1]) and np.all(y_pred) > 0:
+        if (SSE[0] / 21 + SSE[1]) < (best_SSE[0] / 21 + best_SSE[1]) and np.all(
+            y_pred
+        ) > 0:
             best_SSE = SSE
             best_model = model
             best_y_pred = y_pred
 
-        print(np.round(idx/runs*100, 3), " % complete")
+        print(np.round(idx / runs * 100, 3), " % complete")
 
     best_model.custom = SimpleNamespace(
         input_labels=xlabels,

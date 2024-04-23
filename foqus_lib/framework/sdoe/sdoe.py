@@ -98,7 +98,7 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
         get_client()
         use_dask = True
     except ValueError:
-        logging.getLogger("foqus." + __name__).exception(
+        logging.getLogger("foqus." + __name__).warning(
             "Unable to load Dask client, continuing without it using original algorithms"
         )
         pass

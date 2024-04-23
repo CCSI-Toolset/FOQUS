@@ -228,6 +228,14 @@ class Results(pd.DataFrame):
             self.calculated_columns = None  # avoid set column from attribute warn
             self.calculated_columns = OrderedDict()
 
+        if "time" not in self.columns:
+            self["time"] = []
+
+        self["set"] = self["set"].astype(str)
+        self["result"] = self["result"].astype(str)
+        self["time"] = self["time"].astype(str)
+        self[self.columns[-1]] = self[self.columns[-1]].astype(object)
+
     def row_to_flow(self, fs, row, filtered=True):
         idx = list(self.get_indexes(filtered=filtered))[row]
         _log.debug("Row to flowsheet, table row {} dataframe index {}".format(row, idx))
@@ -422,14 +430,10 @@ class Results(pd.DataFrame):
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
         row = self.count_rows(filtered=False)
-        self["set"] = self["set"].astype(str)
         self.loc[row, "set"] = set_name
-        self["result"] = self["result"].astype(str)
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
-                self["time"] = self["time"].astype(str)
-                self[columns[-1]] = self[columns[-1]].astype(str)
                 self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 
@@ -446,9 +450,7 @@ class Results(pd.DataFrame):
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
         for row in range(data.getNumSamples()):
-            self["set"] = self["set"].astype(str)
             self.loc[row, "set"] = set_name
-            self["result"] = self["result"].astype(str)
             self.loc[row, "result"] = result_name
             for i, col in enumerate(columns):
                 self.loc[row, col] = dat[row][i]
@@ -467,9 +469,7 @@ class Results(pd.DataFrame):
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
         for row in range(data.getNumSamples()):
-            self["set"] = self["set"].astype(str)
             self.loc[row, "set"] = set_name
-            self["result"] = self["result"].astype(str)
             self.loc[row, "result"] = result_name
             for i, col in enumerate(columns):
                 self.loc[row, col] = dat[row][i]
@@ -488,9 +488,7 @@ class Results(pd.DataFrame):
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
         for row in range(data.getNumSamples()):
-            self["set"] = self["set"].astype(str)
             self.loc[row, "set"] = set_name
-            self["result"] = self["result"].astype(str)
             self.loc[row, "result"] = result_name
             for i, col in enumerate(columns):
                 self.loc[row, col] = dat[row][i]
@@ -509,9 +507,7 @@ class Results(pd.DataFrame):
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
         for row in range(data.getNumSamples()):
-            self["set"] = self["set"].astype(str)
             self.loc[row, "set"] = set_name
-            self["result"] = self["result"].astype(str)
             self.loc[row, "result"] = result_name
             for i, col in enumerate(columns):
                 self.loc[row, col] = dat[row][i]

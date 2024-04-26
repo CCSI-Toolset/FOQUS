@@ -42,7 +42,7 @@ def setup_frame_blank(main_window, flowsheet_session_file, request):
 
 
 @pytest.mark.usefixtures("setup_frame_blank")
-class TestSDOE:
+class TestUSF:
     @property
     def analysis_dialog(self) -> typing.Union[None, sdoeAnalysisDialog]:
         return self.__class__.frame._analysis_dialog
@@ -98,5 +98,50 @@ class TestSDOE:
                         qtbot.click(button="Plot SDoE")
                         qtbot.wait(1000)
                     qtbot.click(button="OK")
+        qtbot.click(button="Open SDoE Dialog")
+        qtbot.wait_until(has_dialog, timeout=10_000)
+
+@pytest.mark.usefixtures("setup_frame_blank")
+class TestNUSF:
+    @property
+    def analysis_dialog(self) -> typing.Union[None, sdoeAnalysisDialog]:
+        return self.__class__.frame._analysis_dialog
+
+    def test_run_sdoe(self, qtbot, start_analysis):
+        assert self.analysis_dialog is not None
+        qtbot.focused = self.analysis_dialog
+        qtbot.click(button="Estimate Runtime")
+        qtbot.wait(1000)
+        qtbot.using(spin_box="Number of Random Starts: n = 10^").enter_value(2)
+        qtbot.wait(1000)
+        qtbot.click(button="Run SDoE")
+        qtbot.wait(10_000)
+        with qtbot.searching_within(self.analysis_dialog):
+            with qtbot.searching_within(group_box="Created Designs"):
+                with qtbot.focusing_on(table=any):
+                    qtbot.select_row(0)
+                    with qtbot.waiting_for_modal(timeout=10_000):
+                        qtbot.using(column="Plot SDoE").click()
+                        with qtbot.searching_within(sdoePreview):
+                            with qtbot.searching_within(group_box="Plots"):
+                                qtbot.click(button="Plot SDoE")
+                                qtbot.wait(1000)
+                            qtbot.click(button="OK")
+
+    @pytest.fixture(scope="class")
+    def start_analysis(self, qtbot, foqus_examples_dir):
+        def has_dialog():
+            return self.analysis_dialog is not None
+
+        qtbot.focused = self.frame
+        with qtbot.file_selection(
+            foqus_examples_dir / "tutorial_files/SDOE/NUSFex1.csv"
+        ):
+            qtbot.click(button="Load Existing\n Set")
+        qtbot.click(button="Continue")
+        qtbot.wait(1000)
+        with qtbot.focusing_on(self.frame.aggFilesTable):
+            combo_box=qtbot.locate(combo_box=any)
+            qtbot.using(combo_box=combo_box).select("Non-Uniform Space Filling (NUSF)")             
         qtbot.click(button="Open SDoE Dialog")
         qtbot.wait_until(has_dialog, timeout=10_000)

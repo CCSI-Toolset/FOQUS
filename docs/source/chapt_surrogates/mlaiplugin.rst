@@ -86,10 +86,16 @@ https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegr
 
 Surrogate Modeling Toolbox is an open-source Python package supporting a number of surrogate
 modeling methods, including gradient-enhanced neural network (GENN) models. GENN models train
-parameters by minimizing a modified Least Squares Estimator which accounts for partial derivative predictions, leading to better accuracy on fewer training points compared to non-gradient-enhanced models. Gradient methods are applicable when training use cases where
+parameters by minimizing a modified Least Squares Estimator which accounts for partial
+derivative predictions, leading to better accuracy on fewer training points compared to
+non-gradient-enhanced models. Gradient methods are applicable when training use cases where
 system data is generally known, such as continuous physics-based problems like aerodynamics.
-If gradient data is not known, users may run a gradient generation tool provided within FOQUS and can consults the tool documentation here: :ref:`gengrad`. Users may find further information on GENN models within Surrogate Modeling Toolbox in
-the documentation: https://smt.readthedocs.io/en/stable/_src_docs/surrogate_models/genn.html.
+If gradient data is not known, users may run a gradient generation tool provided within FOQUS
+and can consults the tool documentation here: :ref:`gengrad`. Users may find further information
+on GENN models within Surrogate Modeling Toolbox in the documentation:
+https://smt.readthedocs.io/en/stable/_src_docs/surrogate_models/genn.html. SMT GENN model training
+leverages an external dependency JENN (Jacobian-Enhanced Neural Networks) package which may also be
+utilized independently. Users may find further information on JENN models in the documentation: https://pypi.org/project/jenn/.
 
 The examples files located in *FOQUS.examples.other_files.ML_AI_Plugin* show how users
 may train new models or re-save loaded models with a custom layer.
@@ -263,7 +269,7 @@ to obtain the correct output values for the entered inputs.
 To run the models, copy the appropriate model files or folders ('h5_model.h5',
 'saved_model/', 'json_model.json', 'json_model_weights.h5') and any custom layer
 scripts ('model_name.py') into the working directory folder 'user_ml_ai_models'.
-As mentioned earlier, PyTorch, Scikit-learn and Surrogate Modeling Toolbox models only require the model file ('pt_model.pt', 'skl_model.pkl' or 'smt_model.pkl').
+As mentioned earlier, PyTorch, Scikit-learn and Surrogate Modeling Toolbox models only require the model file ('pt_model.pt', 'skl_model.pkl', 'smt_model.pkl', or 'jenn_model.pkl').
 For example, the model name below is 'mea_column_model' and is saved in H5 format,
 and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.h5*
 and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to

@@ -139,9 +139,10 @@ class TestNUSF:
         ):
             qtbot.click(button="Load Existing\n Set")
         qtbot.click(button="Continue")
-        qtbot.wait(1000)
-        with qtbot.focusing_on(self.frame.aggFilesTable):
-            combo_box=qtbot.locate(combo_box=any)
-            qtbot.using(combo_box=combo_box).select("Non-Uniform Space Filling (NUSF)")             
+        #qtbot.wait(1000)
+        with qtbot.searching_within(group_box="Design Construction") as gb:
+            with qtbot.searching_within(table=...) as t:
+                qtbot.select_row(3)
+                qtbot.using(column="Descriptor").set_option("Non-Uniform Space Filling (NUSF)")           
         qtbot.click(button="Open SDoE Dialog")
         qtbot.wait_until(has_dialog, timeout=10_000)

@@ -228,6 +228,14 @@ class Results(pd.DataFrame):
             self.calculated_columns = None  # avoid set column from attribute warn
             self.calculated_columns = OrderedDict()
 
+        if "time" not in self.columns:
+            self["time"] = []
+
+        self["set"] = self["set"].astype(str)
+        self["result"] = self["result"].astype(str)
+        self["time"] = self["time"].astype(str)
+        self[self.columns[-1]] = self[self.columns[-1]].astype(object)
+
     def row_to_flow(self, fs, row, filtered=True):
         idx = list(self.get_indexes(filtered=filtered))[row]
         _log.debug("Row to flowsheet, table row {} dataframe index {}".format(row, idx))
@@ -426,9 +434,6 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
-                # if type(dat[i])==list:
-                #     self.loc[row, col] = str(dat[i])
-                # else:
                 self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 

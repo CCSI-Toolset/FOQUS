@@ -282,10 +282,6 @@ class TestOUU:
         n_vars = len(self.frame.input_table.getUQDiscreteVariables()[0])
         assert n_inps == n_vars
 
-    @pytest.mark.xfail(
-        reason="This test is known to fail intermittently on macOS. See CCSI-Toolset/FOQUS#1195",
-        strict=False,
-    )
     def testRunOUU(self, runUntilConfirmationDialog):
         """
         [Test-5] Test that the optimizer launches and finishes.

@@ -111,28 +111,32 @@ class TestNUSF:
     def test_run_sdoe(self, qtbot, start_analysis):
         assert self.analysis_dialog is not None
         qtbot.focused = self.analysis_dialog
-        qtbot.click(button="Estimate Runtime")
-        qtbot.wait(1000)
-        qtbot.using(spin_box="Number of Random Starts: n = 10^").enter_value(2)
-        qtbot.wait(1000)
-        qtbot.click(button="Run SDoE")
-        qtbot.wait(10_000)
-        with qtbot.searching_within(self.analysis_dialog):
-            with qtbot.searching_within(group_box="Created Designs"):
-                with qtbot.focusing_on(table=any):
-                    qtbot.select_row(0)
-                    with qtbot.waiting_for_modal(timeout=10_000):
-                        qtbot.using(column="Plot SDoE").click()
-                        with qtbot.searching_within(sdoePreview):
-                            with qtbot.searching_within(group_box="Plots"):
-                                qtbot.click(button="Plot SDoE")
-                                qtbot.wait(1000)
-                            qtbot.click(button="OK")
+        with qtbot.focusing_on(group_box="Desired Design Size and NUSF Weights"):
+            dropdown_1, dropdown_2 = qtbot.locate(combo_box=..., index=[1, 2])
+            qtbot.using(dropdown_1).set_option("10")
+            qtbot.using(dropdown_2).set_option("30")
+        with qtbot.focusing_on(group_box="Generate Design"):
+            with qtbot.focusing_on(table=...) as table:
+                qtbot.select_row(3)
+                qtbot.using(column="Type").set_option("Weight")
+            qtbot.click(button="Estimate Runtime")
+
+        with qtbot.focusing_on(group_box="SDoE Progress"):
+            qtbot.using(combo_box="Number of Random Starts: n =").set_option("10")
+            run_button = qtbot.locate_widget(button="Run SDoE")
+            qtbot.using(run_button).click()
+
+            def run_button_available() -> bool:
+                return not run_button.isEnabled()
+
+            qtbot.wait_until(run_button_available, timeout=120_000)
 
     @pytest.fixture(scope="class")
     def start_analysis(self, qtbot, foqus_examples_dir):
+        # find Run SdoE button
         def has_dialog():
-            return self.analysis_dialog is not None
+            # button=qt.lo
+            return self.analysis_dialog is not None  # check if text is Run SDoE
 
         qtbot.focused = self.frame
         with qtbot.file_selection(

@@ -130,6 +130,17 @@ class TestNUSF:
                 return not run_button.isEnabled()
 
             qtbot.wait_until(run_button_available, timeout=120_000)
+        with qtbot.searching_within(self.analysis_dialog):
+            with qtbot.searching_within(group_box="Created Designs"):
+                with qtbot.focusing_on(table=any):
+                    qtbot.select_row(0)
+                    with qtbot.waiting_for_modal(timeout=10_000):
+                        qtbot.using(column="Plot SDoE").click()
+                        with qtbot.searching_within(sdoePreview):
+                            with qtbot.searching_within(group_box="Plots"):
+                                qtbot.click(button="Plot SDoE")
+                                qtbot.wait(1000)
+                            qtbot.click(button="OK")
 
     @pytest.fixture(scope="class")
     def start_analysis(self, qtbot, foqus_examples_dir):

@@ -53,6 +53,7 @@ def attempt_load_tensorflow(try_imports=True):
 
         load = tf.keras.models.load_model
         json_load = tf.keras.models.model_from_json
+        TFSM_load = tf.keras.layers.TFSMLayer
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
@@ -70,7 +71,13 @@ def attempt_load_tensorflow(try_imports=True):
                 "kwargs={kwargs} but `tensorflow` is not available"
             )
 
-    return load, json_load
+        def TFSM_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `tensorflow` is not available"
+            )
+
+    return load, json_load, TFSM_load
 
 
 def attempt_load_sympy(try_imports=True):
@@ -215,7 +222,7 @@ def attempt_load_jenn(try_imports=True):
 
 # pickle is loaded identically twice so that sklearn, smt, and jenn can load
 # or fail independently of each other
-load, json_load = attempt_load_tensorflow()
+load, json_load, TFSM_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 torch_load, torch_tensor, torch_float = attempt_load_pytorch()
 skl_pickle_load = attempt_load_sklearn()
@@ -1247,18 +1254,23 @@ class Node:
 
             # check which type of file Keras needs to load
             if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
-                extension = ".h5"
+                extension = ".h5"  # deprecated, include for back-compatibility and user warning
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".keras")
+            ):
+                extension = ".keras"
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".json")
             ):
                 extension = ".json"
-            elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")):
+            elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")
+            ):
                 extension = ".pt"  # this is for PyTorch models
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
             ):
                 extension = ".pkl"  # this is for Sci Kit Learn, SMT, and JENN models
-            else:  # assume it's a folder with no extension
+            else:  # assume it's a SavedModel folder with no extension
                 extension = ""
 
             if extension == ".pt":  # use Pytorch loading syntax
@@ -1315,6 +1327,12 @@ class Node:
                         "sklearn MLPRegressor, smt GENN, and JENN objects are "
                         "currently supported."
                     )
+            elif extension == "":  # legacy SavedModel folder with no extension
+                # this format must be loaded via TFSMLayer, and any custom layer will be lost
+                # essentially same case as .keras or .h5 with no custom layer
+                # should still be supported, use TFSM load method
+                self.model = TFSM_load(str(self.modelName), call_endpoint='serve')
+                trainer = "keras"  # TODO
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1359,7 +1377,7 @@ class Node:
                     trainer = "keras"
                 finally:
                     self.model.load_weights(
-                        str(self.modelName) + "_weights.h5"
+                        str(self.modelName) + "_weights.weights.h5"
                     )  # load pretrained weights
             os.chdir(cwd)  # reset to original working directory
             inst = pymodel_ml_ai(self.model, trainer)
@@ -1833,7 +1851,11 @@ class Node:
 
             # check which type of file Keras needs to load
             if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
-                extension = ".h5"
+                extension = ".h5"  # deprecated, include for back-compatibility and user warning
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".keras")
+            ):
+                extension = ".keras"
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".json")
             ):
@@ -1945,7 +1967,7 @@ class Node:
                     trainer = "keras"
                 finally:
                     self.model.load_weights(
-                        str(self.modelName) + "_weights.h5"
+                        str(self.modelName) + "_weights.weights.h5"
                     )  # load pretrained weights
             os.chdir(cwd)  # reset to original working directory
             self.pyModel = pymodel_ml_ai(self.model, trainer)

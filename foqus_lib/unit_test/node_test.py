@@ -43,7 +43,7 @@ from foqus_lib.framework.pymodel.pymodel import pymodel
 def model_files(
     foqus_ml_ai_models_dir: Path,
     install_ml_ai_model_files,
-    suffixes: Tuple[str] = (".py", ".h5", ".json", ".pt", ".pkl"),
+    suffixes: Tuple[str] = (".py", ".keras", ".h5", ".json", ".pt", ".pkl"),
 ) -> List[Path]:
     paths = []
     for path in sorted(foqus_ml_ai_models_dir.glob("*")):
@@ -66,13 +66,15 @@ class testImports(unittest.TestCase):
     def test_import_tensorflow_failure(self):
 
         # method loaded from node module as * import
-        load, json_load = attempt_load_tensorflow(try_imports=False)
+        load, json_load, TFSM_load = attempt_load_tensorflow(try_imports=False)
 
         # check that the returned load functions print the expected warning
         with pytest.raises(ModuleNotFoundError):
             load(None)
         with pytest.raises(ModuleNotFoundError):
             json_load(None)
+        with pytest.raises(ModuleNotFoundError):
+            TFSM_load(None)
 
     def test_import_sympy_failure(self):
 
@@ -134,14 +136,16 @@ class testImports(unittest.TestCase):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
         # method loaded from node module as * import
-        load, json_load = attempt_load_tensorflow(try_imports=True)
+        load, json_load, TFSM_load = attempt_load_tensorflow(try_imports=True)
 
         # check that the returned function expects the correct input as a way
         # of confirming that the class (function) type is correct
-        with pytest.raises(OSError):
-            load(None)  # expects HDF5 filepath, should throw load path error
+        with pytest.raises(ValueError):
+            load(None)  # expects Keras 3 file, should throw format error
         with pytest.raises(TypeError):
             json_load(None)  # expects JSON object, should throw type error
+        with pytest.raises(TypeError):
+            TFSM_load(None)  # expects TFSM object, should throw type error
 
     def test_import_sympy_success(self):
         # skip this test if sympy is not available
@@ -244,15 +248,15 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load, json_load = attempt_load_tensorflow()  # alias for load methods
+        load, json_load, TFSM_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
-        model_h5 = [
-            path for path in model_files if str(path).endswith("AR_nocustomlayer.h5")
+        model = [
+            path for path in model_files if str(path).endswith("AR_nocustomlayer.keras")
         ]
 
         # has no custom layer or normalization
-        model = load(model_h5[0])
+        model = load(model[0])
 
         return model
 
@@ -263,11 +267,11 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load, json_load = attempt_load_tensorflow()  # alias for load methods
+        load, json_load, TFSM_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
-        model_h5 = [
-            path for path in model_files if str(path).endswith("mea_column_model.h5")
+        model = [
+            path for path in model_files if str(path).endswith("mea_column_model.keras")
         ]
         model_py = [
             path for path in model_files if str(path).endswith("mea_column_model.py")
@@ -278,7 +282,7 @@ class TestPymodelMLAI:
 
         # has a custom layer with a preset normalization option
         model = load(
-            model_h5[0], custom_objects={"mea_column_model": module.mea_column_model}
+            model[0], custom_objects={"mea_column_model": module.mea_column_model}
         )
 
         return model
@@ -291,13 +295,13 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load, json_load = attempt_load_tensorflow()  # alias for load methods
+        load, json_load, TFSM_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
-        model_h5 = [
+        model = [
             path
             for path in model_files
-            if str(path).endswith("mea_column_model_customnormform.h5")
+            if str(path).endswith("mea_column_model_customnormform.keras")
         ]
         model_py = [
             path
@@ -310,7 +314,7 @@ class TestPymodelMLAI:
 
         # has a custom layer with a preset normalization option
         model = load(
-            model_h5[0],
+            model[0],
             custom_objects={
                 "mea_column_model_customnormform": module.mea_column_model_customnormform
             },
@@ -326,7 +330,7 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load, json_load = attempt_load_tensorflow()  # alias for load methods
+        load, json_load, TFSM_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
         model_folder = [
@@ -345,11 +349,9 @@ class TestPymodelMLAI:
         module = import_module("mea_column_model_customnormform_savedmodel")
 
         # has a custom layer with a custom normalization option
-        model = load(
+        model = TFSM_load(
             model_folder[0],
-            custom_objects={
-                "mea_column_model_customnormform_savedmodel": module.mea_column_model_customnormform_savedmodel
-            },
+            call_endpoint='serve',
         )
 
         return model
@@ -362,7 +364,7 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load, json_load = attempt_load_tensorflow()  # alias for load methods
+        load, json_load, TFSM_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
         model_json = [
@@ -398,7 +400,7 @@ class TestPymodelMLAI:
         )  # load architecture
         h5_path = os.path.join(
             os.path.dirname(model_py[0]),
-            "mea_column_model_customnormform_json_weights.h5",
+            "mea_column_model_customnormform_json_weights.weights.h5",
         )
         model.load_weights(h5_path)  # load pretrained weights
 
@@ -674,8 +676,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [0.500000, 0.500000, 0.500000, 0.500000, 0.500000, 0.500000]
-        expected_out = [0.664327, 0.0207218]
-        expected_soln = [79.41160, 3.29667]  # best scaling for this problem
+        expected_out = [0.65611, 0.019666]
+        expected_soln = [78.90788, 3.29184]  # best scaling for this problem
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -698,8 +700,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [0.550111, 0.523938, 0.554206, 0.513060, 0.527202, 0.629837]
-        expected_out = [0.540576, 0.00824950]
-        expected_soln = [64.64234, 3.22524]
+        expected_out = [0.53272, 0.0074783]
+        expected_soln = [64.16219, 3.22303]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -737,8 +739,8 @@ class TestPymodelMLAI:
         # note that these values can't be compared to the other test results
         # since the input data was scaled down by a factor of 100
         expected_in = [1.05368e-05, 0.499895, 4.06959e-13, 0.443145, 0.499803, 0.499430]
-        expected_out = [0.669423, 0.0257747]
-        expected_soln = [99.81156, 6.197305]
+        expected_out = [0.67254, 0.0230617]
+        expected_soln = [99.81344, 6.14905]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -761,8 +763,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [0.740363, 0.740363, 0.740363, 0.740363, 0.740363, 0.740363]
-        expected_out = [0.433785, 0.00257231]
-        expected_soln = [50.37371, 3.20471]
+        expected_out = [0.420926, 0.0024649]
+        expected_soln = [49.83423, 3.20459]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -785,8 +787,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [-0.648636, -0.648636, -0.648636, -0.648636, -0.648636, -0.648636]
-        expected_out = [0.788902, 0.736369]
-        expected_soln = [152.16169, 11.55070]
+        expected_out = [0.75379, 0.723701]
+        expected_soln = [150.94991, 11.51615]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -813,8 +815,8 @@ class TestPymodelMLAI:
         print(unscaled_out)
 
         expected_in = [0.500000, 0.500000, 0.500000, 0.500000, 0.500000, 0.500000]
-        expected_out = [0.664327, 0.0207218]
-        expected_soln = [79.41160, 3.29667]
+        expected_out = [0.65611, 0.019666]
+        expected_soln = [78.90788, 3.29184]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed

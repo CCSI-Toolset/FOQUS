@@ -148,22 +148,22 @@ def install_ml_ai_model_files(
     models_dir = foqus_ml_ai_models_dir
 
     base_path = foqus_examples_dir / "other_files" / "ML_AI_Plugin"
-    ts_models_base_path = base_path / "deprecated_keras_h5"
+    ts_models_base_path = base_path / "Supported_Keras_Models"
     other_models_base_path = base_path / "Other_MLAI_Models"
 
     models_dir.mkdir(exist_ok=True, parents=False)
 
     for path in [
         ts_models_base_path / "mea_column_model.py",
-        ts_models_base_path / "mea_column_model.h5",
-        ts_models_base_path / "AR_nocustomlayer.h5",
+        ts_models_base_path / "mea_column_model.keras",
+        #ts_models_base_path / "AR_nocustomlayer.h5",
         ts_models_base_path / "mea_column_model_customnormform.py",
-        ts_models_base_path / "mea_column_model_customnormform.h5",
+        ts_models_base_path / "mea_column_model_customnormform.keras",
         ts_models_base_path / "mea_column_model_customnormform_savedmodel.py",
         ts_models_base_path / "mea_column_model_customnormform_savedmodel.zip",
         ts_models_base_path / "mea_column_model_customnormform_json.py",
         ts_models_base_path / "mea_column_model_customnormform_json.json",
-        ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
+        ts_models_base_path / "mea_column_model_customnormform_json_weights.weights.h5",
         other_models_base_path / "mea_column_model_customnormform_pytorch.pt",
         other_models_base_path / "mea_column_model_customnormform_scikitlearn.pkl",
         other_models_base_path / "mea_column_model_smtgenn.pkl",

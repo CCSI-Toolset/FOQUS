@@ -43,7 +43,7 @@ tf.random.set_seed(62)
 
 
 @tf.keras.utils.register_keras_serializable()
-class mea_column_model_customnormform_json(tf.keras.layers.Layer):
+class mea_column_model_customnormform_savedmodel(tf.keras.layers.Layer):
     def __init__(
         self,
         n_hidden=1,
@@ -61,7 +61,7 @@ class mea_column_model_customnormform_json(tf.keras.layers.Layer):
     ):
 
         super(
-            mea_column_model_customnormform_json, self
+            mea_column_model_customnormform_savedmodel, self
         ).__init__()  # create callable object
 
         # add attributes from training settings
@@ -109,7 +109,7 @@ class mea_column_model_customnormform_json(tf.keras.layers.Layer):
 
     # attach attributes to class CONFIG
     def get_config(self):
-        config = super(mea_column_model_customnormform_json, self).get_config()
+        config = super(mea_column_model_customnormform_savedmodel, self).get_config()
         config.update(
             {
                 "n_hidden": self.n_hidden,
@@ -133,7 +133,7 @@ def create_model(data):
 
     inputs = tf.keras.Input(shape=(np.shape(data)[1],))  # create input layer
 
-    layers = mea_column_model_customnormform_json(  # define the rest of network using our custom class
+    layers = mea_column_model_customnormform_savedmodel(  # define the rest of network using our custom class
         input_labels=xlabels,
         output_labels=zlabels,
         input_bounds=xdata_bounds,
@@ -157,7 +157,7 @@ def create_model(data):
 # Main code
 
 # import data
-data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
+data = pd.read_csv(r"../MEA_carbon_capture_dataset_mimo.csv")
 
 xdata = data.iloc[:, :6]  # there are 6 input variables/columns
 zdata = data.iloc[:, 6:]  # the rest are output variables/columns
@@ -192,8 +192,5 @@ zdata = model_data[:, -2:]
 model = create_model(xdata)
 model.summary()
 
-# save as JSON
-json_model = model.to_json()
-with open("mea_column_model_customnormform_json.json", "w") as json_file:
-    json_file.write(json_model)
-model.save_weights("mea_column_model_customnormform_json_weights.h5")
+# save as Keras SavedModel
+model.save("mea_column_model_customnormform_savedmodel")

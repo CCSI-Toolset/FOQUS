@@ -62,7 +62,7 @@ def test_model_files_are_present(model_files: List[Path]):
 
 
 @pytest.fixture(
-    scope="class", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
+    scope="class", params=["other_files/ML_AI_Plugin/deprecated_keras_h5/mea_column_model.foqus"]
 )
 def flowsheet_session_file(foqus_examples_dir: Path, request) -> Path:
     return foqus_examples_dir / request.param

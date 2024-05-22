@@ -124,12 +124,16 @@ class TestNUSF:
         with qtbot.focusing_on(group_box="SDoE Progress"):
             qtbot.using(combo_box="Number of Random Starts: n =").set_option("10")
             run_button = qtbot.locate_widget(button="Run SDoE")
-            qtbot.using(run_button).click()
+        with qtbot.searching_within(self.analysis_dialog):
+            with qtbot.searching_within(group_box="Created Designs"):
+                created_designs_table = qtbot.locate_widget(table=any)
 
-            def run_button_available() -> bool:
-                return not run_button.isEnabled()
+        def created_designs_table_is_populated() -> bool:
+            return created_designs_table.rowCount() > 0
 
-            qtbot.wait_until(run_button_available, timeout=120_000)
+        qtbot.using(run_button).click()
+
+        qtbot.wait_until(created_designs_table_is_populated, timeout=120_000)
         with qtbot.searching_within(self.analysis_dialog):
             with qtbot.searching_within(group_box="Created Designs"):
                 with qtbot.focusing_on(table=any):

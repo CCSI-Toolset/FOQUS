@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -57,7 +57,7 @@ Methods:
 
     setSampleFileName(name):
         Set the name of the file from which to sample.
-        This is to accomodate the S distribution type in psuade
+        This is to accommodate the S distribution type in psuade
     getSampleFileName():
         Get the name of the file that was sampled
 
@@ -129,14 +129,16 @@ Methods:
         Writes SampleData data to a csv file that can be read in by Excel
 """
 
-import os
-import numpy
 import copy
+import os
 import time
-from .Model import Model
+
+import numpy
+
 from .Distribution import Distribution
-from .SamplingMethods import SamplingMethods
+from .Model import Model
 from .ResponseSurfaces import ResponseSurfaces
+from .SamplingMethods import SamplingMethods
 from .UQAnalysis import UQAnalysis
 
 
@@ -511,7 +513,7 @@ class SampleData(object):
         return self.inputData
 
     def setOutputData(self, data):
-        if data == []:
+        if not isinstance(data, numpy.ndarray) and data == []:
             self.outputData = []
             return
         temp = numpy.array(data, dtype=float, ndmin=2)

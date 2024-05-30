@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -13,11 +13,12 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import re
-import numpy as np
+
 import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 import matplotlib.cm as cmx
+import matplotlib.colors as colors
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.figure import Figure
 
 try:
@@ -522,7 +523,7 @@ class Plotter:
 
             def update(self, value):
                 # remove last line
-                self.ax.lines.remove(self.yrange)
+                self.yrange.remove()
 
                 # draw new line
                 (k1,) = np.where(self.cdfL < value)
@@ -1144,6 +1145,9 @@ class Plotter:
                     znew = interpolate.bisplev(xnew[:, 0], ynew[0, :], tck)
                     # ...... display heatmap such that x variable is on y-axis
                     if show_cbar:  # use global colormap for each off-diagonal subplots
+                        # PYLINT-WHY: used-before-assignment for norm_global
+                        # is a false positive that only occurs in Pylint 2
+                        # pylint: disable-next=used-before-assignment
                         ax.pcolormesh(ynew, xnew, znew, cmap=cmap, norm=norm_global)
                     else:  # use local colormap for each off-diagonal subplots
                         znewf = znew.flatten()

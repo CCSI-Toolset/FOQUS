@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -13,7 +13,8 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import sys
-from PyQt5 import QtGui, QtCore, QtWidgets
+
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Dialog(QtWidgets.QDialog):  # QtWidgets.QMainWindow):

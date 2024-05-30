@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,17 +15,15 @@
 """ mlaiSearch.py
 
 * This class looks for ml_ai model files and creates a list containing the
-  NN model names. The ml_ai models are identified by a certain string contained
-  in the file name. Files containing ml_ai models should have a .h5 extension.
+  NN model names.
 
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import sys
-import os
 import importlib
 import logging
-import imp
+import os
+import sys
 
 _log = logging.getLogger("foqus." + __name__)
 

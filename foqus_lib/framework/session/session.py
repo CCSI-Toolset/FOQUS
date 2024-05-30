@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -16,35 +16,36 @@
 
 * Some functions to setup FOQUS environment
 * Class to store FOQUS session information
-* Class for genral FOQUS settings
+* Class for general FOQUS settings
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import collections
 import json
+import logging
 import os
 import shutil
-import collections
 import sys
-import logging
 import uuid
+
+import foqus_lib.framework.optimizer.problem as oprob
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.graph.node import nodeModelTypes
-import foqus_lib.framework.optimizer.problem as oprob
-from foqus_lib.framework.sim.turbineConfiguration import *
-from foqus_lib.framework.plugins import pluginSearch
 from foqus_lib.framework.ml_ai_models import mlaiSearch
-from foqus_lib.framework.surrogate import surrogate
 from foqus_lib.framework.optimizer import problem
-from foqus_lib.framework.pymodel import pymodel
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.sampleResults.results import Results
 
 # these are just imported so py2exe will pick them up since they
 # are used only in plugins
 from foqus_lib.framework.optimizer.optimization import optimization as junk
+from foqus_lib.framework.plugins import pluginSearch
+from foqus_lib.framework.pymodel import pymodel
+from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.framework.sim.turbineConfiguration import *
+from foqus_lib.framework.surrogate import surrogate
 from foqus_lib.framework.surrogate.surrogate import surrogate as junk2
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.uq.SampleData import *
 
 # Before the session class there are a few functions to help set up the
 # FOQUS environment.
@@ -194,7 +195,7 @@ class session:
         """
         self.flowsheet = None
         # Get to the general foqus settings through the FOQUS session,
-        # but the setting are stored in a seperate file not in the
+        # but the setting are stored in a separate file not in the
         # FOQUS session file.  Its just here to make things easier,
         # since general FOQUS settings where a late addition.
         self.foqusSettings = generalSettings()
@@ -262,7 +263,7 @@ class session:
             except:
                 pass
         else:
-            # if not stoppoing consumers then reuse them
+            # if not stopping consumers then reuse them
             tc = self.flowsheet.turbConfig
         self.name = ""
         self.originalFileName = ""
@@ -373,10 +374,10 @@ class session:
 
     def saveFlowsheetValues(self, filename, indent=0):
         """
-        Save only the values of flowsheet varaibles to a json file
+        Save only the values of flowsheet variables to a json file
         This is mostly for running flowsheets from the command line,
         where you already loaded a session, and you don't need all
-        the other junk in a sesssion file.  The values file is much
+        the other junk in a session file.  The values file is much
         smaller.
         """
         with open(filename, "w") as f:
@@ -387,10 +388,10 @@ class session:
 
     def loadFlowsheetValues(self, filename):
         """
-        Load only the values of flowsheet varaibles to a json file
+        Load only the values of flowsheet variables to a json file
         This is mostly for running flowsheets from the command line,
         where you already loaded a session, and you don't need all
-        the other junk in a sesssion file.  The values file is much
+        the other junk in a session file.  The values file is much
         smaller.
         """
         with open(filename, "r") as f:
@@ -414,7 +415,7 @@ class session:
         updateCurrentFile == True: changes the current FOQUS session
             file to filename (only if filenale != None)
         changeLogMsg: A change log entry
-        confidence: Confidence in the qulity of the session
+        confidence: Confidence in the quality of the session
         bkp: save two files so you have a backup to keep tarck of
             all saved versions.
         """
@@ -752,15 +753,15 @@ class generalSettings:
 
     2) The settings file in the working directory overrides the
        main settings file.  This is foqus.cfg in the working
-       direcotry.  The option to override settings by storing a
+       directory.  The option to override settings by storing a
        settings file in the working directory is mainly to allow
        multiple copies of FOQUS to run at the same time without
-       haveing conficts if the user wants to change settings.
+       having conflicts if the user wants to change settings.
 
     The reason the main settings file exists is for starting FOQUS
     from the Windows start menu.  It provide the working directory
     to use.  If you want to run more than one copy of FOQUS at a
-    time it is best to start addtional copies from the command line
+    time it is best to start additional copies from the command line
     specifying the working directory as a command line option.
     """
 
@@ -861,16 +862,16 @@ class generalSettings:
         self.recentlyOpenedFiles = files
         return files
 
-    def getRecentlyOpendFiles(self):
+    def getRecentlyOpenedFiles(self):
         """
         Just returns the list of files.  This is here in case
-        we deside to add some validation step.
+        we decide to add some validation step.
         """
         return self.recentlyOpenedFiles
 
     def settingsNormpath(self):
         """
-        Make sure all the seperators match and go the right way for
+        Make sure all the separators match and go the right way for
         the OS
         """
         if self.working_dir:
@@ -916,7 +917,7 @@ class generalSettings:
         """
         Load the settings from a dictionary, and apply them
         some setting changes may require a FOQUS restart though and
-        are handeled when FOQUS starts.
+        are handled when FOQUS starts.
         """
         curWdir = os.getcwd()
         for att in self.directCopy:  # reads settings from appdata
@@ -954,7 +955,7 @@ class generalSettings:
             the $HOME or %APPDATA% location regaurdless of the
             setting to save the options in the working directory.
             this allows FOQUS to create a main settings file if
-            it doesn't exist.  Asside from that the
+            it doesn't exist.  Aside from that the
             ignoreWDirSetting argument is pretty useless
         """
         d = self.saveDict(newWdir=newWdir)

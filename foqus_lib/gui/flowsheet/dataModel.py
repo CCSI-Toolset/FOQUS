@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -18,10 +18,11 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-from PyQt5 import QtCore
 import json
 import logging
+
 import numpy as np
+from PyQt5 import QtCore
 
 
 class dataModel(QtCore.QAbstractTableModel):

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for Surrogate Based Optimization in Pyomo
@@ -23,22 +23,23 @@ text).  They also need to have a .py extension and inherit the optimization clas
 Anuja Deshpande, KeyLogic Systems, Inc. - NETL
 """
 
-import csv
-import pickle
-import importlib
-import numpy as np
-import threading
-import queue
-import logging
-import subprocess
-import os
-import sys
 import copy
-import traceback
-import time
-import shutil
-import re
+import csv
+import importlib
+import logging
 import math
+import os
+import pickle
+import queue
+import re
+import shutil
+import subprocess
+import sys
+import threading
+import time
+import traceback
+
+import numpy as np
 
 try:
     import win32api  # used to get short file name for alamo sim exe
@@ -46,9 +47,9 @@ try:
 except:
     pass
 
-from foqus_lib.framework.optimizer.optimization import optimization
-from foqus_lib.framework.graph.nodeVars import NodeVars
 from foqus_lib.framework.graph.edge import edge, edgeConnect
+from foqus_lib.framework.graph.nodeVars import NodeVars
+from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
@@ -58,24 +59,24 @@ from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 try:
     # add direct imports (in addition to existing wildcard import)
     # to make pylint happy without affecting the existing runtime behavior
+    import pyutilib.subprocess.GlobalData
     from pyomo.environ import (
-        Var,
-        Objective,
+        ConcreteModel,
         Constraint,
         ConstraintList,
-        ConcreteModel,
+        Objective,
         PositiveReals,
-        value,
-        log,
+        Var,
         exp,
+        log,
+        value,
     )
     from pyomo.opt import SolverFactory
-    import pyutilib.subprocess.GlobalData
 
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
+    from pyDOE import *
     from pyomo.core.expr import current as EXPR
     from pyomo.core.expr.current import clone_expression
-    from pyDOE import *
     from smt.sampling_methods import LHS
 
     packages_available = True
@@ -129,7 +130,7 @@ class opt(optimization):
         self.available = packages_available  # If plugin is available
         self.description = "Optimization Solver"  # Short description
         self.mp = False  # Can evaluate objectives in parallel?
-        self.mobj = False  # Can do multi-objective optimzation?
+        self.mobj = False  # Can do multi-objective optimization?
         self.minVars = 1  # Minimum number of decision variables
         self.maxVars = 10000  # Maximum number of decision variables
 
@@ -285,11 +286,11 @@ class opt(optimization):
 
         if self.stop.isSet():  # if user pushed stop button
             self.userInterupt = True
-            raise Exception("User interupt")  # raise exeception to stop
+            raise Exception("User interrupt")  # raise exception to stop
 
         objValues, cv, pv = self.prob.runSamples([x], self)
         # objValues = list of lists of objective function values
-        #             first list is for mutiple evaluations second list
+        #             first list is for multiple evaluations second list
         #             is for multi-objective.  In this case one evaluation
         #             one objective [[obj]].
         # cv = constraint violations
@@ -345,9 +346,9 @@ class opt(optimization):
         # The solver is all setup and ready to go
         start = time.time()  # get start time
         self.userInterupt = False  #
-        self.bestSoFar = float("inf")  # set inital best values
+        self.bestSoFar = float("inf")  # set initial best values
 
-        # self.prob is the optimzation problem. get it ready
+        # self.prob is the optimization problem. get it ready
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters()  #
         self.prob.solverStart = start

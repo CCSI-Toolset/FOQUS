@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -21,20 +21,21 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import io
 import json
-import uuid
-import urllib.request
-from urllib.parse import urlparse
-from shutil import copyfile
-from botocore.stub import Stubber
 import os
+import urllib.request
+import uuid
+from shutil import copyfile
+from urllib.parse import urlparse
 
 import pytest
-import foqus_lib
 import turbine
+from botocore.stub import Stubber
+
+import foqus_lib
 from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.graph.node import Node
-from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 from foqus_lib.framework.session.session import session
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 
 try:
     from unittest.mock import MagicMock, PropertyMock, patch
@@ -82,7 +83,7 @@ def _url_open_side_effect(url):
         if len(args) == idx + 3:
             val = TAGS_USERDATA_BIN
         else:
-            assert len(args) == idx + 4, "unexpect url path length %s" % (url)
+            assert len(args) == idx + 4, "unexpected url path length %s" % (url)
             d = json.loads(INSTANCE_USERDATA_JSON)
             key = args[idx + 3]
             assert key in d, "Missing Key in %s, instance-data %s" % (url, str(args))

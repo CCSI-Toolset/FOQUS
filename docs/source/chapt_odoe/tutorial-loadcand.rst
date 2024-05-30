@@ -98,7 +98,7 @@ In this example, the user will provide an existing candidate set.
 
    Browse and load the EvaluationSet.csv file from the examples folder. Similar to the candidate set
    section, the user can select the evaluation set and click on the **Delete Selection** button in
-   case they want to delete the evaulation set. To visualize the data, just click the **View**
+   case they want to delete the evaluation set. To visualize the data, just click the **View**
    button under the **Visualize** column.
 
    .. figure:: figs/9a-2_ODoE_Cand&EvalSets.png

@@ -7,14 +7,14 @@ recycle. Sections :ref:`tutorial.simple.flow` and
 for creating flowsheets, in this section a pre-constructed flowsheet is
 used.
 
-The file for this tutorial is **Mass_Bal_Test_02.foqus**, and
-this file is located in **examples/tutorial_files/Flowsheets/Tutorial_3**
+The file for this tutorial is :filename:`examples/tutorial_files/Flowsheets/Tutorial_3/Mass_Bal_Test_02.foqus`, and
+this file is located in :path:`examples/tutorial_files/Flowsheets/Tutorial_3`.
 
 .. note:: |examples_reminder_text|
 
 #. Open FOQUS.
 
-3. Open the Mass_Bal_Test_02.foqus file.
+3. Open the :path:`examples/tutorial_files/Flowsheets/Tutorial_3/Mass_Bal_Test_02.foqus` file.
 
    #. Open the **Session** drop-down menu on the right side of the
       **Session** button (Figure :ref:`fig.recycle.tut1`).

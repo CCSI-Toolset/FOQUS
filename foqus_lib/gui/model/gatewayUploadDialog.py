@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -18,13 +18,15 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import json
-import os
-import sys
-import subprocess
 import logging
-import foqus_lib.gui.helpers.guiHelpers as gh
+import os
+import subprocess
+import sys
+
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog, QLineEdit
+from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
 
 mypath = os.path.dirname(__file__)
 _gatewayUploadDialogUI, _gatewayUploadDialog = uic.loadUiType(
@@ -127,9 +129,9 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         """
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
-        # stored up sent signals.  But they happen after fnction returns
+        # stored up sent signals.  But they happen after function returns
         # so can't figure out how to block them.  launch process in a
-        # seperate thread?
+        # separate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
         exepath = os.path.join(exepath, "SinterConfigGUI.exe")
         tmp_file = os.path.abspath("temp\\sc_out.txt")
@@ -276,7 +278,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                 return
             finally:
                 self.notwaiting.emit()
-        # If uploaded to a Turbine gatway other that the current,
+        # If uploaded to a Turbine gateway other that the current,
         # make sure the turbine version is set back to proper value.
         self.turb.updateSettings()
         self.done(QDialog.Accepted)
@@ -362,11 +364,11 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         # if selected and drop the indexes for those rows
         if 0 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for configuration"
+                self, "Warning", "Won't set relative path for configuration"
             )
         if 1 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for model"
+                self, "Warning", "Won't set relative path for model"
             )
         rows.discard(0)
         rows.discard(1)

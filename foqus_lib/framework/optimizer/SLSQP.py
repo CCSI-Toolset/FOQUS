@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for scipy SLSQP using finite dif
@@ -24,17 +24,19 @@ text).  They also need to have a .py extension and inherit the optimization clas
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import time
 import copy
 import csv
+import logging
+import math
+import os
 import pickle
 import queue
 import sys
-import logging
-import math
-import numpy
-import os
+import time
 import traceback
+
+import numpy
+
 from foqus_lib.framework.optimizer.optimization import optimization
 
 try:
@@ -146,7 +148,7 @@ class opt(optimization):
         objValues, cv, pv = self.prob.runSamples([x], self)
         if self.stop.isSet():
             self.userInterupt = True
-            raise Exception("User interupt")
+            raise Exception("User interrupt")
         obj = float(objValues[0][0])
         if obj < self.bestSoFar:
             self.bestSoFar = obj
@@ -226,7 +228,7 @@ class opt(optimization):
         # Print some final words
         eltime = time.time() - start
         self.msgQueue.put(
-            "{0}, Total Elasped Time {1}s, Obj: {2}".format(
+            "{0}, Total Elapsed Time {1}s, Obj: {2}".format(
                 self.prob.iterationNumber, math.floor(eltime), self.bestSoFar
             )
         )

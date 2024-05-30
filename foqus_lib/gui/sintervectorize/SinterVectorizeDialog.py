@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -16,21 +16,23 @@
 * dialog to vectorize SimSinter (.json) files
 """
 import json
-import os
-import sys
-import subprocess
 import logging
-import foqus_lib.gui.helpers.guiHelpers as gh
-import foqus_lib.framework.sintervectorize.SinterFileVectorize as sv
+import os
+import subprocess
+import sys
+
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import (
-    QMessageBox,
     QDialog,
-    QInputDialog,
     QFileDialog,
+    QInputDialog,
     QLineEdit,
+    QMessageBox,
     QTextEdit,
 )
+
+import foqus_lib.framework.sintervectorize.SinterFileVectorize as sv
+import foqus_lib.gui.helpers.guiHelpers as gh
 
 mypath = os.path.dirname(__file__)
 _SinterVectorizeDialogUI, _SinterVectorizeDialog = uic.loadUiType(

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -16,10 +16,10 @@
 
 def makeShortcut():
     """Create a windows shortcut on the desktop to start FOQUS"""
+    import logging
     import os
     import pathlib as pl
     import sys
-    import logging
 
     log = logging.getLogger("foqus." + __name__)
     if os.name != "nt":

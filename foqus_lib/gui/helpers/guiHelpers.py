@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -19,12 +19,13 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import copy
+import json
+
+import numpy
 from PyQt5 import QtCore
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QTableWidgetItem, QComboBox
-import numpy
-import json
-import copy
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 
 
 def setColHeaderIntem(table, col, text=None):

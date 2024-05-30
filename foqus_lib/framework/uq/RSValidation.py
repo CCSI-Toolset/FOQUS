@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -13,11 +13,12 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
-from .UQRSAnalysis import UQRSAnalysis
-from .UQAnalysis import UQAnalysis
-from .RSAnalyzer import RSAnalyzer
-from .ResponseSurfaces import ResponseSurfaces
+
 from .Common import Common
+from .ResponseSurfaces import ResponseSurfaces
+from .RSAnalyzer import RSAnalyzer
+from .UQAnalysis import UQAnalysis
+from .UQRSAnalysis import UQRSAnalysis
 
 
 class RSValidation(UQRSAnalysis):

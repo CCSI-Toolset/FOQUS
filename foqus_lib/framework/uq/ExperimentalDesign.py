@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,20 +12,22 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
-import subprocess
 import copy
-import numpy
+import os
 import platform
+import subprocess
 import tempfile
 
+import numpy
+
+from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
+
+from .Common import Common
 from .LocalExecutionModule import LocalExecutionModule
 from .RSAnalyzer import RSAnalyzer
-from .Common import Common
 
 
 class ExperimentalDesign:
@@ -77,7 +79,7 @@ class ExperimentalDesign:
         outf.write("OUTPUT\n")
         if data.getNumOutputs() == 0:
             outf.write("   dimension = 1\n")
-            names = ["ghostOuput"]
+            names = ["ghostOutput"]
             indices = list(range(1))
             for i, name in zip(indices, names):
                 outf.write("   variable %d %s\n" % (i + 1, name))

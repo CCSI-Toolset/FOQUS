@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,19 +12,18 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import os
 from pathlib import Path
 from typing import List, Tuple
-import os
 
 import pytest
-from pytest_qt_extras import QtBot
 from PyQt5 import QtWidgets
 
-from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.ml_ai_models.mlaiSearch import ml_ai_models
 from foqus_lib.framework.session import session as FoqusSession
 from foqus_lib.gui.flowsheet.drawFlowsheet import drawFlowsheet
-from foqus_lib.framework.ml_ai_models.mlaiSearch import ml_ai_models
-
+from foqus_lib.gui.main.mainWindow import mainWindow
+from pytest_qt_extras import QtBot
 
 pytestmark = pytest.mark.gui
 
@@ -258,6 +257,34 @@ class TestMLAIPluginFlowsheetRun:
             simnode.simNameBox.currentText()
             == "mea_column_model_customnormform_scikitlearn"
         )
+
+        def test_flowsheet_run_successful(
+            self,
+            trigger_flowsheet_run_action,
+            statusbar_message: str,
+            text_when_success: str = "Finished Single Simulation... Success",
+        ):
+            assert text_when_success in statusbar_message
+
+    def test_load_and_run_measmtgenn(self, active_session, simnode):
+        pytest.importorskip("smt", reason="smt not installed")
+        # set sim name and confirm it's the correct model
+        simnode.simNameBox.setCurrentIndex(9)
+        assert simnode.simNameBox.currentText() == "mea_column_model_smtgenn"
+
+        def test_flowsheet_run_successful(
+            self,
+            trigger_flowsheet_run_action,
+            statusbar_message: str,
+            text_when_success: str = "Finished Single Simulation... Success",
+        ):
+            assert text_when_success in statusbar_message
+
+    def test_load_and_run_meajenn(self, active_session, simnode):
+        pytest.importorskip("jenn", reason="jenn not installed")
+        # set sim name and confirm it's the correct model
+        simnode.simNameBox.setCurrentIndex(8)
+        assert simnode.simNameBox.currentText() == "mea_column_model_jenn"
 
         def test_flowsheet_run_successful(
             self,

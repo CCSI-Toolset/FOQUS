@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,24 +12,27 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import tempfile
+import configparser
+import logging
+import os
 import platform
 import re
+import tempfile
+import time
+from typing import Tuple, Dict
 
-from .df_utils import load, write
-import configparser, time, os
+from dask.distributed import get_client
 import numpy as np
 import pandas as pd
+from python_tsp.exact import solve_tsp_dynamic_programming
 
 from foqus_lib.framework.uq.Common import Common
-from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
-from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
-
-
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 
+from .df_utils import load, write
 
-def save(fnames, results, elapsed_time, irsf=False):
+
+def save(fnames: Dict, results: Dict, elapsed_time: float, irsf: bool = False):
     if irsf:
         write(fnames["des"], results["des"])
         print("Designs saved to {}".format(fnames["des"]))
@@ -53,8 +56,7 @@ def save(fnames, results, elapsed_time, irsf=False):
         print("Candidate distances saved to {}".format(fnames["dmat"]))
 
 
-def run(config_file, nd, test=False):
-
+def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, float]:
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
@@ -70,6 +72,10 @@ def run(config_file, nd, test=False):
     min_vals = [float(s) for s in config["INPUT"]["min_vals"].split(",")]
 
     types = [s.strip() for s in config["INPUT"]["types"].split(",")]
+    difficulty = [s.strip() for s in config["INPUT"]["difficulty"].split(",")]
+    type_idx = types.index("Index")
+    diff_no_idx = difficulty.copy()
+    del diff_no_idx[type_idx]
     # 'Input' columns
     idx = [x for x, t in zip(include, types) if t == "Input"]
     # 'Index' column (should only be one)
@@ -85,6 +91,17 @@ def run(config_file, nd, test=False):
     outdir = config["OUTPUT"]["results_dir"]
 
     sf_method = config["SF"]["sf_method"]
+
+    # check whether to use dask version of algorithms
+    use_dask = False
+    try:
+        get_client()
+        use_dask = True
+    except ValueError:
+        logging.getLogger("foqus." + __name__).warning(
+            "Unable to load Dask client, continuing without it using original algorithms"
+        )
+        pass
 
     if sf_method == "nusf":
         # 'Weight' column (should only be one)
@@ -112,7 +129,10 @@ def run(config_file, nd, test=False):
             "mwr_values": mwr_values,
             "scale_method": scale_method,
         }
-        from .nusf import criterion
+        if use_dask:
+            from .nusf_dask import criterion
+        else:
+            from .nusf import criterion
 
     if sf_method == "usf":
         scl = np.array([ub - lb for ub, lb in zip(max_vals, min_vals)])
@@ -121,7 +141,10 @@ def run(config_file, nd, test=False):
             "xcols": idx,
             "scale_factors": pd.Series(scl, index=include),
         }
-        from .usf import criterion
+        if use_dask:
+            from .usf_dask import criterion
+        else:
+            from .usf import criterion
 
     if sf_method == "irsf":
         args = {
@@ -161,8 +184,12 @@ def run(config_file, nd, test=False):
             return results["t1"], results["t2"]
         else:
             t0 = time.time()
-            _results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+            criterion(cand, args, nr, nd, mode=mode, hist=hist)
             elapsed_time = time.time() - t0
+            if use_dask:
+                return (
+                    elapsed_time - 1.4
+                )  # Dask startup skews the test results so remove that
             return elapsed_time
 
     # otherwise, run sdoe for real
@@ -180,6 +207,10 @@ def run(config_file, nd, test=False):
                 "dmat": os.path.join(outdir, "nusf_dmat_{}.npy".format(suffix)),
             }
             save(fnames[mwr], results[mwr], elapsed_time)
+            if all(x == "Hard" for x in diff_no_idx):
+                rank(fnames[mwr])
+            elif any(x == "Hard" for x in diff_no_idx):
+                order_blocks(fnames[mwr], difficulty)
 
     if sf_method == "usf":
         suffix = "d{}_n{}_{}".format(nd, nr, "+".join(include))
@@ -188,6 +219,10 @@ def run(config_file, nd, test=False):
             "dmat": os.path.join(outdir, "usf_dmat_{}.npy".format(suffix)),
         }
         save(fnames, results, elapsed_time)
+        if all(x == "Hard" for x in diff_no_idx):
+            rank(fnames)
+        elif any(x == "Hard" for x in diff_no_idx):
+            order_blocks(fnames, difficulty)
 
     if sf_method == "irsf":
         fnames = {}
@@ -208,8 +243,52 @@ def run(config_file, nd, test=False):
     return fnames, results, elapsed_time
 
 
-def dataImputation(fname, y, rsMethodName, eval_fname):
+def rank(fnames):
+    """return fnames ranked"""
+    dist_mat = np.load(fnames["dmat"])
 
+    permutation, _distance = solve_tsp_dynamic_programming(dist_mat)
+
+    # retrieve ranked list
+    cand = load(fnames["cand"])
+    ranked_cand = cand.loc[permutation]
+
+    # save the output
+    fname_ranked = fnames["cand"]
+
+    write(fname_ranked, ranked_cand)
+
+    return fname_ranked
+
+
+def order_blocks(fnames, difficulty):
+    # load candidate set
+    cand = load(fnames["cand"])
+    cols = list(cand.columns)
+
+    diff_arr = np.array(difficulty)
+    diff_idx_arr = np.where(diff_arr == "Hard")[0]
+    diff_idx = list(diff_idx_arr)
+
+    col_order = []
+    for i in diff_idx:
+        col_order.append(cols[i])
+
+    sorted_cand = cand.sort_values(col_order)
+
+    # save the output
+    fname_blocks = fnames["cand"]
+
+    write(fname_blocks, sorted_cand)
+
+    return fname_blocks
+
+
+def dataImputation(fname: str, y: int, rsMethodName: str, eval_fname: str) -> str:
+    """
+    args: fname, y, rsMethodName, eval_fname
+    returns: outfile filename
+    """
     rsIndex = ResponseSurfaces.getEnumValue(rsMethodName)
 
     # write script
@@ -242,10 +321,15 @@ def dataImputation(fname, y, rsMethodName, eval_fname):
 
     outfile = "eval_sample"
     assert os.path.exists(outfile)
+
     return outfile
 
 
-def readEvalSample(fileName):
+def readEvalSample(fileName: str) -> Tuple[np.ndarray, np.ndarray, int, int]:
+    """
+    args: fileName
+    returns: inputArray, outputArray, numInputs, numOutputs
+    """
     f = open(fileName, "r")
     lines = f.readlines()
     f.close()

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,33 +15,35 @@
 """ #FOQUS_SURROGATE_PLUGIN
 
 Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the surrogate class.
 
 * Plugin wprapper for the ACOSSO surrogate model builer.
-* ACOSSO is excuted in R and a working R install with the quadprog
+* ACOSSO is executed in R and a working R install with the quadprog
   package is required.  The user must install R
 * ACOSSO Ref:
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import numpy as np
-import threading
-import queue
-import logging
-import subprocess
-import os
-import sys
 import copy
-import traceback
-import time
-import shutil
-import re
 import json
+import logging
+import os
+import queue
+import re
+import shutil
+import subprocess
+import sys
+import threading
+import time
+import traceback
+from multiprocessing.connection import Client
+
+import numpy as np
+
+from foqus_lib.framework.listen import listen
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
-from foqus_lib.framework.listen import listen
-from multiprocessing.connection import Client
 
 
 def checkAvailable():

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,24 +12,26 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import copy
 import math
 import os
+import platform
+import re
 import subprocess
 import tempfile
-import platform
-import copy
-import re
+
 import numpy as np
 from scipy import stats
+
+from .Common import Common
+from .Distribution import Distribution
+from .LocalExecutionModule import LocalExecutionModule
 from .Model import Model
+from .Plotter import Plotter
+from .RawDataAnalyzer import RawDataAnalyzer
+from .ResponseSurfaces import ResponseSurfaces
 from .SampleData import SampleData
 from .SamplingMethods import SamplingMethods
-from .Distribution import Distribution
-from .Common import Common
-from .LocalExecutionModule import LocalExecutionModule
-from .ResponseSurfaces import ResponseSurfaces
-from .RawDataAnalyzer import RawDataAnalyzer
-from .Plotter import Plotter
 
 
 class RSAnalyzer:
@@ -456,7 +458,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(
@@ -811,7 +813,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             if data.getNamesIncludeNodes():
@@ -922,7 +924,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(
@@ -1171,7 +1173,7 @@ class RSAnalyzer:
             if platform.system() == "Windows":
                 userRegressionFile = win32api.GetShortPathName(userRegressionFile)
             f.write("%s\n" % userRegressionFile)  # driver file
-            f.write("y\n")  # apply auxillary arg (output name)
+            f.write("y\n")  # apply auxiliary arg (output name)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(
@@ -1342,7 +1344,7 @@ class RSAnalyzer:
                 if platform.system() == "Windows":
                     userRegressionFile = win32api.GetShortPathName(userRegressionFile)
                 f.write("%s\n" % userRegressionFile)  # driver file
-                f.write("y\n")  # apply auxillary arg (output name)
+                f.write("y\n")  # apply auxiliary arg (output name)
                 outName = outVarNames[y - 1]
                 outName = Common.getUserRegressionOutputName(
                     outName, userRegressionFile, data
@@ -1599,7 +1601,7 @@ class RSAnalyzer:
         # apply this function for initializing the prior bounds
         # make sure parameters are passed in as floats
 
-        from scipy.stats import norm, lognorm, triang, gamma, beta, expon, weibull_min
+        from scipy.stats import beta, expon, gamma, lognorm, norm, triang, weibull_min
 
         if pdf == Distribution.NORMAL:
             # norm.pdf(x) = exp(-x**2/2)/sqrt(2*pi)

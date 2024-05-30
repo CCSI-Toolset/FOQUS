@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for NLopt
@@ -25,17 +25,19 @@ text).  They also need to have a .py extension and inherit the optimization clas
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import time  # Some of these things are left over from CMA-ES
 import copy  # too lazy to sort out which I really need in here
 import csv
+import logging
+import math
+import os
 import pickle
 import queue
 import sys
-import logging
-import math
-import numpy
-import os
+import time  # Some of these things are left over from CMA-ES
 import traceback
+
+import numpy
+
 from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the NLopt module is available and import it if possible.
@@ -83,11 +85,11 @@ class opt(optimization):
             dat = foqus session object
         """
         optimization.__init__(self, dat)  # base class __init__
-        self.name = "NLopt"  # Plugin name is actually comming from file
+        self.name = "NLopt"  # Plugin name is actually coming from file
         # name at this point so give file same name
         # (with a *.py).
         # Next is the description of the optimization
-        # Unfortunatly not all the HTML below works
+        # Unfortunately not all the HTML below works
         self.methodDescription = (
             "<html>\n<head>"
             ".hangingindent {\n"
@@ -108,7 +110,7 @@ class opt(optimization):
         self.available = nlopt_available  # If plugin is available
         self.description = "NLopt"  # Short description
         self.mp = False  # Can evaluate objectives in parallel?
-        self.mobj = False  # Can do multi-objective optimzation?
+        self.mobj = False  # Can do multi-objective optimization?
         self.minVars = 2  # Minimum number of decision variables
         self.maxVars = 10000  # Maximum number of decision variables
         #
@@ -143,7 +145,7 @@ class opt(optimization):
             dtype=int,
             desc=(
                 "Initial Population size for CRS2 or ISRES other "
-                "methods do not use this paramter (<= 0 for default)"
+                "methods do not use this parameter (<= 0 for default)"
             ),
         )
         self.options.add(
@@ -253,7 +255,7 @@ class opt(optimization):
         This is the function for the solver to call to get function
         evaluations.  This should run the FOQUS flowsheet also can
         stick in other dignostic output.  Whatever you like.  Since
-        only the DFO solvers are made avalable the grad arg can be
+        only the DFO solvers are made available the grad arg can be
         ignored.  If there is an exception in here optimization
         terminates (NLopt behavior).
         """
@@ -261,10 +263,10 @@ class opt(optimization):
         # because this function can return there results of multiple
         # evaluations here we just want one.  If FOQUS is setup right
         # this could do function evaluations in parallel (not with NLopt
-        # because NLopt doesn't suport it))
+        # because NLopt doesn't support it))
         objValues, cv, pv = self.prob.runSamples([x], self)
-        # objValues = list of lists of ojective function values
-        #             first list is for mutiple evaluations second list
+        # objValues = list of lists of objective function values
+        #             first list is for multiple evaluations second list
         #             is for multi-objective.  In this case one evaluation
         #             one objective [[obj]].
         # cv = constraint violations
@@ -272,7 +274,7 @@ class opt(optimization):
 
         if self.stop.isSet():  # if user pushed stop button
             self.userInterupt = True
-            raise Exception("User interupt")  # raise exeception to stop
+            raise Exception("User interrupt")  # raise exception to stop
         obj = float(objValues[0][0])  # get objective
         # See is objective is better and update best solution found if
         # so this is used to update the flowsheet, plots, and messages
@@ -284,7 +286,7 @@ class opt(optimization):
             # flowsheet display needs updated
             self.resQueue.put(["BEST", [self.bestSoFar], x])
         #        else:
-        # Spit out objective for objective plot coresponding to each function evaluation/iteration
+        # Spit out objective for objective plot corresponding to each function evaluation/iteration
         self.resQueue.put(["IT", self.prob.iterationNumber, obj])
         # Spit out message to messages window after exery 10 evaluations
         if not self.prob.iterationNumber % 10:
@@ -294,7 +296,7 @@ class opt(optimization):
         # Count iteration, (in this case actually evaluations)
         self.prob.iterationNumber += 1
         # Save flowsheet at certain intervals with best solution so
-        # far stored.  If something bad happes and optimzation stops
+        # far stored.  If something bad happes and optimization stops
         # at least you will have that.  Restart files are not possible
         # with NLopt, but can do with some solvers.
         if self.bkp_int > 0.03 and (time.time() - self.bkp_timer) / 3600 > self.bkp_int:
@@ -338,7 +340,7 @@ class opt(optimization):
         upper = self.options["upper"].value  # These are for scaled vars
         lower = self.options["lower"].value  # usually 0 to 10 not usually
         # changed but could be
-        # If upper and/or lower are scalar conver to array with the
+        # If upper and/or lower are scalar convert to array with the
         # number of variables.
         if type(upper) == float or type(upper) == int:
             upper = upper * numpy.ones(n)
@@ -390,11 +392,11 @@ class opt(optimization):
         # The solver is all setup and ready to go
         start = time.time()  # get start time
         self.userInterupt = False  #
-        self.bestSoFar = float("inf")  # set inital best values
+        self.bestSoFar = float("inf")  # set initial best values
         self.bestSoFarList = []  # List of all previous best so far values
         #        self.bestSoFarList.append(self.bestSoFar)
 
-        # self.prob is the optimzation problem. get it ready
+        # self.prob is the optimization problem. get it ready
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters()  #
         self.prob.solverStart = start
@@ -407,12 +409,12 @@ class opt(optimization):
         opt.set_min_objective(self.f)  # set the solver objective function
         self.prob.prep(self)  # get problem ready for solving
         self.bkp_timer = time.time()  # timer for flowseet backup
-        # Run the optimzation
+        # Run the optimization
         x = opt.optimize(xinit)
-        # Print some final words now that optimzation is done.
+        # Print some final words now that optimization is done.
         eltime = time.time() - start
         self.msgQueue.put(
-            "{0}, Total Elasped Time {1}s, Obj: {2}".format(
+            "{0}, Total Elapsed Time {1}s, Obj: {2}".format(
                 self.prob.iterationNumber, math.floor(eltime), self.bestSoFar
             )
         )

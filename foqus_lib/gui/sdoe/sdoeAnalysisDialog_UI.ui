@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1440</width>
-    <height>1027</height>
+    <height>994</height>
    </rect>
   </property>
   <property name="font">
@@ -593,6 +593,11 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
            </column>
            <column>
             <property name="text">
+             <string>Difficulty</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
              <string>Min</string>
             </property>
            </column>
@@ -1049,7 +1054,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="2" column="2">
+        <item row="1" column="2">
          <widget class="QPushButton" name="deleteAnalysisButton">
           <property name="font">
            <font>
@@ -1091,22 +1096,6 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
           </property>
           <property name="text">
            <string>Go Back to Generate Design</string>
-          </property>
-          <property name="autoDefault">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="orderAnalysisButton">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Order Design</string>
           </property>
           <property name="autoDefault">
            <bool>false</bool>

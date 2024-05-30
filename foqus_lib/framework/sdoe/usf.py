@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,27 +12,62 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from operator import lt, gt
-import numpy as np
-from .distance import compute_dist
 import time
+from operator import gt, lt
+from typing import Optional, Tuple, List, TypedDict
+
+import numpy as np
+import pandas as pd
+
+from .distance import compute_dist
 
 
-def compute_min_dist(mat, scl, hist_xs=None):
+def compute_min_dist(
+    mat: np.ndarray, scl: np.ndarray, hist_xs: Optional[np.ndarray] = None
+) -> Tuple[np.ndarray, float]:
+    """
+    Computes minimum distance
+    args: mat, scl, hist_xs
+    returns: dmat, min_dist
+    """
     dmat = compute_dist(mat, scl=scl, hist_xs=hist_xs)
     min_dist = np.min(dmat, axis=0)
     return dmat, min_dist
 
 
 def criterion(
-    cand,  # candidates
-    args,  # scaling factors for included columns
-    nr,  # number of restarts (each restart uses a random set of <nd> points)
-    nd,  # design size <= len(candidates)
-    mode="maximin",
-    hist=None,
+    cand: pd.DataFrame,
+    args: TypedDict("args", {"icol": str, "xcols": List, "scale_factors": pd.Series}),
+    nr: int,
+    nd: int,
+    mode: str = "maximin",
+    hist: Optional[pd.DataFrame] = None,
+    rand_gen: np.random.Generator = np.random.default_rng(),
+) -> TypedDict(
+    "results",
+    {
+        "best_cand": pd.DataFrame,
+        "best_index": np.ndarray,
+        "best_val": float,
+        "best_dmat": np.ndarray,
+        "dmat_cols": List,
+        "mode": str,
+        "design_size": int,
+        "num_restarts": int,
+        "elapsed_time": float,
+    },
 ):
+    """
+    args:
+    cand - candidates dataframe
+    args - scaling factors for included columns
+    nr - number of restarts (each restart uses a random set of <nd> points)
+    nd - design size <= len(candidates)
+    mode - maximin by default
+    hist - previous data dataframe
 
+    returns: dictionary with results
+    """
     mode = mode.lower()
     assert mode in ["maximin", "minimax"], "MODE {} not recognized.".format(mode)
     if mode == "maximin":
@@ -63,11 +98,8 @@ def criterion(
 
     t0 = time.time()
     for i in range(nr):
-
-        print("Random start {}".format(i))
-
         # sample without replacement <nd> indices
-        rand_index = np.random.choice(cand.index, nd, replace=False)
+        rand_index = rand_gen.choice(cand.index, nd, replace=False)
         # extract the <nd> rows
         rand_cand = cand.loc[rand_index]
         # extract the relevant columns (of type 'Input' only) for dist computations

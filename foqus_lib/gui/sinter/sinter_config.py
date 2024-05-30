@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,19 +12,20 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
+import hashlib
 import json
 import logging
-from PyQt5 import uic
-from PyQt5 import QtCore
+import os
+
+from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import (
-    QFileDialog,
-    QDialog,
-    QMessageBox,
     QAbstractItemView,
+    QDialog,
+    QFileDialog,
+    QMessageBox,
     QTableWidgetItem,
 )
-import hashlib
+
 import foqus_lib.gui.helpers.guiHelpers as gh
 
 _log = logging.getLogger(__name__)

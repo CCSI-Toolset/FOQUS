@@ -21,7 +21,7 @@ specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The
 
     Step 1.1 - Setup the Aspen model for flash column as FOQUS simulation node : To setup the Aspen model in the FOQUS flowsheet,
     first, create and add the SimSinter json file to turbine. Then, create a node named ‘FLASH’, and load the simulation in the node.
-    The Aspen and json files (along with the FOQUS file) can be found in the folder: **examples/tutorial_files/SM_Optimizer/Flash_Optimization**.
+    The Aspen and json files (along with the FOQUS file) can be found in the folder: :path:`examples/tutorial_files/SM_Optimizer/Flash_Optimization`.
 
     .. note:: |examples_reminder_text|
 
@@ -207,7 +207,7 @@ MEA Carbon Capture System Optimization
    The flue gas flowrate to the absorber is 2266.1 kg/hr with 17.314 % by mass CO2. It is sought to minimize the specific reboiler duty associated with the regenerator,
    by varying the CO2 loading in the lean solvent entering the absorber.
 
-   Note: The Aspen, json, and FOQUS files for this example can be found in the folder: **examples/tutorial_files/SM_Optimizer/MEA_Optimization**
+   Note: The Aspen, json, and FOQUS files for this example can be found in the folder: :path:`examples/tutorial_files/SM_Optimizer/MEA_Optimization`
 
    **Result:**
    After implementing the SM based optimization solver, the solution is:

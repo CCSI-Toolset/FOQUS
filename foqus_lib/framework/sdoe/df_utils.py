@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,20 +12,30 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+from typing import Optional, Union, Tuple, List
 import pandas as pd
 
 
-def write(fname, df, index=False):
+def write(fname: str, df: pd.DataFrame, index: bool = False) -> None:
+    """
+    Writes data frame as csv file
+    args: fname, df, index
+    returns: None, saves df to csv file
+    """
     if index:
         index_label = "__id"
     else:
         index_label = None
-    # write data frame as csv file
+
     df.to_csv(fname, index=index, index_label=index_label)  # do not write row names
 
 
-def load(fname, index=None):
-    # load file as data frame
+def load(fname: str, index: Optional[str] = None) -> pd.DataFrame:
+    """
+    Loads file as data frame
+    args: fname, index
+    returns: df
+    """
     df = pd.read_csv(fname)
     df.rename(columns=lambda x: x.strip(), inplace=True)
     if index:
@@ -33,11 +43,12 @@ def load(fname, index=None):
     return df
 
 
-def merge(fnames):
-    # merge multiple files into single data frame
-
-    if not fnames:
-        return []
+def merge(fnames: List) -> pd.DataFrame:
+    """
+    Merges multiple files into single data frame
+    args: fnames
+    returns: df
+    """
 
     dfs = [load(fname) for fname in fnames]
 
@@ -49,8 +60,14 @@ def merge(fnames):
     return df
 
 
-def check(cfiles, hfiles):
-    # aggregate files and ensure consistent columns
+def check(
+    cfiles: List, hfiles: Optional[List]
+) -> Tuple[pd.DataFrame, Union[List, pd.DataFrame]]:
+    """
+    Aggregates files and ensure consistent columns
+    args: cfiles, hfiles
+    returns: cand_df, hist_df
+    """
 
     cand_df = merge(cfiles)
     if not hfiles:

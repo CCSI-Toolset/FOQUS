@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,13 +12,17 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from foqus_lib.framework.foqusOptions.optionList import optionList
-import threading
 import copy
-import queue
-import os
-import foqus_lib.framework.uq.SurrogateParser
 import json
+import os
+import queue
+import threading
+from typing import Tuple
+
+import pandas as pd
+
+import foqus_lib.framework.uq.SurrogateParser
+from foqus_lib.framework.foqusOptions.optionList import optionList
 
 
 class surrogate(threading.Thread):
@@ -112,7 +116,7 @@ class surrogate(threading.Thread):
         """
         Set input variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist set/return default
-        If val is set and option exists returs val.
+        If val is set and option exists returns val.
             opt: string option name
             var: string variable name
             val: value to set if none use default
@@ -129,7 +133,7 @@ class surrogate(threading.Thread):
         """
         Set output variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist set/return default
-        If val is set and option exists returs val.
+        If val is set and option exists returns val.
             opt: string option name
             var: string variable name
             val: value to set if none use default
@@ -234,6 +238,18 @@ class surrogate(threading.Thread):
         else:
             self.graph = None
 
+    def getSelectedInputOutputData(
+        self, query: str = 'set == "Flowsheet"'
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        "Return a 2-ple of dataframes containing data for the currently selected input and output data"
+        input_vars, output_vars = list(self.input), list(self.output)
+        if not input_vars and output_vars:
+            pass
+            # TODO add warning
+        res = self.graph.results.query(query)
+        df = res.exportVars(inputs=input_vars, outputs=output_vars)
+        return df[input_vars], df[output_vars]
+
     def terminate(self):
         """
         This sets the stop flag to indicate that you want to stop
@@ -246,7 +262,7 @@ class surrogate(threading.Thread):
 
     def writePluginTop(self, method="Generic", comments=[], importLines=[]):
         """
-        Write the code for the top protion of a flowsheet plugin
+        Write the code for the top portion of a flowsheet plugin
         that does the standard imports and variable definitions in
         the class init.  Returns string.
         """
@@ -254,7 +270,7 @@ class surrogate(threading.Thread):
         # The first comment is needed for FOQUS to identify file as
         # a Python flowsheet model plugin.
         lines.append("# FOQUS_PYMODEL_PLUGIN")
-        # Some comments just for users lookin into the file
+        # Some comments just for users looking into the file
         lines.append("#")
         lines.append("# {0} surrogate export".format(method))
         lines.append("# THIS FILE WAS AUTOMATICALLY GENERATED.")

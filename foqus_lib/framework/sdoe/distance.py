@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,18 +12,31 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+from typing import Optional, Tuple
 import numpy as np
 
 
 def compute_dist(
-    mat,  # numpy array of shape (N, nx) and type 'float'
-    scl=None,  # [usf] numpy array of shape (nx,) and type 'float'
-    wt=None,  # [nusf] numpy array of shape (N,) and type 'float'
-    hist_xs=None,  # numpy array of shape (M, nx) and type 'float'
-    hist_wt=None,  # [nusf] numpy array of shape (M,) and type 'float'
-    val=np.inf,
-    return_sqrt=False,
-):
+    mat: np.ndarray,  # numpy array of shape (N, nx) and type 'float'
+    scl: Optional[
+        np.ndarray
+    ] = None,  # [usf] numpy array of shape (nx,) and type 'float'
+    wt: Optional[
+        np.ndarray
+    ] = None,  # [nusf] numpy array of shape (N,) and type 'float'
+    hist_xs: Optional[
+        np.ndarray
+    ] = None,  # numpy array of shape (M, nx) and type 'float'
+    hist_wt: Optional[
+        np.ndarray
+    ] = None,  # [nusf] numpy array of shape (M,) and type 'float'
+    val: float = np.inf,
+    return_sqrt: bool = False,
+) -> np.ndarray:
+    """
+    args: mat, scl, wt, hist_xs, hist_wt, val, return_sqrt
+    returns: dmat
+    """
 
     if hist_xs is not None:
         mat = np.concatenate((mat, hist_xs), axis=0)
@@ -59,14 +72,16 @@ def compute_dist(
     return dmat
 
 
-def compute_min_params(dmat):
-    # Input:
-    #   dmat - numpy array of shape (M, M) where M = N+nh
-    # Output:
-    #     md - scalar representing min(dmat)
-    #  mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
-    #  mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
+def compute_min_params(dmat: np.ndarray) -> Tuple[float, np.ndarray, int]:
+    """
+    args:
+    dmat - numpy array of shape (M, M) where M = N+nh
 
+    returns:
+    md - scalar representing min(dmat)
+    mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
+    mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
+    """
     md = np.min(dmat)
     mdpts = np.argwhere(np.triu(dmat) == md)  # check upper triangular matrix
     mties = mdpts.shape[0]  # number of points returned

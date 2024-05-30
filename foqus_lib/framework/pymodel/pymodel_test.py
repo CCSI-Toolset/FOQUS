@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -16,8 +16,9 @@
 # FOQUS_PYMODEL_PLUGIN
 
 import numpy
-from foqus_lib.framework.pymodel.pymodel import *
+
 from foqus_lib.framework.graph.nodeVars import *
+from foqus_lib.framework.pymodel.pymodel import *
 
 
 def checkAvailable():

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -22,18 +22,19 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import time
 import math
-import traceback
 import os
 import shutil
-from foqus_lib.gui.flowsheet.dataBrowserFrame import *
+import time
+import traceback
+
+from PyQt5 import QtCore, uic
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTableWidget
+
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.session.hhmmss import *
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidget
-from PyQt5.QtGui import QColor
-from PyQt5 import uic
+from foqus_lib.gui.flowsheet.dataBrowserFrame import *
 
 mypath = os.path.dirname(__file__)
 _surrogateFrameUI, _surrogateFrame = uic.loadUiType(
@@ -312,7 +313,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         pg.updateOptions()
 
         for i, btn in enumerate(pg.inputVarButtons):
-            # this is because I am beeing lazy there are two
+            # this is because I am being lazy there are two
             # preexisting buttons
             if i == 0:
                 self.ivGeneralButton1.setText(btn[0])

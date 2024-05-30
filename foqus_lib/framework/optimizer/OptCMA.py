@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,14 +15,14 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * This is an example of an optimization plugin for FOQUS, CMA
   optimization solver from https://www.lri.fr/~hansen/cmaes_inmatlab.html#python
-* This optimiztion plugin is basically just a wrapper for the available
+* This optimization plugin is basically just a wrapper for the available
   CMA code to make it work with FOQUS.
-* CMA-ES Refrence:
+* CMA-ES Reference:
 
   Hansen, N. (2006). The CMA Evolution Strategy: A Comparing Review.
        In J.A. Lozano, P. Larranga, I. Inza and E. Bengoetxea (eds.).
@@ -32,17 +32,19 @@ text).  They also need to have a .py extension and inherit the optimization clas
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import time
 import copy
 import csv
+import logging
+import math
+import os
 import pickle
 import queue
 import sys
-import logging
-import math
-import numpy
-import os
+import time
 import traceback
+
+import numpy
+
 from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the CMA-ES python script is available and import it if
@@ -137,7 +139,7 @@ class opt(optimization):
             name="tolstagnation",
             default=None,
             desc="stop after this number of iterations without "
-            "improvment (null solver default, "
+            "improvement (null solver default, "
             "100+100*N**1.5/popsize, N = number of variables)",
             dtype=float,
         )
@@ -314,7 +316,7 @@ class opt(optimization):
             it = 0  # the iteration index
             bestSoFar = numpy.array(numpy.inf)
         #
-        # Put initial progress message out, jus says no samples have run
+        # Put initial progress message out, just says no samples have run
         # and on first iteration (or whatever iteration from restart)
         #
         self.resQueue.put(["PROG", 0, popsize, 0, it, 0, 0])
@@ -370,7 +372,7 @@ class opt(optimization):
             #
             # Create a file that just logs the basic objective function
             # information, this will give you some performance info
-            # That can be analized later.
+            # That can be analyzed later.
             if objRecFile:
                 with open(objRecFile, "ab") as orf:
                     orf.write(
@@ -421,7 +423,7 @@ class opt(optimization):
             eltime = time.time() - start
             r = es.result  # get the results from CMA-ES
             self.msgQueue.put(
-                "{0}, Total Elasped Time {1}s, Obj: {2}".format(
+                "{0}, Total Elapsed Time {1}s, Obj: {2}".format(
                     it, math.floor(eltime), r[1]
                 )
             )
@@ -437,7 +439,7 @@ class opt(optimization):
             bkp=False,
         )
         #
-        # Print out final solver mesages about the results
+        # Print out final solver messages about the results
         #
         if it > 0:
             r = es.result  # get the results from CMA-ES

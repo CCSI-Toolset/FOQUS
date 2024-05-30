@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,23 +15,26 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 """
+import copy
+import csv
+import logging
+import math
+import os
+import queue
+import sys
+
 #
 # PSUADE
 #
 import time
-import copy
-import csv
-import queue
-import sys
-import logging
-import math
-import numpy
-import os
 import traceback
+
+import numpy
+
 from foqus_lib.framework.optimizer.optimization import optimization
 
 
@@ -79,7 +82,7 @@ class opt(optimization):
             "<p><b>PSUADE Optimiation Library</b></p></html>"
         )
         self.available = True
-        self.description = "PSUADE Optimzation solvers"
+        self.description = "PSUADE Optimization solvers"
         self.mp = False  # can be parallel?
         self.mobj = False  # handles multiobjective?
         self.minVars = 2  # minimum number of decision variables

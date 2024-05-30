@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,48 +12,40 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
-import os, re
 import math
-from .nodeToUQModel import nodeToUQModel
-from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
-from foqus_lib.framework.listen import listen
-from multiprocessing.connection import Client
+import os
+import re
 import shutil
+import sys
+from multiprocessing.connection import Client
 
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from PyQt5 import QtCore, uic
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QFileDialog,
+    QGroupBox,
+    QMessageBox,
+    QRadioButton,
+    QTableWidgetItem,
+    QVBoxLayout,
+)
 
-if __name__ == "__main__":
-    import imp
-
-    # f, filename, desc = imp.find_module('foqus_lib', ['c:\\Users\\ou3.THE-LAB\\Documents\\CCSI\\foqus\\'])
-    # f, filename, desc = imp.find_module('foqus_lib', ['/g/g12/ou3/ccsi/foqus/'])
-    # f, filename, desc = imp.find_module('foqus_lib', ['/g/g19/ng30/ts6/foqus/'])
-    f, filename, desc = imp.find_module("foqus_lib", ["c:\\CCSI\\foqus"])
-    foqus_lib = imp.load_module("foqus_lib", f, filename, desc)
-
+from foqus_lib.framework.listen import listen
+from foqus_lib.framework.ouu.OUU import OUU
 from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.uq.LocalExecutionModule import *
 
 # from foqus_lib.gui.uq.Preview import *
 # from InputPriorTable import InputPriorTable
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-from foqus_lib.framework.ouu.OUU import OUU
 
-from PyQt5 import QtCore, uic
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (
-    QApplication,
-    QFileDialog,
-    QMessageBox,
-    QTableWidgetItem,
-    QRadioButton,
-    QComboBox,
-    QGroupBox,
-    QVBoxLayout,
-)
+from .nodeToUQModel import nodeToUQModel
 
 mypath = os.path.dirname(__file__)
 _ouuSetupFrameUI, _ouuSetupFrame = uic.loadUiType(
@@ -679,7 +671,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.objXPoints = []
         self.objYPoints = []
         if "objFigAx" in self.__dict__ and len(self.objFigAx.lines) > 0:
-            self.objFigAx.lines.clear()
+            for line in self.objFigAx.lines:
+                line.remove()
             self.objFigAx.relim()
             # self.objFigAx.set_xlim([0.0, 1.0])
             self.objCanvas.draw()
@@ -688,7 +681,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.inputPoints = [[] for i in range(len(self.inputPoints))]
             for i in range(1, len(self.inputPoints)):
                 if len(self.inputPlots[i - 1]["ax"].lines) > 0:
-                    self.inputPlots[i - 1]["ax"].lines = []
+                    for line in self.inputPlots[i - 1]["ax"].lines:
+                        line.remove()
                     self.inputPlots[i - 1]["canvas"].draw()
 
     def scrollProgressPlots(self, value):
@@ -1021,9 +1015,9 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                     Nrs = (
                         self.z4SubsetSize_spin.value()
                     )  # add spinbox to get number of samples to generate RS
-                    x4sample[
-                        "nsamplesRS"
-                    ] = Nrs  # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
+                    x4sample["nsamplesRS"] = (
+                        Nrs  # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
+                    )
 
             #  TODO: Get rid of usebobyqa option. Behavior should be as if usebobyqa is always false
             # TODO: Change GUI to display optimizer and optimizing with bobyqa

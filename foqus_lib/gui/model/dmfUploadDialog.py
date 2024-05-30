@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -17,32 +17,40 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import foqus_lib.gui.helpers.guiHelpers as gh
-import os
 import json
 import logging
+import os
 import platform
 import subprocess
+from io import StringIO
+from urllib.request import urlopen
+
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
 
 try:
     # pylint: disable=import-error
-    from dmf_lib.dmf_browser import DMFBrowser
+    from dmf_lib.common.common import (
+        DMF_HOME,
+        DMF_LITE_REPO_NAME,
+        PROP_HEADER,
+        PROPERTIES_EXT,
+        REPO_PROPERTIES_UNIX_PATH,
+        REPO_PROPERTIES_WIN_PATH,
+        REQUESTS_TIMEOUT,
+        SC_TITLE,
+        SHARE_LOGIN_EXT,
+        UNIX_PATH_SEPARATOR,
+        UTF8,
+        WIN_PATH_SEPARATOR,
+        WINDOWS,
+    )
+    from dmf_lib.common.methods import Common
     from dmf_lib.dialogs.select_repo_dialog import SelectRepoDialog
     from dmf_lib.dialogs.status_dialog import StatusDialog
-    from dmf_lib.common.methods import Common
-    from dmf_lib.common.common import DMF_HOME
-    from dmf_lib.common.common import DMF_LITE_REPO_NAME
-    from dmf_lib.common.common import PROP_HEADER
-    from dmf_lib.common.common import PROPERTIES_EXT
-    from dmf_lib.common.common import REPO_PROPERTIES_UNIX_PATH
-    from dmf_lib.common.common import REPO_PROPERTIES_WIN_PATH
-    from dmf_lib.common.common import REQUESTS_TIMEOUT
-    from dmf_lib.common.common import SC_TITLE
-    from dmf_lib.common.common import SHARE_LOGIN_EXT
-    from dmf_lib.common.common import UNIX_PATH_SEPARATOR
-    from dmf_lib.common.common import UTF8
-    from dmf_lib.common.common import WIN_PATH_SEPARATOR
-    from dmf_lib.common.common import WINDOWS
+    from dmf_lib.dmf_browser import DMFBrowser
 
     useDMF = True
 except ImportError:
@@ -50,11 +58,6 @@ except ImportError:
         "Failed to import or launch DMFBrowser"
     )
     useDMF = False
-from urllib.request import urlopen
-from io import StringIO
-
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog, QLineEdit
 
 mypath = os.path.dirname(__file__)
 _dmfUploadDialogUI, _dmfUploadDialog = uic.loadUiType(
@@ -214,9 +217,9 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         """
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
-        # stored up sent signals.  But they happen after fnction returns
+        # stored up sent signals.  But they happen after function returns
         # so can't figure out how to block them.  launch process in a
-        # seperate thread?
+        # separate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
         exepath = os.path.join(exepath, "SinterConfigGUI.exe")
         tmp_file = os.path.abspath("temp\\sc_out.txt")
@@ -420,11 +423,11 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         # if selected and drop the indexes for those rows
         if 0 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for configuration"
+                self, "Warning", "Won't set relative path for configuration"
             )
         if 1 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for model"
+                self, "Warning", "Won't set relative path for model"
             )
         rows.discard(0)
         rows.discard(1)

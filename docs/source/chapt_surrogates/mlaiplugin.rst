@@ -1,3 +1,5 @@
+.. _mlaiplugin:
+
 Machine Learning & Artificial Intelligence Flowsheet Model Plugins
 ==================================================================
 
@@ -22,21 +24,19 @@ launched.
   Keras SavedModel format (folder containing .pb data files), or serialized
   to an architecture dictionary (.json) with separately saved model weights
   (.h5). Additionally, this tool supports PyTorch models saved in the standard
-  format (.pt) and Scikit-learn models serialized in the standard Python pickle
-  format (.pkl). The examples folder contains demonstrative training and class
-  scripts for models containing no custom layer (see below for more information
-  on adding custom layers), a custom layer with a preset normalization option
+  format (.pt), and Scikit-learn and Surrogate Modeling Toolbox models serialized
+  in the standard Python pickle format (.pkl). The examples folder contains demonstrative training and class scripts for models containing no custom layer (see below for more information on adding custom layers), a custom layer with a preset normalization option
   and a custom layer with a custom normalization function, as well as models
   saved in all supported file formats. To use this tool, users must train and
-  export a machine leanring model and place the file in the appropriate folder
+  export a machine learning model and place the file in the appropriate folder
   *user_ml_ai_plugins* in the working directory, as shown below. Optionally,
   users may save Keras models with custom attributes to display on the node,
   such as variable labels and bounds. While training a Keras model with custom
   attributes is not required to use the plugin tool, users must provide the
   necessary class script if the Keras model does contain a custom object (see
-  below for further information on creating custom objects). PyTorch and
-  Scikit-learn models do not have this requirement and the class script does not
-  need to exist in the plugins folder. This model type is used in the same manner
+  below for further information on creating custom objects). PyTorch, Scikit-learn, and
+  Surrogate Modeling Toolbox models do not have this requirement and the class script
+  does not need to exist in the plugins folder. This model type is used in the same manner
   as Pymodel Plugins, per the workflow in Section :ref:`tutorial.surrogate.fs`.
 
 Custom Model Attributes
@@ -84,6 +84,19 @@ https://scikit-learn.org/stable/index.html and further information on deep learn
 capabilities as well:
 https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html#sklearn.neural_network.MLPRegressor.
 
+Surrogate Modeling Toolbox is an open-source Python package supporting a number of surrogate
+modeling methods, including gradient-enhanced neural network (GENN) models. GENN models train
+parameters by minimizing a modified Least Squares Estimator which accounts for partial
+derivative predictions, leading to better accuracy on fewer training points compared to
+non-gradient-enhanced models. Gradient methods are applicable when training use cases where
+system data is generally known, such as continuous physics-based problems like aerodynamics.
+If gradient data is not known, users may run a gradient generation tool provided within FOQUS
+and can consults the tool documentation here: :ref:`gengrad`. Users may find further information
+on GENN models within Surrogate Modeling Toolbox in the documentation:
+https://smt.readthedocs.io/en/stable/_src_docs/surrogate_models/genn.html. SMT GENN model training
+leverages an external dependency JENN (Jacobian-Enhanced Neural Networks) package which may also be
+utilized independently. Users may find further information on JENN models in the documentation: https://pypi.org/project/jenn/.
+
 The examples files located in *FOQUS.examples.other_files.ML_AI_Plugin* show how users
 may train new models or re-save loaded models with a custom layer.
 
@@ -99,7 +112,7 @@ Currently, FOQUS supports the following custom attributes:
   bounds for each output variable (default: (0, 1E5))
 - *normalized* – Boolean flag for whether the user is passing a normalized
   neural network model; to use this flag, users must train their models with
-  data normalized according to a specifc scaling form and add all input and
+  data normalized according to a specific scaling form and add all input and
   output bounds custom attributes. The section below details scaling options.
 - *normalization_form* - string flag required when *normalization* is *True*
   indicating a scaling option for FOQUS to automatically scale flowsheet-level
@@ -107,6 +120,8 @@ Currently, FOQUS supports the following custom attributes:
   The section below details scaling options.
 - *normalization_function* - optional string argument that is required when a
   'Custom' *normalization_form* is used. The section below details scaling options.
+
+.. _mlaiplugin.datanorm:
 
 Data Normalization For Neural Network Models
 --------------------------------------------
@@ -254,8 +269,7 @@ to obtain the correct output values for the entered inputs.
 To run the models, copy the appropriate model files or folders ('h5_model.h5',
 'saved_model/', 'json_model.json', 'json_model_weights.h5') and any custom layer
 scripts ('model_name.py') into the working directory folder 'user_ml_ai_models'.
-As mentioned earlier, PyTorch and Scikit-learn models only require the model file
-('pt_model.pt' or 'skl_model.pkl').
+As mentioned earlier, PyTorch, Scikit-learn and Surrogate Modeling Toolbox models only require the model file ('pt_model.pt', 'skl_model.pkl', 'smt_model.pkl', or 'jenn_model.pkl').
 For example, the model name below is 'mea_column_model' and is saved in H5 format,
 and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.h5*
 and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to

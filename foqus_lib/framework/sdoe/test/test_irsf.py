@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -17,12 +17,14 @@ Tests for sdoe/irsf
 
 See LICENSE.md for license and copyright details.
 """
+from importlib import resources
 from unittest import result
-import pytest
+
 import numpy as np
 import pandas as pd
+import pytest
+
 from foqus_lib.framework.sdoe import irsf
-from importlib import resources
 
 
 @pytest.mark.skip

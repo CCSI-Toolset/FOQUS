@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -17,23 +17,22 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import ast
 import os
-import types
 import platform
+import types
 from configparser import RawConfigParser
 from io import StringIO
-import ast
-
-from foqus_lib.gui.dialogs.tagSelectDialog import *
-from foqus_lib.framework.graph.node import *
-from foqus_lib.framework.graph.node import *
-import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-from foqus_lib.framework.uq.Distribution import Distribution
 
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit, QAbstractItemView
 from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QAbstractItemView, QInputDialog, QLineEdit, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
+from foqus_lib.framework.graph.node import *
+from foqus_lib.framework.uq.Distribution import Distribution
+from foqus_lib.gui.dialogs.tagSelectDialog import *
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
 mypath = os.path.dirname(__file__)
 _nodeDockUI, _nodeDock = uic.loadUiType(os.path.join(mypath, "nodePanel_UI.ui"))
@@ -68,8 +67,8 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.simNameBox.currentIndexChanged.connect(self.simSet)
         self.addInputButton.clicked.connect(self.addInputClicked)
         self.removeInputButton.clicked.connect(self.delInput)
-        self.valuesToDeafultsButton.clicked.connect(self.valuesToDefaults)
-        self.valuesToDeafultsButton.hide()
+        self.valuesToDefaultsButton.clicked.connect(self.valuesToDefaults)
+        self.valuesToDefaultsButton.hide()
         self.addOutputButton.clicked.connect(self.addOutputClicked)
         self.removeOutputButton.clicked.connect(self.delOutput)
         self.vexButton.clicked.connect(self.showVex)
@@ -112,9 +111,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         """
         Check if the model assigned to the node exists.  This would
         mostly be a problem when someone passes a flowsheet to
-        someone else who is using a differnt Turbine instance.  They
+        someone else who is using a different Turbine instance.  They
         may not have uploaded the models to Turbine, or may be using
-        differnt model names.
+        different model names.
         """
         if self.node.modelType == nodeModelTypes.MODEL_NONE:
             pass
@@ -587,7 +586,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
 
     def addInputClicked(self):
         """
-        The clicked signal contains will send a checked argumnet to the callback
+        The clicked signal contains will send a checked argument to the callback
         which will go into name if I directly use addInput as the callback
         """
         self.addInput()
@@ -692,7 +691,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
 
     def addOutputClicked(self):
         """
-        The clicked signal contains will send a checked argumnet to the callback
+        The clicked signal contains will send a checked argument to the callback
         which will go into name if I directly use addInput as the callback
         """
         self.addOutput()

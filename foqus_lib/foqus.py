@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -20,19 +20,20 @@ John Eslick, Carnegie Mellon University, 2014
 Keith Beattie, Lawrence Berkeley National Labs, 2020
 """
 
-# Imports
-import signal
-import uuid
-import sys
 import argparse
-import time
 import json
 import logging
 
+# Imports
+import signal
+import sys
+import time
+import uuid
+
 # FOQUS imports
 import foqus_lib.version.version as ver  # foqus version and other info
-from foqus_lib.framework.session.session import *
 from foqus_lib.framework.listen.listen import foqusListener2
+from foqus_lib.framework.session.session import *
 from foqus_lib.gui.make_shortcut import makeShortcut
 
 loadGUI = False
@@ -56,7 +57,10 @@ def guiImport(mpl_backend="Qt5Agg"):
     global PyQt5
     # GUI Imports
     try:  # Check if the PySide libraries are available
+        import matplotlib
         import PyQt5
+        import PyQt5.QtCore
+        import PyQt5.QtGui
 
         # QtWidgets, QtGui, and QtCore are used in this module,
         # but they might not be available in PyQt5 without importing them first
@@ -64,9 +68,6 @@ def guiImport(mpl_backend="Qt5Agg"):
         # from the imports in foqus_lib.framework.session.session
         # to be on the safe side, we run these imports explicitly here, too
         import PyQt5.QtWidgets
-        import PyQt5.QtGui
-        import PyQt5.QtCore
-        import matplotlib
 
         matplotlib.use(mpl_backend)
         matplotlib.rcParams["backend"] = mpl_backend
@@ -154,7 +155,7 @@ def startGUI(
         showSplash: if false don't show splash screen
         app: if already created pyside app to show message use it
         showUQ: Show the UQ tab
-        showOpt: Show the optimzation tab
+        showOpt: Show the optimization tab
         showBasicDataTab: Show the Basic Data tab
         ts: A testing script to automatiacally run when GUI starts.
     """
@@ -208,7 +209,7 @@ def logException(etype, evalue, etrace):
             "unhandled exception", exc_info=(etype, evalue, etrace)
         )
         if foqus_application:
-            # just incase the exception happend when
+            # just in case the exception happened when
             # cursor was set to waiting type set to normal
             foqus_application.restoreOverrideCursor()
             # Now show error in a message box
@@ -231,8 +232,8 @@ def signal_handler(signal, frame):
     A signal handler to cause a siginal to raise a keyboardinterupt exception.
     Used to override a default signal like SIGINT so the FOQUS consumer process
     can shutdown cleanly. The FOQUS consumer catches the keyboardinterupt
-    exception as one (slighlty unreliable) way to shut down.  Seems ctrl-c
-    causes keyboard interupt exception and SIGINT signal, hense need to change
+    exception as one (slightly unreliable) way to shut down.  Seems ctrl-c
+    causes keyboard interrupt exception and SIGINT signal, hence need to change
     SIGINT handler.
     """
     raise KeyboardInterrupt()
@@ -255,7 +256,7 @@ def main(args_to_parse=None):
     try:
         turbine.commands._setup_logging.done = True
     except:
-        logging.getLogger("foqus." + __name__).exception("Cannot finde turbine module")
+        logging.getLogger("foqus." + __name__).exception("Cannot find turbine module")
     app = None  # Qt application if I need to display message boxes.
     ## Setup the command line arguments
     parser = argparse.ArgumentParser()
@@ -347,7 +348,21 @@ def main(args_to_parse=None):
     parser.add_argument(
         "-s", "--runUITestScript", help="Load and run a user interface test script"
     )
+    parser.add_argument(
+        "--sdoe-use-dask",
+        action="store_true",
+        help="Use Dask for parallelizing SDoE calculations",
+        dest="sdoe_use_dask",
+    )
+
     args = parser.parse_args(args=args_to_parse)
+    if args.sdoe_use_dask:
+        import dask.config as dconf
+        from dask.distributed import Client
+
+        Client()  # n_workers=4, threads_per_worker=1)
+        dconf.set({"dataframe.convert-string": False})
+
     # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead
     # or relative to the working dir
@@ -362,8 +377,10 @@ def main(args_to_parse=None):
         sys.exit(makeShortcut())
     if args.terminateConsumer:
         try:
-            from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
-            from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer
+            from foqus_lib.framework.sim.turbineLiteDB import (
+                keepAliveTimer,
+                turbineLiteDB,
+            )
 
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
@@ -379,8 +396,10 @@ def main(args_to_parse=None):
             sys.exit(1)
     elif args.addTurbineApp:
         try:
-            from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
-            from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer
+            from foqus_lib.framework.sim.turbineLiteDB import (
+                keepAliveTimer,
+                turbineLiteDB,
+            )
 
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
@@ -596,11 +615,10 @@ def main(args_to_parse=None):
         listener.start()
         listener.join()
     elif args.consumer:
-        from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
-        from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer
+        from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer, turbineLiteDB
 
         load_gui = False
-        # Make ctrl-c do nothing but and SIGINT donothing but interupt
+        # Make ctrl-c do nothing but and SIGINT donothing but interrupt
         # the loop
         signal.signal(signal.SIGINT, signal_handler)
         # Register consumer TurbineLite DB
@@ -819,7 +837,7 @@ def main(args_to_parse=None):
             if guid:
                 try:
                     db.add_message(
-                        "consumer={0}, stopping consumer keyboard interupt".format(
+                        "consumer={0}, stopping consumer keyboard interrupt".format(
                             consumer_uuid
                         ),
                         guid,

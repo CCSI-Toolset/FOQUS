@@ -9,19 +9,19 @@ be single runs, part of an optimization problem, or part of a UQ
 ensemble. This tutorial provide information about sorting, filtering,
 and exporting data.
 
-The FOQUS file for this tutorial is **Simple_flow.foqus**, and
-this file is located in: **examples/tutorial_files/Flowsheets/Tutorial_4**
+The FOQUS file for this tutorial is :filename:`examples/tutorial_files/Flowsheets/Tutorial_4/Simple_flow.foqus`, and
+this file is located in :path:`examples/tutorial_files/Flowsheets/Tutorial_4`.
 
 .. note:: |examples_reminder_text|
 
-The **Simple_flow.foqus** file is
+The :filename:`examples/tutorial_files/Flowsheets/Tutorial_4/Simple_flow.foqus` file is
 similar to the one created in the tutorial Section
 :ref:`tutorial.sim.flowsheet`, but it has been run
 an additional 100 times using a UQ ensemble (see :ref:`subsec:uqt_sim`).
 
 #. Open FOQUS.
 
-#. Open the Simple_flow.foqus session from the example files.
+#. Open the :path:`examples/tutorial_files/Flowsheets/Tutorial_4/Simple_flow.foqus` session from the example files.
 
 #. Click the **Flowsheet** button from the Home window.
 

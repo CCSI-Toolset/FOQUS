@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -13,23 +13,24 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+
+import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
     QApplication,
+    QCheckBox,
+    QComboBox,
+    QFileDialog,
+    QMessageBox,
+    QSpinBox,
     QTableWidget,
     QTableWidgetItem,
-    QComboBox,
-    QCheckBox,
-    QMessageBox,
-    QAbstractItemView,
-    QSpinBox,
-    QFileDialog,
 )
-from PyQt5.QtGui import QColor
-import numpy as np
 
-from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.SampleData import *
 
 
 class InputPriorTable(QTableWidget):

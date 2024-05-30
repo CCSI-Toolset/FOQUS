@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -17,12 +17,12 @@
     to include vector variables.
 
 """
-import sys
-import json
-import copy
-from collections import OrderedDict
-import os
 import ast
+import copy
+import json
+import os
+import sys
+from collections import OrderedDict
 
 # Check that the win32com module is available and import it if possible.
 # If not, the module will not be used.

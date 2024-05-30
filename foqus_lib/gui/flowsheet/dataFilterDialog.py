@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -25,21 +25,21 @@ import os
 
 _log = logging.getLogger("foqus.{}".format(__name__))
 
-from foqus_lib.framework.sampleResults.results import *
-import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
-
 from PyQt5 import uic
+from PyQt5.QtCore import QDataStream, QEvent, QObject, QSize, Qt
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QObject, QEvent, QDataStream, QSize, Qt
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
     QApplication,
-    QMessageBox,
-    QSplitter,
     QInputDialog,
     QLineEdit,
-    QAbstractItemView,
+    QMessageBox,
+    QSplitter,
 )
+
+import foqus_lib.gui.helpers.guiHelpers as gh
+from foqus_lib.framework.sampleResults.results import *
+from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 
 mypath = os.path.dirname(__file__)
 _dataFilterDialogUI, _dataFilterDialog = uic.loadUiType(
@@ -111,11 +111,11 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.doneButton.clicked.connect(self.doneClicked)
         self.addCalcButton.clicked.connect(self.showCalcEdit)
         self.prevFilter = None
-        # Set up column list widget for help selecting fileter and sort terms
+        # Set up column list widget for help selecting filter and sort terms
         self.updateColList()
         self.colList.itemDoubleClicked.connect(self.copyCol2)
         self.colList.setDragDropMode(QAbstractItemView.DragOnly)
-        # When draging into sort and filter text boxes add text to mimedata
+        # When dragging into sort and filter text boxes add text to mimedata
         self.filterTermEdit.installEventFilter(_DropHandler(self, True))
         self.sortTermEdit.installEventFilter(_DropHandler(self, False))
         # Initially populate the dialog

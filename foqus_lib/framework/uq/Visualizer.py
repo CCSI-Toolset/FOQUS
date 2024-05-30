@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -13,16 +13,18 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
+import re
 import subprocess
 import tempfile
-import re
-import platform
+
 import numpy as np
-from .Model import Model
-from .SampleData import SampleData
-from .LocalExecutionModule import LocalExecutionModule
+
 from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .Model import Model
 from .Plotter import Plotter
+from .SampleData import SampleData
 
 
 class Visualizer:
@@ -438,7 +440,7 @@ class Visualizer:
         if rsIndex == ResponseSurfaces.USER and userRegressionFile is not None:
             f.write("1\n")  # number of basis functions
             f.write("%s\n" % userRegressionFile)  # surrogate file
-            f.write("y\n")  # apply auxillary arg (output index)
+            f.write("y\n")  # apply auxiliary arg (output index)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -20,9 +20,10 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import os
 
-from foqus_lib.gui.flowsheet.dataBrowserFrame import *
 from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog
+
+from foqus_lib.gui.flowsheet.dataBrowserFrame import *
 
 mypath = os.path.dirname(__file__)
 _dataBrowserDialogUI, _dataBrowserDialog = uic.loadUiType(

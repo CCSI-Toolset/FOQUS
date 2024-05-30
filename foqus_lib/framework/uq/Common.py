@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,19 +12,19 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
+import io
+import logging
 import os
+import platform
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
-import platform
-import logging
-import io
 
 try:
-    from PyQt5 import QtGui, QtCore, QtWidgets
+    from PyQt5 import QtCore, QtGui, QtWidgets
 
     usePyside = True
 except:
@@ -68,7 +68,7 @@ class Common(obj):
 
     @staticmethod
     def getPsuadePath():  ### OBSOLETE in this release
-        # Brenda's version of getPsuadePath(), superceded by LocalExecutionModule.getPsuadePath()
+        # Brenda's version of getPsuadePath(), superseded by LocalExecutionModule.getPsuadePath()
         fname = os.getcwd() + os.path.sep + "PSUADEPATH"
         if not os.path.exists(fname):
             error = "%s does not exist." % fname

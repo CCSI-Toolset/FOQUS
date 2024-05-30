@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -14,9 +14,10 @@
 #################################################################################
 import contextlib
 import os
-from pathlib import Path
 import shutil
 import zipfile
+from pathlib import Path
+
 import pytest
 
 
@@ -165,6 +166,8 @@ def install_ml_ai_model_files(
         ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
         other_models_base_path / "mea_column_model_customnormform_pytorch.pt",
         other_models_base_path / "mea_column_model_customnormform_scikitlearn.pkl",
+        other_models_base_path / "mea_column_model_smtgenn.pkl",
+        other_models_base_path / "mea_column_model_jenn.pkl",
     ]:
         shutil.copy2(path, models_dir)
     # unzip the zip file (could be generalized later to more files if needed)

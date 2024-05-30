@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -18,24 +18,35 @@
 Joshua Boverhof, Lawrence Berkeley National Lab
 
 """
-import socket
-import os
-import time
-import boto3, optparse
-import sys, json, signal, os, errno, uuid, threading, time, traceback
-from os.path import expanduser
-import urllib.request, urllib.error, urllib.parse
-from foqus_lib.framework.session.session import session as Session
-from foqus_lib.framework.session.session import generalSettings as FoqusSettings
-from foqus_lib.framework.graph.nodeVars import NodeVarListEx, NodeVarEx
-from foqus_lib.framework.foqusException.foqusException import *
-from foqus_lib.framework.graph.graph import Graph
-from foqus_lib.framework.plugins import pluginSearch
-from foqus_lib.framework.pymodel import pymodel
-from turbine.commands import turbine_simulation_script
+import errno
+import json
 import logging
 import logging.config
+import optparse
+import os
+import signal
+import socket
+import sys
+import threading
+import time
+import traceback
+import urllib.error
+import urllib.parse
+import urllib.request
+import uuid
+from os.path import expanduser
+
+import boto3
 import botocore.exceptions
+from turbine.commands import turbine_simulation_script
+
+from foqus_lib.framework.foqusException.foqusException import *
+from foqus_lib.framework.graph.graph import Graph
+from foqus_lib.framework.graph.nodeVars import NodeVarEx, NodeVarListEx
+from foqus_lib.framework.plugins import pluginSearch
+from foqus_lib.framework.pymodel import pymodel
+from foqus_lib.framework.session.session import generalSettings as FoqusSettings
+from foqus_lib.framework.session.session import session as Session
 
 WORKING_DIRECTORY = os.path.abspath(
     os.environ.get("FOQUS_SERVICE_WORKING_DIR", "\\ProgramData\\foqus_service")
@@ -95,7 +106,7 @@ def getfilenames(jid):
 
 
 def scrub_empty_string_values_for_dynamo(db):
-    """DynamoDB throws expection if there is an empty string in dict
+    """DynamoDB throws exception if there is an empty string in dict
     ValidationException: ExpressionAttributeValues contains invalid value:
     One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
     """
@@ -198,7 +209,7 @@ def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
 
 
 def _setup_flowsheet_turbine_node(dat, nkey, user_name):
-    """From s3 download all simulation files into AspenSinterComsumer cache directory '{working_directory\test\{simulation_guid}'.  If
+    """From s3 download all simulation files into AspenSinterConsumer cache directory '{working_directory\test\{simulation_guid}'.  If
     Simulation does not exist create one.  If Simulation does exist just s3 download all simulation files into the above cache directory.
 
     The new simulation_guid is created for all file updates to TurbineWS, so this is sidestepping that process.

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -19,19 +19,21 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import os
 import json
-import math
-import numpy as np
 import logging
-from foqus_lib.framework.pymodel.pymodel import *
-from foqus_lib.framework.graph.nodeVars import *
-from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
+import math
+import os
 from collections import OrderedDict
-from foqus_lib.framework.foqusOptions.optionList import optionList
-from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
-from foqus_lib.framework.at_dict.at_dict import AtDict
 from importlib import import_module
+
+import numpy as np
+
+from foqus_lib.framework.at_dict.at_dict import AtDict
+from foqus_lib.framework.foqusOptions.optionList import optionList
+from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
+from foqus_lib.framework.graph.nodeVars import *
+from foqus_lib.framework.pymodel.pymodel import *
+from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 
 _logger = logging.getLogger("foqus." + __name__)
 
@@ -146,29 +148,79 @@ def attempt_load_sklearn(try_imports=True):
     try:
         assert try_imports  # if False will auto-trigger exceptions
         # sklearn should be installed, but not required for non ML/AI models
-        import sklearn
         import pickle
 
-        pickle_load = pickle.load
+        skl_pickle_load = pickle.load
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
         # if sklearn is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
-        def pickle_load(*args, **kwargs):
+        def skl_pickle_load(*args, **kwargs):
             raise ModuleNotFoundError(
                 f"`load()` was called with args={args},"
                 "kwargs={kwargs} but `sklearn` is not available"
             )
 
-    return pickle_load
+    return skl_pickle_load
 
 
-# attempt to load optional dependenices for node script
+def attempt_load_smt(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # smt should be installed, but not required for non ML/AI models
+        import pickle
+
+        import smt
+
+        smt_pickle_load = pickle.load
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if smt is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def smt_pickle_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `smt` is not available"
+            )
+
+    return smt_pickle_load
+
+
+def attempt_load_jenn(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # jenn should be installed, but not required for non ML/AI models
+        import pickle
+
+        import jenn
+
+        jenn_pickle_load = pickle.load
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if jenn is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def jenn_pickle_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `jenn` is not available"
+            )
+
+    return jenn_pickle_load
+
+
+# attempt to load optional dependencies for node script
+
+# pickle is loaded identically twice so that sklearn, smt, and jenn can load
+# or fail independently of each other
 load, json_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 torch_load, torch_tensor, torch_float = attempt_load_pytorch()
-pickle_load = attempt_load_sklearn()
+skl_pickle_load = attempt_load_sklearn()
+smt_pickle_load = attempt_load_smt()
+jenn_pickle_load = attempt_load_jenn()
 
 # pylint: enable=import-error
 
@@ -237,11 +289,11 @@ class NodeEx(foqusException):
         self.codeString[21] = "Error in Python node script code"
         self.codeString[23] = "Could not convert numpy value to list"
         self.codeString[27] = "Can't read variable in results (see log)"
-        self.codeString[50] = "Node script interupt exception"
+        self.codeString[50] = "Node script interrupt exception"
         self.codeString[61] = "Unknow type string"
-        self.codeString[
-            self.ERROR_CONFIGURATION_MISSING
-        ] = "Model Missing Configuration"
+        self.codeString[self.ERROR_CONFIGURATION_MISSING] = (
+            "Model Missing Configuration"
+        )
         self.codeString[self.ERROR_NODE_FLOWSHEET] = "Node cannot be set to a flowsheet"
 
 
@@ -296,13 +348,28 @@ class pymodel_ml_ai(pymodel):
             model_input_size = self.model.n_features_in_
             model_output_size = self.model.n_outputs_
 
+        elif self.trainer == "smt":
+            # set the custom layer object
+            custom_layer = self.model.custom
+            # set the model input and output sizes
+            model_input_size = self.model.nx
+            model_output_size = self.model.ny
+
+        elif self.trainer == "jenn":
+            # set the custom layer object
+            custom_layer = self.model.custom
+            # set the model input and output sizes
+            model_input_size = self.model.parameters.n_x
+            model_output_size = self.model.parameters.n_y
+
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
                 "Unknown file type: " + self.trainer + ", this "
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
-                "trainer should be set internally to `keras`, 'torch' or "
-                "`sklearn` and should not be able to take any other value."
+                "trainer should be set internally to `keras`, `torch`, "
+                "`sklearn`, `smt`, or `jenn` and should not be able to take "
+                "any other value."
             )
 
         self.custom_layer = (
@@ -615,13 +682,30 @@ class pymodel_ml_ai(pymodel):
             self.scaled_outputs = self.model.predict(
                 np.array(self.scaled_inputs, ndmin=2)
             )[0]
+        elif self.trainer == "smt":
+            self.scaled_outputs = np.reshape(
+                self.model.predict_values(
+                    np.reshape(
+                        np.array(self.scaled_inputs, ndmin=2), (1, self.model.nx)
+                    )
+                ),
+                (self.model.ny, 1),
+            )
+        elif self.trainer == "jenn":
+            self.scaled_outputs = self.model.predict(
+                np.reshape(
+                    np.array(self.scaled_inputs, ndmin=2),
+                    (self.model.parameters.n_x, 1),
+                )
+            )
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
                 "Unknown file type: " + self.trainer + ", this "
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
-                "trainer should be set internally to `keras`, 'torch' or "
-                "`sklearn` and should not be able to take any other value."
+                "trainer should be set internally to `keras`, `torch`, "
+                "`sklearn`, `smt`, or `jenn` and should not be able to take "
+                "any other value."
             )
 
         outidx = 0
@@ -726,7 +810,7 @@ class Node:
     """
     This class stores information for graph nodes.  It also contains
     function for running a calculations and simulations associated
-    with a node.  The varaibles associated with nodes are all stored
+    with a node.  The variables associated with nodes are all stored
     at the graph level, so the parent graph of a node needs to be
     set before running any calculations, so the node knows where
     to find variables, turbine config info,...
@@ -873,7 +957,7 @@ class Node:
             default=1440.0,
             dtype=float,
             desc=(
-                "This is the ammount of time in seconds that FOQUS "
+                "This is the amount of time in seconds that FOQUS "
                 "should wait for results to come back from Turbine."
             ),
             optSet=NodeOptionSets.TURBINE_OPTIONS,
@@ -882,7 +966,7 @@ class Node:
             name="Maximum Run Time (s)",
             default=840.0,
             desc=(
-                "This is the ammount of time in seconds that FOQUS "
+                "This is the amount of time in seconds that FOQUS "
                 "should wait for results to come back from Turbine "
                 "once the simulation starts running."
             ),
@@ -897,7 +981,7 @@ class Node:
         self.options.addIfNew(
             name="Max Status Check Interval",
             default=5.0,
-            desc=("This is the maximum ammount of time between job " "status"),
+            desc=("This is the maximum amount of time between job " "status"),
             optSet=NodeOptionSets.TURBINE_OPTIONS,
         )
         self.options.addIfNew(
@@ -906,7 +990,7 @@ class Node:
             desc=(
                 "Optional, provide a path to a Trubine config to "
                 "submit models for this node to a alternative Turbine "
-                "gateway.  This can be used for special simualtions."
+                "gateway.  This can be used for special simulations."
             ),
             optSet=NodeOptionSets.TURBINE_OPTIONS,
         )
@@ -984,7 +1068,7 @@ class Node:
                 v.loadDict(var)
 
     def stringToType(self, s):
-        # only check start of string since sinter inclued dimensions
+        # only check start of string since sinter included dimensions
         # after foqus will pick up dimensions from the default value
         if s[:6] == "double":
             return float
@@ -1173,7 +1257,7 @@ class Node:
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
             ):
-                extension = ".pkl"  # this is for Sci Kit Learn models
+                extension = ".pkl"  # this is for Sci Kit Learn, SMT, and JENN models
             else:  # assume it's a folder with no extension
                 extension = ""
 
@@ -1184,9 +1268,53 @@ class Node:
             elif (
                 extension == ".pkl"
             ):  # use importlib/pickle loading syntax for SciKitLearn models
-                with open(str(self.modelName) + extension, "rb") as file:
-                    self.model = pickle_load(file)
-                trainer = "sklearn"
+                pickle_loaded = (
+                    False  # use a flag so we don't overload the model unnecessarily
+                )
+                try:  # try Scikitlearn first
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = skl_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
+
+                try:  # try SMT next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = smt_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that smt is not installed but won't just fail
+
+                try:  # try JENN next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = jenn_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that jenn is not installed but won't just fail
+
+                # now check which model type was unpickled
+                model_type_name = str(type(self.model))
+                if "sklearn" in model_type_name:
+                    trainer = "sklearn"
+                elif "smt" in model_type_name:
+                    trainer = "smt"
+                elif "jenn" in model_type_name:
+                    trainer = "jenn"
+                else:  # unsupported model type was unpickled
+                    raise AttributeError(
+                        f"Unknown model type: {model_type_name!r}. Only "
+                        "sklearn MLPRegressor, smt GENN, and JENN objects are "
+                        "currently supported."
+                    )
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1267,19 +1395,19 @@ class Node:
         the inputs.  First it does the model calculations then
         any Python post-processing calculations.  The model and
         or the post-processing calculations can be omitted.  If
-        niether are pressent the model will successfully execute
+        neither are present the model will successfully execute
         but do nothing.
         """
         self.turbineMessages = ""
         self.calcError = -1  # set error code to incomplete
         self.calcCount += 1
         self.altInput = None
-        # raise Exception("Test exeception")
+        # raise Exception("Test exception")
         if nanout:
             # Set all outputs to numpy.nan to avoid confusion about
             # whether the output value is valid.  After successful
             # completion the nan values will be replaced.  May want
-            # ouput values for initial guess though so I made this
+            # output values for initial guess though so I made this
             # optional and disabled for now.  Should check node status
             # instead of depending on nan
             for vname, var in self.outVars.items():
@@ -1308,7 +1436,7 @@ class Node:
         ):
             self.runPython()
         # If you made it here and nothing threw an exception or reset
-        # the error code, the cacluation finished succesfully
+        # the error code, the calculation finished successfully
         if self.calcError == -1:
             self.calcError = 0
 
@@ -1404,7 +1532,7 @@ class Node:
                                 idx
                             ]["value"]
         except PyCodeInterupt as e:
-            _logger.error("Node script interupt: " + str(e))
+            _logger.error("Node script interrupt: " + str(e))
             if self.calcError == -1:
                 # if no error code set go with 50
                 # otherwise the sim would appear to be successful
@@ -1614,7 +1742,7 @@ class Node:
                 self.turbineMessages = ""
             else:
                 self.turbineMessages = json.dumps(m)
-            # single quotes are bad news when trying to instert this into
+            # single quotes are bad news when trying to insert this into
             # the TurbineLite database in consumer mode so they gone
             self.turbineMessages = self.turbineMessages.replace("'", '"')
         if res and readResults and "Output" in res and res["Output"]:
@@ -1726,9 +1854,53 @@ class Node:
             elif (
                 extension == ".pkl"
             ):  # use importlib/pickle loading syntax for SciKitLearn models
-                with open(str(self.modelName) + extension, "rb") as file:
-                    self.model = pickle_load(file)
-                trainer = "sklearn"
+                pickle_loaded = (
+                    False  # use a flag so we don't overload the model unnecessarily
+                )
+                try:  # try Scikitlearn first
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = skl_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
+
+                try:  # try SMT next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = smt_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that smt is not installed but won't just fail
+
+                try:  # try JENN next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = jenn_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that jenn is not installed but won't just fail
+
+                # now check which model type was unpickled
+                model_type_name = str(type(self.model))
+                if "sklearn" in model_type_name:
+                    trainer = "sklearn"
+                elif "smt" in model_type_name:
+                    trainer = "smt"
+                elif "jenn" in model_type_name:
+                    trainer = "jenn"
+                else:  # unsupported model type was unpickled
+                    raise AttributeError(
+                        f"Unknown model type: {model_type_name!r}. Only "
+                        "sklearn MLPRegressor, smt GENN, and JENN objects are "
+                        "currently supported."
+                    )
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer

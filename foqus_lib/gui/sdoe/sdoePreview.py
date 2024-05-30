@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -14,20 +14,23 @@
 #################################################################################
 import os
 
-from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.sdoe import plot_utils
-
-# from Preview_UI import Ui_Dialog
-
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import (
-    QListWidgetItem,
     QAbstractItemView,
     QApplication,
+    QDialog,
+    QHBoxLayout,
+    QListWidgetItem,
     QTableWidgetItem,
+    QVBoxLayout,
 )
-from PyQt5.QtGui import QCursor, QColor
+
+from foqus_lib.framework.sdoe import plot_utils
+from foqus_lib.framework.uq.Model import Model
 
 mypath = os.path.dirname(__file__)
 _sdoePreviewUI, _sdoePreview = uic.loadUiType(os.path.join(mypath, "sdoePreview_UI.ui"))
@@ -141,14 +144,75 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         irsf = self.irsf
         scatterLabel = self.scatterLabel
         nImpPts = self.nImpPts
-        plot_utils.plot(
-            fname,
-            scatterLabel,
-            hname=hname,
-            show=show,
-            usf=usf,
-            nusf=nusf,
-            irsf=irsf,
-            nImpPts=nImpPts,
-        )
-        self.setModal(True)
+
+        if nusf:
+            fig1, fig2 = plot_utils.plot(
+                fname,
+                scatterLabel,
+                hname=hname,
+                show=show,
+                usf=usf,
+                nusf=nusf,
+                irsf=irsf,
+                nImpPts=nImpPts,
+            )
+        else:
+            fig1 = plot_utils.plot(
+                fname,
+                scatterLabel,
+                hname=hname,
+                show=show,
+                usf=usf,
+                nusf=nusf,
+                irsf=irsf,
+                nImpPts=nImpPts,
+            )
+            fig2 = None
+
+        dialog = Window(fig1, fig2, self)
+        if nusf:
+            title = "SDoE (NUSF) Weights and Designs Visualization"
+        elif usf:
+            title = "SDoE (USF) Designs Visualization"
+        else:
+            title = "SDoE Candidates Visualization"
+
+        dialog.setWindowTitle(title)
+        dialog.show()
+
+
+class Window(QDialog):
+    def __init__(self, fig1, fig2, parent=None):
+        super(Window, self).__init__(parent)
+
+        # a figure instance to plot on
+        self.fig1 = fig1
+        if fig2 is not None:
+            self.fig2 = fig2
+
+        # this is the Canvas Widget that displays the `figure`
+        # it takes the `figure` instance as a parameter to __init__
+        self.canvas1 = FigureCanvas(self.fig1)
+        if fig2 is not None:
+            self.canvas2 = FigureCanvas(self.fig2)
+
+        # this is the Navigation widget
+        # it takes the Canvas widget and a parent
+        self.toolbar1 = NavigationToolbar(self.canvas1, self)
+        if fig2 is not None:
+            self.toolbar2 = NavigationToolbar(self.canvas2, self)
+
+        # set the layout
+        layout1 = QVBoxLayout()
+        layout1.addWidget(self.toolbar1)
+        layout1.addWidget(self.canvas1)
+        if fig2 is not None:
+            main_layout = QHBoxLayout()
+            layout2 = QVBoxLayout()
+            layout2.addWidget(self.toolbar2)
+            layout2.addWidget(self.canvas2)
+            main_layout.addLayout(layout2)
+            main_layout.addLayout(layout1)
+            self.setLayout(main_layout)
+        else:
+            self.setLayout(layout1)

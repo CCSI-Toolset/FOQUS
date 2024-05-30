@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -18,21 +18,21 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import json
 import copy
+import json
 import os
 
+from PyQt5 import QtCore, uic
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QDialog, QMessageBox
+
+import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.graph.node import *
 from foqus_lib.framework.graph.nodeVars import *
-import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.optimization.optMonitor import *
 from foqus_lib.gui.optimization.optSampleGenDialog import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QDialog
-from PyQt5.QtGui import QColor
 
 mypath = os.path.dirname(__file__)
 _optSetupFrameUI, _optSetupFrame = uic.loadUiType(
@@ -80,7 +80,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
 
     def clearOld(self):
         """
-        Clear messages from old optimzation runs
+        Clear messages from old optimization runs
         """
         self.optMonitorFrame.clearMessages()
         try:
@@ -259,7 +259,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
 
     def scaleHelper(self, ind=0):
         """
-        If a descision variable has a none scale type set the scale
+        If a decision variable has a none scale type set the scale
         to lineae.  For other variables set the scale type to none
         and disable the scale selection.
         """

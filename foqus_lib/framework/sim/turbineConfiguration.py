@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -21,26 +21,42 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import configparser
+import importlib
+import json
+import logging
 import os
 import os.path
-import configparser
-import json
-import re
-import time
 import random
+import re
+import socket
 import ssl
+import subprocess
+import time
+import traceback
 import urllib.parse
 import urllib.request
-import logging
-import traceback
-import subprocess
-import socket
-import imp
-import foqus_lib.framework.sim.process_management as _pm
-
-_log = logging.getLogger("foqus." + __name__)
 from collections import OrderedDict
 
+import turbine.commands
+import turbine.commands.turbine_application_script as _tapp
+import turbine.commands.turbine_consumer_script as _tcon
+import turbine.commands.turbine_job_script as _tjob
+import turbine.commands.turbine_session_script as _tsess
+import turbine.commands.turbine_simulation_script as _tsim
+from turbine.commands import turbine_session_result_script
+from turbine.commands.requests_base import (
+    HTTPStatusCode,
+    delete_page,
+    get_page_by_url,
+    post_page_by_url,
+    read_configuration,
+)
+
+import foqus_lib.framework.sim.process_management as _pm
+from foqus_lib.framework.foqusException.foqusException import *
+
+_log = logging.getLogger("foqus." + __name__)
 
 if os.name == "nt":
     import win32process
@@ -49,22 +65,6 @@ if os.name == "nt":
         from . import turbineLiteDB
     except Exception:
         _log.exception("Problem importing turbineLiteDB")
-
-from foqus_lib.framework.foqusException.foqusException import *
-import turbine.commands.turbine_application_script as _tapp
-import turbine.commands.turbine_session_script as _tsess
-import turbine.commands.turbine_simulation_script as _tsim
-import turbine.commands.turbine_job_script as _tjob
-import turbine.commands.turbine_consumer_script as _tcon
-import turbine.commands
-from turbine.commands.requests_base import (
-    HTTPStatusCode,
-    read_configuration,
-    get_page_by_url,
-    post_page_by_url,
-    delete_page,
-)
-from turbine.commands import turbine_session_result_script
 
 
 class TurbineInterfaceEx(foqusException):
@@ -103,7 +103,11 @@ class TurbineInterfaceEx(foqusException):
             elif isinstance(e, socket.error):
                 if e.errno == 10054:
                     self.code = 3
-                elif e.reason.errno == 10060:
+                elif (
+                    hasattr(e, "reason")
+                    and hasattr(e.reason, "errno")
+                    and e.reason.errno == 10060
+                ):
                     # connection timeout
                     self.code = 2
                 else:
@@ -120,15 +124,15 @@ class TurbineInterfaceEx(foqusException):
         self.codeString[5] = "Gateway SSL error (probably wrong address)"
         self.codeString[7] = "Unknown Socket Error"
         self.codeString[10] = "Gateway unknown http error"
-        self.codeString[
-            11
-        ] = "Gateway 401 authentication error (bad user name or password)"
+        self.codeString[11] = (
+            "Gateway 401 authentication error (bad user name or password)"
+        )
         self.codeString[12] = "Gateway 404 page not found error"
         self.codeString[13] = "Gateway 403 access forbidden"
         self.codeString[14] = "Gateway 400 bad request"
         self.codeString[15] = "Gateway 500 server error"
         self.codeString[151] = "Could not start Turbine consumer"
-        self.codeString[152] = "Cound not get consumer ID"
+        self.codeString[152] = "Could not get consumer ID"
         self.codeString[153] = (
             "Will not start consumer for non-Lite Turbine, check local"
             " Turbine config file."
@@ -173,9 +177,9 @@ class TurbineInterfaceEx(foqusException):
         )
         self.codeString[310] = "Could not update simulation, it does not exist"
         self.codeString[350] = "Job failed"
-        self.codeString[
-            351
-        ] = "Job failed to converge (may have also been another error)"
+        self.codeString[351] = (
+            "Job failed to converge (may have also been another error)"
+        )
         self.codeString[352] = "Job failed due to run timeout"
         self.codeString[353] = "Job failed due to max wait timeout"
         self.codeString[354] = "Job failed could not get status"
@@ -381,7 +385,6 @@ class TurbineConfiguration:
             time.sleep(2)
             cid = db.consumer_id(proc.pid)
             if cid is not None:
-
                 break
         if cid is not None:
             self.consumers[nodeName] = ConsumerInfo(cid, 0, proc)
@@ -496,7 +499,7 @@ class TurbineConfiguration:
         try again this reloads turbine so it doesn't store anything
         and you can change the configuration.
         """
-        imp.reload(turbine.commands)
+        importlib.reload(turbine.commands)
         # make sure turbine doesn't change my log settings by telling it
         # the log settings have already been done and not to change them
         turbine.commands._setup_logging.done = True
@@ -522,7 +525,7 @@ class TurbineConfiguration:
         ordered and keyword arguments for the function.
         """
         # Only retry on errors I expect could possibly resolve with time
-        # (could be caused by a temprary network/sever problem)
+        # (could be caused by a temporary network/sever problem)
         retryList = self.retryErrors  # actually I gave up on this, there
         # are too many weird unexpected
         # errors that work on second attempt
@@ -768,7 +771,7 @@ class TurbineConfiguration:
     #     except Exception as e:
     #         raise TurbineInterfaceEx(
     #             code=0,
-    #             msg="Error getting session staus. ",
+    #             msg="Error getting session status. ",
     #             e=e,
     #             tb=traceback.format_exc(),
     #         )
@@ -939,7 +942,7 @@ class TurbineConfiguration:
             )
 
     def simResourceList(self, sim):
-        """Get a list of resources for a simualtion"""
+        """Get a list of resources for a simulation"""
         kw = {}
         cp = self.turbineConfigParse()
         url, auth, params = read_configuration(cp, _tsim.SECTION, **kw)
@@ -1039,13 +1042,13 @@ class TurbineConfiguration:
         res = None
         state = "submit"  # initial state of the job
         failedStates = ["error", "expired", "cancel", "terminate"]
-        succesStates = ["success", "warning"]
+        successStates = ["success", "warning"]
         while True:  # start status checking loop
             # wait checkInt seconds wait before checking first time,
             # probably started the job, and it won't finish instantly
             time.sleep(checkInt)
             # Check that consumer is still running, had trouble with it
-            # stopping for unknwn reasons, so I'll keep an eye on it.
+            # stopping for unknown reasons, so I'll keep an eye on it.
             if checkConsumer:
                 proc = self.checkConsumer(nodeName)
                 if proc == None:
@@ -1073,7 +1076,7 @@ class TurbineConfiguration:
                 ):
                     state = "error"
                 failure = state in failedStates
-                success = state in succesStates
+                success = state in successStates
                 # Check for the run start time instead of the state just
                 # in case job started and completed between checks
                 if not setupStart and state == "setup":
@@ -1203,7 +1206,7 @@ class TurbineConfiguration:
             app = "foqus"
             modelFile = (None, app)
         # WHY the undefined-variable errors reported by pylint look like true positive
-        # this suggests that the code branches where the underfined variables are used are not run
+        # this suggests that the code branches where the undefined variables are used are not run
         else:
             # if no model file found it is probably not a sinter
             # configuration file or FOQUS is out of sync with
@@ -1257,7 +1260,7 @@ class TurbineConfiguration:
             # type and make sure it matches the resource type in the sinter
             # configuration file.
             app, resourceType = self.getAppByExtension(modelFile)
-            # Now get anyother extra input files
+            # Now get any other extra input files
             other = sinterConfData.get("input-files", [])
         return (modelFile, resourceType, app, other)
 

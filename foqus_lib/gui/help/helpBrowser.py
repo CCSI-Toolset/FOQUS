@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -23,21 +23,22 @@ Joshua Boverhof, Lawrence Berkeley National Lab
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import os
-import time
-import logging
 import base64
 import json
+import logging
+import os
 import threading
+import time
 from datetime import datetime
-from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
-import websocket
 from typing import Optional
-from foqus_lib.help.helpPath import *
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
+
+import websocket
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QTextBrowser
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMainWindow, QMessageBox, QTextBrowser
+
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
+from foqus_lib.help.helpPath import *
 
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = uic.loadUiType(
@@ -295,7 +296,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
                 )
             except ValueError as e:
                 logging.getLogger("foqus." + __name__).info(str(e))
-                self.CloudLogView.append("Cloud Notifcations: OFF")
+                self.CloudLogView.append("Cloud Notifications: OFF")
                 self.CloudLogView.append(
                     "turbine configuration section Application, key notification"
                 )

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,11 +15,13 @@
 #
 # FOQUS_PYMODEL_PLUGIN
 
-import subprocess
 import logging
+import subprocess
+
 import numpy
-from foqus_lib.framework.pymodel.pymodel import *
+
 from foqus_lib.framework.graph.nodeVars import *
+from foqus_lib.framework.pymodel.pymodel import *
 
 
 def checkAvailable():
@@ -273,7 +275,7 @@ class pymodel_pg(pymodel):
                 tags = vars[name].tags  # get variable tags
                 blk = blockLookup.get(
                     name, None
-                )  # get the blocks that a varible is associated with
+                )  # get the blocks that a variable is associated with
                 if blk != None:
                     if (
                         blk in heaterSet and "heater" in tags
@@ -486,9 +488,9 @@ class pymodel_pg(pymodel):
             numpy.power((1.0 + ROR / 100.0), lifeOpe) / lifeOpe
         )  # annualized factor for the capital cost
 
-        coeff_a = 10000.0  # capital cost coefficent a
-        coeff_b = 800.0  # capital cost coefficent b
-        coeff_c = 0.8  # capital cost coefficent c
+        coeff_a = 10000.0  # capital cost coefficient a
+        coeff_b = 800.0  # capital cost coefficient b
+        coeff_c = 0.8  # capital cost coefficient c
 
         # heat integration information for feed water heaters
         feedSet = set(["FH1", "FH2", "FH3", "FH4", "FH5"])  # set of feed water heaters
@@ -864,9 +866,9 @@ class pymodel_pg(pymodel):
         # pull GAMS results in the node variables
         costUtiHr = float((f.readline()).strip())  # utility cost (hourly) ($MM/hr)
         costUtiYr = costUtiHr * timeOpe / 1e6  # utility cost (annually) ($MM/yr)
-        self.outputs[
-            "Utility.Cost"
-        ].value = costUtiYr  # utility cost (annually) ($MM/yr)
+        self.outputs["Utility.Cost"].value = (
+            costUtiYr  # utility cost (annually) ($MM/yr)
+        )
         areaHx = float((f.readline()).strip())  # heat exchanger area (m^2)
         self.outputs["Heat.Exchanger.Area"].value = areaHx  # heat exchanger area (m^2)
         numShell_2 = numpy.ceil(

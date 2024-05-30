@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,8 +12,9 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from . import node as gn
 import subprocess
+
+from . import node as gn
 
 
 def makeHeatIntegrationNode(node):
@@ -150,7 +151,7 @@ def heatIntegrationCalc(node):
             tags = vars[name].tags  # get variable tags
             blk = blockLookup.get(
                 name, None
-            )  # get the blocks that a varible is associated with
+            )  # get the blocks that a variable is associated with
             if blk != None:
                 if (
                     blk in heaterSet and "heater" in tags

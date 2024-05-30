@@ -9,7 +9,7 @@ Creating a simulation ensemble using the variables' distributions
 In this tutorial, a simulation ensemble is created (using FOQUS) and run.
 
 The FOQUS file for this tutorial is **Rosenbrock_no_vectors.foqus**, and
-this file is located in: **examples/tutorial_files/UQ/Tutorial_1**
+this file is located in: :path:`examples/tutorial_files/UQ/Tutorial_1`
 
 .. note:: |examples_reminder_text|
 

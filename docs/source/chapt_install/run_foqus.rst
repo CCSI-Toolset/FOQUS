@@ -58,4 +58,4 @@ e.g., for the Bash shell:
 
 If, on the contrary, a graphical interface *is* desired but the errors above occur, it is possible that the system is not yet configured to support graphical applications.
 In this case, try installing the :code:`libgl1-mesa-glx` and/or :code:`libxkbcommon-x11-0` packages using
-the package manager appropriate for your Linux distrubution (i.e. :code:`apt-get install` on Ubuntu).
+the package manager appropriate for your Linux distribution (i.e. :code:`apt-get install` on Ubuntu).

@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -18,56 +18,58 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import time
-import math
-import logging
-import subprocess
-import collections
 import array
-import platform
+import collections
 import functools
+import logging
+import math
 import os
-from foqus_lib.framework.graph.graph import *
-from foqus_lib.framework.session.session import *
-from foqus_lib.framework.session.hhmmss import *
-from foqus_lib.framework.sim.turbineConfiguration import *
-from foqus_lib.framework import optimizer
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.sintervectorize.SinterFileVectorize import *
+import platform
+import subprocess
+import time
+from configparser import *
+
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (
-    QMainWindow,
-    QStackedWidget,
-    QWidget,
-    QActionGroup,
-    QMenu,
-    QAction,
-    QToolBar,
-)
 from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import (
+    QAction,
+    QActionGroup,
+    QMainWindow,
+    QMenu,
+    QStackedWidget,
+    QToolBar,
+    QWidget,
+)
+
+from foqus_lib.framework import optimizer
+from foqus_lib.framework.graph.graph import *
+from foqus_lib.framework.session.hhmmss import *
+from foqus_lib.framework.session.session import *
+from foqus_lib.framework.sim.turbineConfiguration import *
+from foqus_lib.framework.sintervectorize.SinterFileVectorize import *
+from foqus_lib.framework.uq.Model import *
 from foqus_lib.gui import icons_rc
+from foqus_lib.gui.basic_data.basicDataParentFrame import *
 from foqus_lib.gui.dialogs.variableBrowser import *
-from foqus_lib.gui.main.Dash import *
-from foqus_lib.gui.main.settingsFrame import *
-from foqus_lib.gui.main.sessionDescriptionEdit import *
-from foqus_lib.gui.main.saveMetadataDialog import *
-from foqus_lib.gui.model.gatewayUploadDialog import *
-from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import *
+from foqus_lib.gui.flowsheet.dataBrowserDialog import *
 from foqus_lib.gui.flowsheet.drawFlowsheet import *
-from foqus_lib.gui.flowsheet.nodePanel import *
 from foqus_lib.gui.flowsheet.edgePanel import *
 from foqus_lib.gui.flowsheet.flowsheetSettingsDialog import *
-from foqus_lib.gui.flowsheet.dataBrowserDialog import *
-from foqus_lib.gui.basic_data.basicDataParentFrame import *
+from foqus_lib.gui.flowsheet.nodePanel import *
+from foqus_lib.gui.heatIntegration.heatIntegrationFrame import *
+from foqus_lib.gui.help.helpBrowser import *
+from foqus_lib.gui.main.Dash import *
+from foqus_lib.gui.main.saveMetadataDialog import *
+from foqus_lib.gui.main.sessionDescriptionEdit import *
+from foqus_lib.gui.main.settingsFrame import *
+from foqus_lib.gui.model.gatewayUploadDialog import *
 from foqus_lib.gui.optimization.optSetupFrame import *
 from foqus_lib.gui.ouu.ouuSetupFrame import *
-from foqus_lib.gui.uq.uqSetupFrame import *
 from foqus_lib.gui.sdoe.sdoeSetupFrame import *
-from foqus_lib.gui.uq.updateUQModelDialog import *
-from foqus_lib.gui.help.helpBrowser import *
+from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import *
 from foqus_lib.gui.surrogate.surrogateFrame import *
-from foqus_lib.gui.heatIntegration.heatIntegrationFrame import *
-from configparser import *
+from foqus_lib.gui.uq.updateUQModelDialog import *
+from foqus_lib.gui.uq.uqSetupFrame import *
 
 _log = logging.getLogger("foqus." + __name__)
 
@@ -259,7 +261,7 @@ class mainWindow(QMainWindow):
 
     def clearOldMessages(self):
         """
-        This function clears old mesages from the gui
+        This function clears old messages from the gui
         when loading or creating a new session.
         """
         self.optSetupFrame.clearOld()
@@ -437,7 +439,7 @@ class mainWindow(QMainWindow):
         self.surrogateAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.surrogateAction)
         self.toolbarMain.addAction(self.surrogateAction)
-        # Setings Action
+        # Settings Action
         self.mainSettingsAction = QAction(
             QIcon(self.iconPaths["settings48"]), "Settings", self
         )
@@ -1496,7 +1498,11 @@ class mainWindow(QMainWindow):
             QMessageBox.critical(
                 self,
                 "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
-                "The simulation completed with an error " + str(err) + ", " + errText,
+                "The simulation completed with an error "
+                + str(err)
+                + ", "
+                + errText
+                + ".\n\nFor more details see the Log Viewer in Help.",
             )
             self.setStatus(
                 "Error Single Simulation in "
@@ -1568,7 +1574,7 @@ class mainWindow(QMainWindow):
             self.dat.foqusSettings.addRecentlyOpenedFile(self.dat.currentFile)
         self.openRecentMainMenu.clear()
         self.openRecentAction = []
-        for i, f in enumerate(self.dat.foqusSettings.getRecentlyOpendFiles()):
+        for i, f in enumerate(self.dat.foqusSettings.getRecentlyOpenedFiles()):
             self.openRecentAction.append(QAction(f, self))
             self.openRecentAction[i].setIcon(QIcon())
             self.openRecentAction[i].triggered.connect(

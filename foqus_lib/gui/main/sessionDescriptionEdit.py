@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -13,8 +13,8 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
-from PyQt5 import QtCore, uic, QtGui
-from PyQt5 import uic
+
+from PyQt5 import QtCore, QtGui, uic
 
 mypath = os.path.dirname(__file__)
 _sessionDescriptionDialogUI, _sessionDescriptionDialog = uic.loadUiType(

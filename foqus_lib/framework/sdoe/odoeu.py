@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -13,13 +13,13 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
-import tempfile
-import re
 import platform
+import re
+import tempfile
 
-from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
-from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 
 dname = os.path.join(os.getcwd(), "ODOE_files")
 

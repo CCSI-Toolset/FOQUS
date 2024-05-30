@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,46 +12,45 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import platform
-import os
-import logging
 import copy
+import logging
+import os
+import platform
 import time
-import pandas as pd
 from datetime import datetime
-from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
-from foqus_lib.gui.sdoe.sdoeSimSetup import *
-from foqus_lib.gui.sdoe.odoeSimSetup import *
-from foqus_lib.gui.uq import RSCombos
-from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
-from foqus_lib.framework.uq.DataProcessor import *
-from foqus_lib.framework.uq.RSValidation import *
-from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.sampleResults.results import Results
 
-from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe
-from .sdoePreview import sdoePreview
-from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-
-from PyQt5 import QtCore, uic, QtGui
+import pandas as pd
+from PyQt5 import QtCore, QtGui, uic
+from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
+from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
-    QStyledItemDelegate,
+    QAbstractItemView,
     QApplication,
-    QTableWidgetItem,
+    QCheckBox,
+    QDialog,
+    QMenu,
+    QMessageBox,
     QPushButton,
     QStyle,
-    QDialog,
-    QMessageBox,
-    QMenu,
-    QAbstractItemView,
-    QCheckBox,
+    QStyledItemDelegate,
+    QTableWidgetItem,
 )
-from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
-from PyQt5.QtGui import QCursor
 
-from PyQt5 import uic
+from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe
+from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.DataProcessor import *
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.RSAnalyzer import *
+from foqus_lib.framework.uq.RSValidation import *
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+from foqus_lib.gui.sdoe.odoeSimSetup import *
+from foqus_lib.gui.sdoe.sdoeSimSetup import *
+from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
+from foqus_lib.gui.uq import RSCombos
+from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
+
+from .sdoePreview import sdoePreview
 
 mypath = os.path.dirname(__file__)
 _sdoeSetupFrameUI, _sdoeSetupFrame = uic.loadUiType(
@@ -1054,10 +1053,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         from .sdoeAnalysisDialog import sdoeAnalysisDialog
 
         dialog = self._analysis_dialog = sdoeAnalysisDialog(
-            candidateData, dname, analysis, historyData, type, self
+            candidateData,
+            dname,
+            analysis,
+            historyData,
+            # PYLINT-WHY: used-before-assignment for type
+            # is a false positive that only occurs in Pylint 2
+            # pylint: disable-next=used-before-assignment
+            type,
+            self,
         )
         dialog.open()
-        # dialog.deleteLater()
 
     def initUQToolBox(self):
 
@@ -2576,11 +2582,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             )
             time_list.append(time.time() - t0)
             self.resultMessage += "Results for Run #%d:\n" % (nr + 1)
-            self.resultMessage += "Best Design(s): %s\n" % best_indices
-            self.resultMessage += "Best %s-Optimality Value: %f\n\n" % (
-                optCriterion,
-                best_optval,
-            )
+            if best_indices is not None:
+                self.resultMessage += "Best Design(s): %s\n" % best_indices
+            else:
+                self.resultMessage += "Best Design(s): Not Found\n"
+            if best_optval is not None:
+                self.resultMessage += "Best %s-Optimality Value: %f\n\n" % (
+                    optCriterion,
+                    best_optval,
+                )
+            else:
+                self.resultMessage += "Best %s-Optimality Value: Not Found\n\n"
 
         # Save results to text file
         resultsFile = os.path.join(outdir, "odoe_results.txt")

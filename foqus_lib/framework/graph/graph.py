@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -21,25 +21,27 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import queue
-import foqus_lib.framework.sampleResults.results as resultList
-import multiprocessing.dummy as multiprocessing
-import numpy
-import math
-import time
-import csv
 import copy
-import threading
+import csv
 import logging
+import math
+import multiprocessing.dummy as multiprocessing
+import queue
 import sys
+import threading
+import time
 from collections import OrderedDict
+
+import numpy
+import pandas
+
+import foqus_lib.framework.sampleResults.results as resultList
+from foqus_lib.framework.graph.edge import *  # Edge and variable connection classes
 from foqus_lib.framework.graph.node import *  # Node, input var and output var classes
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
-from foqus_lib.framework.graph.edge import *  # Edge and variable connection classes
+from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.OptGraphOptim import *  # Objective function calculation class
 from foqus_lib.framework.sim.turbineConfiguration import *
-from foqus_lib.framework.graph.nodeVars import *
-import pandas
 
 _log = logging.getLogger("foqus." + __name__)
 
@@ -296,7 +298,7 @@ class Graph(threading.Thread):
         self.singleCount = sd.get("singleCount", self.singleCount)
         self.pre_solve_nodes = sd.get("pre_solve_nodes", [])
         self.post_solve_nodes = sd.get("post_solve_nodes", [])
-        self.no_solve_nodes = sd.get("no_sovle_nodes", [])
+        self.no_solve_nodes = sd.get("no_solve_nodes", [])
         self.turbineSim = sd.get("turbineSim", None)
         temp = sd.get("results", None)
         if temp:
@@ -586,7 +588,7 @@ class Graph(threading.Thread):
 
     def solveListValTurbineGetGenerator(self):
         """
-        Get a results genrator from Turbine, if fail return None
+        Get a results generator from Turbine, if fail return None
         """
         try:
             gid = self.turbConfig.retryFunction(
@@ -658,7 +660,7 @@ class Graph(threading.Thread):
             one time, for a large number of jobs the amount of input
             can get to large for Turbine to receive all at once.
         sid = A turbine session ID to reconnect to.  If a previous
-            run was disconnected this will hook back up and contiune
+            run was disconnected this will hook back up and continue
             to receive results until the session is done.
         """
         ######
@@ -687,7 +689,7 @@ class Graph(threading.Thread):
             if jobIds is None:
                 return
         self.allSubmitted = True  # Flag to say job sumbmission is done
-        # get results genrator
+        # get results generator
         gid = self.solveListValTurbineGetGenerator()
         if gid is None:
             return
@@ -834,7 +836,7 @@ class Graph(threading.Thread):
             if not self.stop.isSet():
                 # run solve if thread has not been stopped
                 # it it has been stopped skip the solve and just
-                # report a -1 error staus on remaining runs
+                # report a -1 error status on remaining runs
                 try:
                     self.solve()
                     with self.resLock:
@@ -1176,7 +1178,7 @@ class Graph(threading.Thread):
             log_file = self.tearLogStub
             for j in range(100):
                 # dont want to pick up too many of these files
-                # but if there are multiple loops want to produce seperate
+                # but if there are multiple loops want to produce separate
                 # files for them
                 if not os.path.isfile("{}{}.csv".format(log_file, j + 1)) or j == 99:
                     log_file = "{}{}.csv".format(log_file, j + 1)
@@ -1344,9 +1346,9 @@ class Graph(threading.Thread):
         order argument in a list of lists of node names.  The nodes
         are run in the order given in the first list followed by the
         order given in the second list and so on.  Information is
-        transfered between nodes for any active none tear edges
+        transferred between nodes for any active none tear edges
         after the completion of each node calculation.  If there
-        is an error in any node this returns immediatly and sets the
+        is an error in any node this returns immediately and sets the
         graph error status to indicate error.
         """
         for namelst in order:
@@ -1448,7 +1450,7 @@ class Graph(threading.Thread):
             for e in self.edges:
                 if e.tear and not includeTear:
                     ntear += 1
-                if not e.acitve and not includeInactive:
+                if not e.active and not includeInactive:
                     ninactive += 1
         return len(self.edges) - ntear - ninactive
 
@@ -1479,7 +1481,7 @@ class Graph(threading.Thread):
         are specified by providing a list of node names and/or a
         list of edge indexes.
 
-        Since the adjacency matrix gives the nodes indexs this
+        Since the adjacency matrix gives the nodes indexes this
         function provides a way to get the index form the name
         or the name from the index.  The results returned are
 
@@ -1711,7 +1713,7 @@ class Graph(threading.Thread):
         subGraphNodes = {None, []} if none consider all nodes, other wise a list of nodes in a subgraph
         subGraphEdges = {None, []} if none consider all edges attached at both ends to a node in the
                                     subgraph.  Otherwise a list of edge indexes in a subgraph only edges
-                                    attached at both ends to a node in the subgraph will be inclued.
+                                    attached at both ends to a node in the subgraph will be included.
 
         Return Value:
 
@@ -1805,7 +1807,7 @@ class Graph(threading.Thread):
         """
         This finds optimal sets of tear edges based on two criteria.
         The primary objective is to minimize the maximum number of
-        times any cycle is broken.  The seconday criteria is to
+        times any cycle is broken.  The secondary criteria is to
         minimize the number of tears.  This function uses a branch
         and bound type approach.
 
@@ -1814,23 +1816,23 @@ class Graph(threading.Thread):
             are equally good there are often a very large number of
             equally good tear sets.
 
-        Improvemnts for the future.
-        I think I can imporve the efficency of this, but it is good
+        Improvements for the future.
+        I think I can improve the efficiency of this, but it is good
         enough for now.  Here are some ideas for improvement:
         1) Reduce the number of redundant solutions.  It is possible
            to find tears sets [1,2] and [2,1].  I eliminate
-           redundent solutions from the results, but they can
-           occur and it reduces efficency
+           redundant solutions from the results, but they can
+           occur and it reduces efficiency
         2) Look at strongly connected components instead of whole
            graph this would cut back on the size of graph we are
            looking at.  The flowsheets are rearly one strongly
-           conneted componet.
+           connected component.
         3) When you add an edge to a tear set you could reduce the
            size of the problem in the branch by only looking at
            strongly connected components with that edge removed.
         4) This returns all equally good optimal tear sets.  That
            may not really be nessicary.  For very large flowsheets
-           There could be an extreemly large number of optimial tear
+           There could be an extremely large number of optimal tear
            edge sets.
         """
 
@@ -1932,15 +1934,15 @@ class Graph(threading.Thread):
                 if y[0][i] == 1:
                     edges.append(i)
             es.append(edges)
-        # Log ammount of time required to find tear sets
+        # Log amount of time required to find tear sets
         _log.info("Teat steam search, elapsed time: " + str(time.time() - st))
         return [es, upperBound[0], upperBound[1]]
 
     def tearUpperBound(self):
         """
         This function quickly finds a sub-optimal set of tear
-        edges.  This serves as an inital upperbound when looking
-        for an optimal tear set.  Having an inital upper bound
+        edges.  This serves as an initial upperbound when looking
+        for an optimal tear set.  Having an initial upper bound
         improves efficenty.
 
         This works by constructing a search tree and just makes a
@@ -2043,9 +2045,9 @@ class Graph(threading.Thread):
         done = False
         for i in range(len(sccNodes)):
             for j in range(len(sccNodes)):
-                for ine in ie[i]:
-                    for oute in oe[j]:
-                        if ine == oute:
+                for in_edge in ie[i]:
+                    for out_edge in oe[j]:
+                        if in_edge == out_edge:
                             adjlist[j].append(i)
                             adjlistR[i].append(j)
                             done = True
@@ -2066,7 +2068,7 @@ class Graph(threading.Thread):
         a tree the results are not valid.
 
         In the returned order, it is sometimes possible for more
-        than one node to be caclulated at once.  So a list of lists
+        than one node to be calculated at once.  So a list of lists
         is returned by this function.  These represent a bredth
         first search order of the tree.  Following the order all
         nodes that lead to a particular node will be visited

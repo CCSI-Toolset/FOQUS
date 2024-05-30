@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -14,9 +14,10 @@
 #################################################################################
 # FOQUS_PYMODEL_PLUGIN
 #
-from foqus_lib.framework.pymodel.pymodel import *
-import time
 import subprocess
+import time
+
+from foqus_lib.framework.pymodel.pymodel import *
 
 # Check that the MATLAB engine module is available and import it if possible.
 # If not the MATLAB plug-in cannot be used.

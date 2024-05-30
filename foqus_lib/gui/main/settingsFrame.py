@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -16,25 +16,25 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-from foqus_lib.gui.main.turbineConfig import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-
-import os
 import logging
-import time
-import re
-from io import StringIO
-import shutil
+import os
 import pickle  # not sure why this is here probably remove
-from pprint import pprint
+import re
+import shutil
 import subprocess
+import time
 import xml.etree.ElementTree as ET
+from io import StringIO
+from pprint import pprint
+
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
+
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.gui.main.turbineConfig import *
 
 if os.name == "nt":
     import win32process
-
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QInputDialog, QFileDialog
 
 mypath = os.path.dirname(__file__)
 _settingsFrameUI, _settingsFrame = uic.loadUiType(
@@ -79,7 +79,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.simSinterBrowsButton.clicked.connect(self.browseSinterFile)
         self.alamoPathButton.clicked.connect(self.browseALAMOPath)
         self.rScriptPathButton.clicked.connect(self.browseRScriptPath)
-        # Connect okay/cancel singnals
+        # Connect okay/cancel signals
         self.revertButton.clicked.connect(self.revert)
         #
         self.startLite.clicked.connect(self.startTurbineService)
@@ -100,7 +100,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             "You are changing the Turbine server"
             " connection.  The new server may not have the simulations or"
             " correct versions of simulations for your flowsheet.  Please upload"
-            " or update simluations on Turbine as necessary.",
+            " or update simulations on Turbine as necessary.",
         )
 
     def updateTurbineLitePort(self):
@@ -235,7 +235,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             mess = (
                 "Failed to start Turbine Web Service API.  If the "
                 "reason given below is not clear the likely cause is that "
-                "FOQUS does not have permision to start/stop the services."
+                "FOQUS does not have permission to start/stop the services."
             )
             details = "Details:\n{0}\n{1}".format(out, err)
             QMessageBox.information(self, "Information", "\n\n".join([mess, details]))
@@ -261,7 +261,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             mess = (
                 "Failed to start Turbine Web Service API.  If the "
                 "reason given below is not clear the likely cause is that"
-                "FOQUS does not have permision to start/stop the services."
+                "FOQUS does not have permission to start/stop the services."
             )
             details = "Details:\n{0}\n{1}".format(out, err)
             QMessageBox.information(self, "Information", "\n\n".join([mess, details]))
@@ -374,7 +374,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
-            "Find Turbine Confguration",
+            "Find Turbine Configuration",
             "",
             "Config Files (*.cfg);;Text Files (*.txt);;All Files (*)",
         )
@@ -388,7 +388,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
-            "Find Turbine Cluster Confguration",
+            "Find Turbine Cluster Configuration",
             "",
             "Config Files (*.cfg);;Text Files (*.txt);;All Files (*)",
         )

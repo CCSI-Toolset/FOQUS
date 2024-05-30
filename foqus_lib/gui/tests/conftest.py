@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,16 +15,16 @@
 import contextlib
 import logging
 import os
-from pathlib import Path
 import shutil
 import sys
 import typing as t
-
-from PyQt5 import QtWidgets, QtCore, QtGui
+from pathlib import Path
 
 import pytest
-from pytestqt.exceptions import capture_exceptions, format_captured_exceptions
 from _pytest.monkeypatch import MonkeyPatch
+from PyQt5 import QtCore, QtGui, QtWidgets
+from pytestqt.exceptions import capture_exceptions, format_captured_exceptions
+
 import pytest_qt_extras
 
 

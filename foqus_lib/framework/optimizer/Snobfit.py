@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -15,7 +15,7 @@
 """ #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
-begining of the file (see pluginSearch.plugins() for exact character count of
+beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for Snobfit
@@ -23,27 +23,28 @@ text).  They also need to have a .py extension and inherit the optimization clas
 Anuja Deshpande, KeyLogic Systems, Inc. - NETL
 """
 
-import time
 import copy
 import csv
+import logging
+import math
+import os
 import pickle
 import queue
 import sys
-import logging
-import math
-import numpy
-import os
+import time
 import traceback
 
-from foqus_lib.framework.optimizer.optimization import optimization
-from foqus_lib.framework.graph.OptGraphOptim import optim, optimObj
+import numpy
+
 from foqus_lib.framework.graph.nodeVars import NodeVars
+from foqus_lib.framework.graph.OptGraphOptim import optim, optimObj
+from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the Snobfit module is available and import it if possible.
 # If not the Snobfit plug-in will not be available.
 try:
-    import SQSnobFit
     import SQCommon
+    import SQSnobFit
 
     snobfit_available = True
 except ImportError:
@@ -87,7 +88,7 @@ class opt(optimization):
             dat = foqus session object
         """
         optimization.__init__(self, dat)  # base class __init__
-        self.name = "Snobfit"  # Plugin name is actually comming from file
+        self.name = "Snobfit"  # Plugin name is actually coming from file
         # name at this point so give file same name
         # (with a *.py).
         # Next is the description of the optimization
@@ -107,7 +108,7 @@ class opt(optimization):
         self.available = snobfit_available  # If plugin is available
         self.description = "Optimization Solver"  # Short description
         self.mp = False  # Can evaluate objectives in parallel?
-        self.mobj = False  # Can do multi-objective optimzation?
+        self.mobj = False  # Can do multi-objective optimization?
         self.minVars = 2  # Minimum number of decision variables
         self.maxVars = 10000  # Maximum number of decision variables
 
@@ -187,7 +188,7 @@ class opt(optimization):
         This is the function for the solver to call to get function
         evaluations.  This should run the FOQUS flowsheet also can
         stick in other dignostic output.  Whatever you like.  Since
-        only the DFO solvers are made avalable the grad arg can be
+        only the DFO solvers are made available the grad arg can be
         ignored.
         """
         # run the flowsheet at point x.  X is turned into a list there
@@ -197,7 +198,7 @@ class opt(optimization):
 
         objValues, cv, pv = self.prob.runSamples([x], self)
         # objValues = list of lists of objective function values
-        #             first list is for mutiple evaluations second list
+        #             first list is for multiple evaluations second list
         #             is for multi-objective.  In this case one evaluation
         #             one objective [[obj]].
         # cv = constraint violations
@@ -205,7 +206,7 @@ class opt(optimization):
 
         if self.stop.isSet():  # if user pushed stop button
             self.userInterupt = True
-            raise Exception("User interupt")  # raise exeception to stop
+            raise Exception("User interrupt")  # raise exception to stop
 
         obj = float(objValues[0][0])  # get objective
 
@@ -228,7 +229,7 @@ class opt(optimization):
         # Count iteration, (in this case actually evaluations)
         self.prob.iterationNumber += 1
         # Save flowsheet at certain intervals with best solution so
-        # far stored.  If something bad happes and optimzation stops
+        # far stored.  If something bad happes and optimization stops
         # at least you will have that.
 
         #        best solution of flowsheet saved
@@ -253,7 +254,7 @@ class opt(optimization):
         This is the main optimization routine.  This gets called to start
         things up.
         """
-        # giving the initalization to the snobfit solver
+        # giving the initialization to the snobfit solver
         xinit = numpy.array([])
 
         # Display a little information to check that things are working
@@ -287,9 +288,9 @@ class opt(optimization):
         # The solver is all setup and ready to go
         start = time.time()  # get start time
         self.userInterupt = False  #
-        self.bestSoFar = float("inf")  # set inital best values
+        self.bestSoFar = float("inf")  # set initial best values
 
-        # self.prob is the optimzation problem. get it ready
+        # self.prob is the optimization problem. get it ready
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters()  #
         self.prob.solverStart = start
@@ -326,7 +327,7 @@ class opt(optimization):
         #        *********
         eltime = time.time() - start
         self.msgQueue.put(
-            "{0}, Total Elasped Time {1}s, Obj: {2}, xbest: {3}".format(
+            "{0}, Total Elapsed Time {1}s, Obj: {2}, xbest: {3}".format(
                 self.prob.iterationNumber,
                 math.floor(eltime),
                 self.bestSoFar,

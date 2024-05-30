@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,25 +12,27 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
+import abc
 import copy
+import os
+import platform
 import subprocess
 import tempfile
-import platform
-import abc
+
 import numpy as np
-from scipy.stats import norm, lognorm, triang, gamma, beta, expon, weibull_min
 
 # from PySide import QtCore, QtGui
 from PyQt5 import QtCore, QtGui
-from .Model import Model
-from .SampleData import SampleData
-from .Distribution import Distribution
+from scipy.stats import beta, expon, gamma, lognorm, norm, triang, weibull_min
+
 from .Common import Common
+from .Distribution import Distribution
 from .LocalExecutionModule import LocalExecutionModule
+from .Model import Model
+from .Plotter import Plotter
 from .ResponseSurfaces import ResponseSurfaces
 from .RSAnalyzer import RSAnalyzer
-from .Plotter import Plotter
+from .SampleData import SampleData
 from .UQAnalysis import UQAnalysis
 from .UQRSAnalysis import UQRSAnalysis
 
@@ -498,7 +500,7 @@ class RSInferencer(
                 if platform.system() == "Windows":
                     driverFile = win32api.GetShortPathName(driverFile)
                 f.write("%s\n" % driverFile)  # driver file
-                f.write("y\n")  # apply auxillary arg (output index)
+                f.write("y\n")  # apply auxiliary arg (output index)
                 arg = userRegressionArgs[i]
                 if isinstance(arg, int):
                     formatString = "%d\n"
@@ -543,7 +545,7 @@ class RSInferencer(
         f.write("3\n")  # number of MCMC chains; default = 3
         f.write(
             "1.05\n"
-        )  # PSRF (convergence metric for MCMC) thershold; default = 1.05
+        )  # PSRF (convergence metric for MCMC) threshold; default = 1.05
         f.write("quit\n")
         f.seek(0)
 
@@ -709,9 +711,9 @@ class RSInferencer(
         zlim = [zmin, zmax]
         ylabel = ["Probabilities"] * len(xlabel)
         sb_indices = np.reshape(np.arange(1, nshow**2 + 1), [nshow, nshow])
-        sb_indices[
-            np.tril(sb_indices, -1) > 0
-        ] = -1  # set lower triangular elements to -1
+        sb_indices[np.tril(sb_indices, -1) > 0] = (
+            -1
+        )  # set lower triangular elements to -1
 
         return (xdat, ydat, zdat, xlabel, ylabel, xlim, ylim, zlim, sb_indices, loglik)
 

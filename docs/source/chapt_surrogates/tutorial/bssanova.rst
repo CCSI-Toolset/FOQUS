@@ -22,7 +22,7 @@ This tutorial uses the same flowsheet and sample setup as the ALAMO
 tutorial in Section :ref:`sec.surrogate.alamo`.
 
 The FOQUS file for this tutorial is **Surrogate_Tutorial_1.foqus**, and 
-this file is located in: **examples/tutorial_files/Surrogates**
+this file is located in: :path:`examples/tutorial_files/Surrogates`
 
 .. note:: |examples_reminder_text|
 

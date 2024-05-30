@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -22,23 +22,19 @@ pytest -k test_ouu [--qtbot-slowdown-wait-ms=<time_in_ms>]
 Author: Devarshi Ghoshal <dghoshal@lbl.gov>
 """
 
+import os
 import time
 import typing
-import os
 
-from PyQt5 import QtWidgets, QtCore
 import pytest
-
-from foqus_lib.gui.ouu.ouuSetupFrame import ouuSetupFrame
-from foqus_lib.gui.ouu import foqusPSUADEClient
-from foqus_lib.gui.ouu.OUUInputsTable import OUUInputsTable
-from foqus_lib.gui.ouu import nodeToUQModel
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-
-from PyQt5.QtWidgets import QMessageBox
-
+from foqus_lib.gui.ouu import foqusPSUADEClient, nodeToUQModel
+from foqus_lib.gui.ouu.OUUInputsTable import OUUInputsTable
+from foqus_lib.gui.ouu.ouuSetupFrame import ouuSetupFrame
 
 pytestmark = pytest.mark.gui
 
@@ -286,6 +282,10 @@ class TestOUU:
         n_vars = len(self.frame.input_table.getUQDiscreteVariables()[0])
         assert n_inps == n_vars
 
+    @pytest.mark.xfail(
+        reason="This test is known to fail intermittently on macOS. See CCSI-Toolset/FOQUS#1195",
+        strict=False,
+    )
     def testRunOUU(self, runUntilConfirmationDialog):
         """
         [Test-5] Test that the optimizer launches and finishes.

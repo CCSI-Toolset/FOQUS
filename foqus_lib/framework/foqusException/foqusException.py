@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -71,7 +71,7 @@ class foqusException(Exception):
     def __str__(self):
         """
         This is function gets called when use use the str() function
-        to turn the excepetion into a string.  This tries to turn
+        to turn the exception into a string.  This tries to turn
         the exception object into a nice helpful string message to
         print out.
         """

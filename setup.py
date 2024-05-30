@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -20,9 +20,9 @@ import subprocess
 import shutil
 
 # default_version is the version if "git describe --tags" falls through
-# Addtional package info is set in foqus_lib/version/version.template.
+# Additional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.18.dev0"
+default_version = "3.22.dev0"
 
 try:
     version = (
@@ -89,16 +89,21 @@ dist = setup(
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")
     install_requires=[
+        "bokeh!=3.0.*,>=2.4.2",
         "boto3",
         "cma",
-        "matplotlib<3.6",
-        "mlrose_hiive==2.1.3",
+        "dask[dataframe,distributed]",  # <2024.3",
+        # prebuilt wheels not available on 3.11 for matplotlib<3.6 on: macos arm64, win32
+        # matplotlib>=3.8 has API incompatibilities with SDoE plots
+        # see CCSI-Toolset/FOQUS#1211 for more information
+        "matplotlib >= 3.6.0, <= 3.7.5",
+        "python-tsp==0.3.1",
         "mplcursors",
         "numpy",
         "pandas",
         "psutil",
-        "PyQt5==5.15.7",
-        "pywin32<305; sys_platform == 'win32'",
+        "PyQt5==5.15.10",
+        "pywin32==306; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",

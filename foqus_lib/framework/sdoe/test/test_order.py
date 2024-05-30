@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -24,19 +24,11 @@ import sys
 import numpy as np
 import pandas as pd
 
-from foqus_lib.framework.sdoe import order
-from foqus_lib.framework.sdoe import df_utils
-
-
-def test_mat2tuples():
-    """Test mat2tuples"""
-    arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    lte = order.mat2tuples(arr)
-    assert lte == [(1, 0, 4), (2, 0, 7), (2, 1, 8)]
+from foqus_lib.framework.sdoe import df_utils, sdoe
 
 
 def test_rank():
-    """Call to order.rank() using hard-coded data written to temp files"""
+    """Call to sdoe.rank() using hard-coded data written to temp files"""
 
     # candidate dataframe to write to cand file
     cand_df = pd.DataFrame(
@@ -138,11 +130,11 @@ def test_rank():
     dmat_fn = pl.Path(sys.path[0], "tmp_dmat.npy")
     np.save(dmat_fn, dmat)
 
-    # file name dict to be passed to order.rank()
+    # file name dict to be passed to sdoe.rank()
     fnames = {"cand": str(cand_fn), "dmat": str(dmat_fn)}
 
     # Make the actual call
-    fname_ranked = order.rank(fnames, ga_max_attempts=5)
+    fname_ranked = sdoe.rank(fnames)
 
     # Ranked results as a dataframe
     ret_ranked_df = df_utils.load(fname_ranked)
@@ -151,9 +143,9 @@ def test_rank():
     ranked_df = pd.DataFrame(
         {
             "w": [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.175, 0.175],
-            "G": [2000, 2000, 1500, 1500, 2500, 2700, 2500, 2500],
-            "lldg": [0.3, 0.25, 0.15, 0.15, 0.15, 0.15, 0.25, 0.3],
-            "L": [8529, 7519, 3100, 3454, 9060, 10039, 7358, 6185],
+            "G": [2700, 2500, 1500, 1500, 2000, 2000, 2500, 2500],
+            "lldg": [0.15, 0.15, 0.15, 0.15, 0.25, 0.3, 0.3, 0.25],
+            "L": [10039, 9060, 3454, 3100, 7519, 8529, 6185, 7358],
         }
     )
 
@@ -162,6 +154,50 @@ def test_rank():
     # Clean up tmp files
     cand_fn.unlink()
     dmat_fn.unlink()
-    pl.Path(fname_ranked).unlink()
+
+    assert test_results
+
+
+def test_order_blocks():
+    """Call to sdoe.order_blocks() using hard-coded data written to temp files"""
+
+    # candidate dataframe to write to cand file
+    cand_df = pd.DataFrame(
+        {
+            "w": [0.15, 0.15, 0.15, 0.175, 0.175, 0.15, 0.15, 0.15],
+            "G": [2700, 2500, 2000, 2500, 2500, 1500, 1500, 2000],
+            "lldg": [0.15, 0.15, 0.25, 0.25, 0.3, 0.15, 0.15, 0.3],
+            "L": [10039, 9060, 7519, 7358, 6185, 3100, 3454, 8529],
+        }
+    )
+    cand_fn = pl.Path(sys.path[0], "tmp_cand.csv")
+    df_utils.write(cand_fn, cand_df)
+
+    # file name dict to be passed to sdoe.order_blocks()
+    fnames = {"cand": str(cand_fn)}
+
+    # difficulty list
+    difficulty = ["Hard", "Hard", "Easy", "Easy"]
+
+    # Make the actual call
+    fname_blocks = sdoe.order_blocks(fnames, difficulty)
+
+    # Ranked results as a dataframe
+    ret_blocks_df = df_utils.load(fname_blocks)
+
+    # Expected ranked results as dataframe
+    blocks_df = pd.DataFrame(
+        {
+            "w": [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.175, 0.175],
+            "G": [1500, 1500, 2000, 2000, 2500, 2700, 2500, 2500],
+            "lldg": [0.15, 0.15, 0.25, 0.3, 0.15, 0.15, 0.25, 0.3],
+            "L": [3100, 3454, 7519, 8529, 9060, 10039, 7358, 6185],
+        }
+    )
+
+    test_results = ret_blocks_df.equals(blocks_df)
+
+    # Clean up tmp files
+    cand_fn.unlink()
 
     assert test_results

@@ -9,6 +9,10 @@ optional components for use within FOQUS.
 Quick Start
 -----------
 
+.. note::
+    If you are installing on Apple silicon please use the 
+    sub-sections as this quick start will not work.
+
 For those familiar with the details, here is a summary of how to install and run
 FOQUS:
 
@@ -16,11 +20,13 @@ FOQUS:
 
   - In a terminal, to setup and install::
       
-      conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32
+      conda create --name ccsi-foqus -c conda-forge python=3.10 pywin32=306
       conda activate ccsi-foqus
       pip install ccsi-foqus
       foqus --make-shortcut  # Create Desktop shortcut (Windows only)
 
+  - 
+  
   - In a terminal, to run::
       
       conda activate ccsi-foqus

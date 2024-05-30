@@ -4,7 +4,7 @@ Tutorial 3: Microsoft Excel Configuration
 =========================================
 
 The files (both the Excel and the JSON files) for this tutorial are
-located in: **examples/tutorial_files/SimSinter/Tutorial_3**
+located in: :path:`examples/tutorial_files/SimSinter/Tutorial_3`
 
 .. note:: |examples_reminder_text|
 

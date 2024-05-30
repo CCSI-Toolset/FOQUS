@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,19 +12,18 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import os
 from pathlib import Path
 from typing import List, Tuple
-import os
 
 import pytest
-from pytest_qt_extras import QtBot
 from PyQt5 import QtWidgets
 
-from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.plugins.pluginSearch import plugins
 from foqus_lib.framework.session import session as FoqusSession
 from foqus_lib.gui.flowsheet.drawFlowsheet import drawFlowsheet
-from foqus_lib.framework.plugins.pluginSearch import plugins
-
+from foqus_lib.gui.main.mainWindow import mainWindow
+from pytest_qt_extras import QtBot
 
 pytestmark = pytest.mark.gui
 
@@ -63,6 +62,7 @@ def test_model_files_are_present(model_files: List[Path]):
 
 # ----------------------------------------------------------------------------
 # parent class to run flowsheet, starting from main FOQUS session
+
 
 # use the ML_AI session since it already exists, will load and run plugins here
 @pytest.fixture(

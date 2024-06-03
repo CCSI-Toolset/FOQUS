@@ -351,7 +351,7 @@ class TestPymodelMLAI:
         # has a custom layer with a custom normalization option
         model = TFSM_load(
             model_folder[0],
-            call_endpoint='serve',
+            call_endpoint="serve",
         )
 
         return model

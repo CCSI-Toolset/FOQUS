@@ -1254,7 +1254,9 @@ class Node:
 
             # check which type of file Keras needs to load
             if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
-                extension = ".h5"  # deprecated, include for back-compatibility and user warning
+                extension = (
+                    ".h5"  # deprecated, include for back-compatibility and user warning
+                )
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".keras")
             ):
@@ -1263,8 +1265,7 @@ class Node:
                 os.path.join(os.getcwd(), str(self.modelName) + ".json")
             ):
                 extension = ".json"
-            elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")
-            ):
+            elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")):
                 extension = ".pt"  # this is for PyTorch models
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
@@ -1331,7 +1332,7 @@ class Node:
                 # this format must be loaded via TFSMLayer, and any custom layer will be lost
                 # essentially same case as .keras or .h5 with no custom layer
                 # should still be supported, use TFSM load method
-                self.model = TFSM_load(str(self.modelName), call_endpoint='serve')
+                self.model = TFSM_load(str(self.modelName), call_endpoint="serve")
                 trainer = "keras"  # TODO
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
@@ -1851,7 +1852,9 @@ class Node:
 
             # check which type of file Keras needs to load
             if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
-                extension = ".h5"  # deprecated, include for back-compatibility and user warning
+                extension = (
+                    ".h5"  # deprecated, include for back-compatibility and user warning
+                )
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".keras")
             ):

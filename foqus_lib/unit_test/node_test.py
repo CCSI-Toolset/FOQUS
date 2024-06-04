@@ -335,6 +335,11 @@ class TestPymodelMLAI:
         load, json_load, TFSM_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
+        print()
+        print("PRINT MODEL_FILES")
+        for i in model_files:
+            print(i)
+        print()
         model_folder = [
             path
             for path in model_files

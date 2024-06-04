@@ -326,7 +326,6 @@ class pymodel_ml_ai(pymodel):
             model_input_size = self.model.variables[0].shape[0]
             model_output_size = self.model.variables[-1].shape[0]
 
-
         elif self.trainer == "torch":
             # find the custom layer object, if it exists - there's probably a more direct way to do this
             for attribute in dir(self.model):
@@ -695,9 +694,7 @@ class pymodel_ml_ai(pymodel):
                 np.array(self.scaled_inputs, ndmin=2)
             )[0]
         elif self.trainer == "TFSM":
-            self.scaled_outputs = self.model(
-                np.array(self.scaled_inputs, ndmin=2)
-            )[0]
+            self.scaled_outputs = self.model(np.array(self.scaled_inputs, ndmin=2))[0]
         elif self.trainer == "torch":
             self.scaled_outputs = (
                 self.model(torch_tensor(self.scaled_inputs, dtype=torch_float))

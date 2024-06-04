@@ -252,7 +252,9 @@ class TestPymodelMLAI:
 
         # get model files from previously defined model_files pathlist
         model = [
-            path for path in model_files if str(path).endswith("mea_column_model_nocustomlayer.keras")
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_nocustomlayer.keras")
         ]
 
         # has no custom layer or normalization
@@ -507,7 +509,9 @@ class TestPymodelMLAI:
         # as in subsequent tests, an alias is created to preserve the fixture
         # no custom layer, so set keras_has_custom_layer to False
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        test_pymodel = pymodel_ml_ai(example_1, trainer="keras", keras_has_custom_layer=False)
+        test_pymodel = pymodel_ml_ai(
+            example_1, trainer="keras", keras_has_custom_layer=False
+        )
         test_pymodel.run()
 
     def test_build_and_run_as_expected_2(self, example_2):
@@ -533,7 +537,9 @@ class TestPymodelMLAI:
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         # legacy SavedModel type does not support custom layer, so set keras_has_custom_layer to False
-        test_pymodel = pymodel_ml_ai(example_4, trainer="TFSM", keras_has_custom_layer=False)
+        test_pymodel = pymodel_ml_ai(
+            example_4, trainer="TFSM", keras_has_custom_layer=False
+        )
         test_pymodel.run()
 
     def test_build_and_run_as_expected_5(self, example_5):
@@ -595,7 +601,9 @@ class TestPymodelMLAI:
     def test_run_invalid_trainer_type(self, example_1):
         # note, this should never happen since users can never set this value
         # and the error tested above will be detected and raised first
-        test_pymodel = pymodel_ml_ai(example_1, trainer="keras", keras_has_custom_layer=False)  # valid type
+        test_pymodel = pymodel_ml_ai(
+            example_1, trainer="keras", keras_has_custom_layer=False
+        )  # valid type
         test_pymodel.trainer = "notavalidtype"  # now change it and run
         with pytest.raises(
             AttributeError,
@@ -610,7 +618,9 @@ class TestPymodelMLAI:
 
     def test_defaults_no_custom_layer(self, example_1):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        test_pymodel = pymodel_ml_ai(example_1, trainer="keras", keras_has_custom_layer=False)
+        test_pymodel = pymodel_ml_ai(
+            example_1, trainer="keras", keras_has_custom_layer=False
+        )
 
         dummyidx = 0
         for idx in test_pymodel.inputs:

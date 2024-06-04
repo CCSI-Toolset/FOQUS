@@ -27,6 +27,7 @@ np.random.seed(46)
 rn.seed(1342)
 tf.random.set_seed(62)
 
+
 # method to create model
 def create_model(data):
 
@@ -40,9 +41,7 @@ def create_model(data):
     n_hidden, n_neurons, layer_act, out_act = 1, 12, "relu", "sigmoid"
 
     for layer in range(n_hidden):
-        dense_layers.append(
-            tf.keras.layers.Dense(n_neurons, activation=layer_act)
-        )
+        dense_layers.append(tf.keras.layers.Dense(n_neurons, activation=layer_act))
 
     dense_layers_out = tf.keras.layers.Dense(2, activation=out_act)
 

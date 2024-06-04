@@ -252,7 +252,7 @@ class TestPymodelMLAI:
 
         # get model files from previously defined model_files pathlist
         model = [
-            path for path in model_files if str(path).endswith("AR_nocustomlayer.keras")
+            path for path in model_files if str(path).endswith("mea_column_model_nocustomlayer.keras")
         ]
 
         # has no custom layer or normalization
@@ -1280,7 +1280,7 @@ class TestNode:
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(newModel="AR_nocustomlayer", newType=5)
+        node.setSim(newModel="mea_column_model_nocustomlayer", newType=5)
         os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model, trainer="keras")
@@ -1311,7 +1311,7 @@ class TestNode:
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(newModel="AR_nocustomlayer", newType=5)
+        node.setSim(newModel="mea_column_model_nocustomlayer", newType=5)
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 

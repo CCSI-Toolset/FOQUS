@@ -57,6 +57,33 @@ def model_files(
             paths.append(path)
     return paths
 
+@pytest.fixture(scope="session")
+def model_files_filefilteronly(
+    foqus_ml_ai_models_dir: Path,
+    install_ml_ai_model_files,
+    suffixes: Tuple[str] = (".py", ".keras", ".h5", ".json", ".pt", ".pkl"),
+) -> List[Path]:
+    paths = []
+    for path in sorted(foqus_ml_ai_models_dir.glob("*")):
+        if all(
+            [
+                ((path.is_file() and path.suffix in suffixes) or path.is_dir()),
+            ]
+        ):
+            paths.append(path)
+    return paths
+
+@pytest.fixture(scope="session")
+def model_files_nofilter(
+    foqus_ml_ai_models_dir: Path,
+    install_ml_ai_model_files,
+    suffixes: Tuple[str] = (".py", ".keras", ".h5", ".json", ".pt", ".pkl"),
+) -> List[Path]:
+    paths = []
+    for path in sorted(foqus_ml_ai_models_dir.glob("*")):
+        paths.append(path)
+    return paths
+
 
 def test_model_files_are_present(model_files: List[Path]):
     assert model_files
@@ -325,7 +352,7 @@ class TestPymodelMLAI:
         return model
 
     @pytest.fixture(scope="function")
-    def example_4(self, model_files):  # model saved in SavedModel file format
+    def example_4(self, model_files, model_files_filefilteronly, model_files_nofilter, foqus_ml_ai_models_dir, install_ml_ai_model_files):  # model saved in SavedModel file format
         # no tests using this fixture should run if tensorflow and sympy are not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -336,8 +363,21 @@ class TestPymodelMLAI:
 
         # get model files from previously defined model_files pathlist
         print()
+        print("PRINT foqus_ml_ai_models_dir")
+        print(foqus_ml_ai_models_dir)
+        print("PRINT install_ml_ai_model_files")
+        print(install_ml_ai_model_files)
+        print()
         print("PRINT MODEL_FILES")
         for i in model_files:
+            print(i)
+        print()
+        print("PRINT MODEL_FILES_FILEFILTERONLY")
+        for i in model_files_filefilteronly:
+            print(i)
+        print()
+        print("PRINT MODEL_FILES_NOFILTER")
+        for i in model_files_nofilter:
             print(i)
         print()
         model_folder = [
@@ -357,7 +397,7 @@ class TestPymodelMLAI:
 
         # has a custom layer with a custom normalization option
         model = TFSM_load(
-            model_folder[0],
+            model_folder[10],
             call_endpoint="serve",
         )
 

@@ -57,6 +57,7 @@ def model_files(
             paths.append(path)
     return paths
 
+
 @pytest.fixture(scope="session")
 def model_files_filefilteronly(
     foqus_ml_ai_models_dir: Path,
@@ -72,6 +73,7 @@ def model_files_filefilteronly(
         ):
             paths.append(path)
     return paths
+
 
 @pytest.fixture(scope="session")
 def model_files_nofilter(
@@ -352,7 +354,14 @@ class TestPymodelMLAI:
         return model
 
     @pytest.fixture(scope="function")
-    def example_4(self, model_files, model_files_filefilteronly, model_files_nofilter, foqus_ml_ai_models_dir, install_ml_ai_model_files):  # model saved in SavedModel file format
+    def example_4(
+        self,
+        model_files,
+        model_files_filefilteronly,
+        model_files_nofilter,
+        foqus_ml_ai_models_dir,
+        install_ml_ai_model_files,
+    ):  # model saved in SavedModel file format
         # no tests using this fixture should run if tensorflow and sympy are not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -397,7 +406,7 @@ class TestPymodelMLAI:
 
         # has a custom layer with a custom normalization option
         model = TFSM_load(
-            model_folder[10],
+            model_folder[0],
             call_endpoint="serve",
         )
 

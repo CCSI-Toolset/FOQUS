@@ -12,16 +12,10 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import configparser
-import json
 from importlib import resources
-import sys
 from pathlib import Path
-from unittest import mock
 
-import matplotlib.pyplot as plt
 import pandas as pd
-import pytest
 
 from foqus_lib.framework.sdoe.df_utils import write, load, merge, check
 

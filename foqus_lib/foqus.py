@@ -47,6 +47,9 @@ dat = None
 PyQt5 = None
 
 
+_logger = logging.getLogger("foqus." + __name__)
+
+
 def guiImport(mpl_backend="Qt5Agg"):
     """
     Only import the GUI classes if you want the GUI
@@ -74,7 +77,7 @@ def guiImport(mpl_backend="Qt5Agg"):
         loadGUI = True
         guiAvail = True
     except ImportError:
-        logging.getLogger("foqus." + __name__).exception("Error importing PyQt")
+        _logger.exception("Error importing PyQt")
         loadGUI = False
         guiAvail = False
 
@@ -205,7 +208,7 @@ def logException(etype, evalue, etrace):
     except:
         pass
     try:
-        logging.getLogger("foqus." + __name__).critical(
+        _logger.critical(
             "unhandled exception", exc_info=(etype, evalue, etrace)
         )
         if foqus_application:
@@ -221,7 +224,7 @@ def logException(etype, evalue, etrace):
             )
             msgBox.exec_()
     except Exception as e:
-        logging.getLogger("foqus." + __name__).exception(
+        _logger.exception(
             "unhandled exception: If you see this there was some"
             " problem with unhandled exception logging. "
         )
@@ -256,7 +259,7 @@ def main(args_to_parse=None):
     try:
         turbine.commands._setup_logging.done = True
     except:
-        logging.getLogger("foqus." + __name__).exception("Cannot find turbine module")
+        _logger.exception("Cannot find turbine module")
     app = None  # Qt application if I need to display message boxes.
     ## Setup the command line arguments
     parser = argparse.ArgumentParser()
@@ -354,6 +357,12 @@ def main(args_to_parse=None):
         help="Use Dask for parallelizing SDoE calculations",
         dest="sdoe_use_dask",
     )
+    parser.add_argument(
+        "--psuade-path",
+        dest="psuade_path",
+        default="psuade",
+        help="Path to the PSUADE executable. Default is 'psuade'."
+    )
 
     args = parser.parse_args(args=args_to_parse)
     if args.sdoe_use_dask:
@@ -362,6 +371,12 @@ def main(args_to_parse=None):
 
         Client()  # n_workers=4, threads_per_worker=1)
         dconf.set({"dataframe.convert-string": False})
+
+    psuade_exe = shutil.which(args.psuade_path)
+    if psuade_exe is None:
+        logging.critical("Executable not found for %r. The application will now exit.", args.psuade_path)
+        sys.exit(1)
+    logging.info("PSUADE executable found at %r", psuade_exe)
 
     # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead
@@ -390,7 +405,7 @@ def main(args_to_parse=None):
             db.consumer_status(args.terminateConsumer, "terminate")
             sys.exit(0)
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception(
+            _logger.exception(
                 "Error terminating turbine consumer"
             )
             sys.exit(1)
@@ -413,7 +428,7 @@ def main(args_to_parse=None):
             db.add_new_application(args.addTurbineApp)
             sys.exit(0)
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception("Error adding turbine app")
+            _logger.exception("Error adding turbine app")
             sys.exit(1)
     if args.consumer:
         nogui = True
@@ -440,7 +455,7 @@ def main(args_to_parse=None):
             makeWorkingDirStruct()  # setup working dir, session module
             makeWorkingDirFiles()
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception(
+            _logger.exception(
                 'Could not set the working directory to "{}"'.format(args.working_dir)
             )
             sys.exit(111)
@@ -486,7 +501,7 @@ def main(args_to_parse=None):
                         settings["working_dir"] = dirs[0]
                         os.chdir(settings["working_dir"])
                     else:
-                        logging.getLogger("foqus." + __name__).error(
+                        _logger.error(
                             ("No working directory" " specified. FOQUS will exit")
                         )
                         msg = PyQt5.QtWidgets.QMessageBox()
@@ -498,15 +513,15 @@ def main(args_to_parse=None):
                 else:
                     # Fall back on current directory if no config and
                     # now GUI for file selector
-                    logging.getLogger("foqus." + __name__).error(
+                    _logger.error(
                         "Using current directory as working directory"
                     )
     # Create working directory directory structure if is not in place
-    logging.getLogger("foqus." + __name__).debug(
+    _logger.debug(
         "Working directory set to " + os.getcwd()
     )
     if not makeWorkingDirStruct():
-        logging.getLogger("foqus." + __name__).critical(
+        _logger.critical(
             "Could not setup working directory, exiting"
         )
         sys.exit(9)
@@ -516,7 +531,7 @@ def main(args_to_parse=None):
     ##
     ## create an emptpy FOQUS session
     ##
-    logging.getLogger("foqus." + __name__).debug("Create Flowsheet Session")
+    _logger.debug("Create Flowsheet Session")
     dat = session(useCurrentWorkingDir=True)
     ##
     ## Set some options
@@ -531,14 +546,14 @@ def main(args_to_parse=None):
     ##
     ## Load session file if one was specified on command line
     ##
-    logging.getLogger("foqus." + __name__).debug(
+    _logger.debug(
         "Load Flowsheet Session: %s", args.load
     )
     try:
         if args.load:
             dat.load(args.load)
     except:  # couldn't load the file
-        logging.getLogger("foqus." + __name__).exception(
+        _logger.exception(
             "Could not load file specified with --load: " + args.load
         )
         sys.exit(10)
@@ -548,7 +563,7 @@ def main(args_to_parse=None):
     if args.saveValues:
         load_gui = False
         if not args.load:
-            logging.getLogger("foqus." + __name__).error(
+            _logger.error(
                 "To save values you must load a flowsheet"
             )
             sys.exit(11)
@@ -556,33 +571,33 @@ def main(args_to_parse=None):
             try:
                 dat.saveFlowsheetValues(args.saveValues)
             except Exception as e:
-                logging.getLogger("foqus." + __name__).exception(
+                _logger.exception(
                     'Could not save flowsheet values in: "{}"'.format(args.saveValues)
                 )
                 sys.exit(13)
     ##
     ## Load a set of saved values (only with load session option)
     ##
-    logging.getLogger("foqus." + __name__).debug(
+    _logger.debug(
         "LoadValues Flowsheet: %s", args.loadValues
     )
     if args.loadValues:
         if not args.load:
-            logging.getLogger("foqus." + __name__).error(
+            _logger.error(
                 "To load values you must load a flowsheet"
             )
             sys.exit(12)
         else:
-            logging.getLogger("foqus." + __name__).debug("load values flowsheet")
+            _logger.debug("load values flowsheet")
             try:
                 dat.loadFlowsheetValues(args.loadValues)
             except Exception as e:
-                logging.getLogger("foqus." + __name__).exception(
+                _logger.exception(
                     'Could not load flowsheet values in: "{}"'.format(args.loadValues)
                 )
                 sys.exit(14)
     ## Run a single flowsheet, optimization, or eventually uq ensemble
-    logging.getLogger("foqus." + __name__).debug("Run Option: %s", args.run)
+    _logger.debug("Run Option: %s", args.run)
     if args.run == "opt":
         # run an optimization problem from the command line
         # the optimization should previously have been setup
@@ -626,7 +641,7 @@ def main(args_to_parse=None):
         db.dbFile = os.path.join(
             dat.foqusSettings.turbLiteHome, "Data/TurbineCompactDatabase.sdf"
         )
-        logging.getLogger("foqus." + __name__).info(
+        _logger.info(
             "TurbineLite Database:\n   {0}".format(db.dbFile)
         )
         # add 'foqus' app to TurbineLite DB if not already there
@@ -657,7 +672,7 @@ def main(args_to_parse=None):
         else:
             cleanup = False
         if cleanup:
-            logging.getLogger("foqus." + __name__).info(
+            _logger.info(
                 "FOQUS consumer moving running jobs to {0}".format(cleanup)
             )
             guid = 0
@@ -671,7 +686,7 @@ def main(args_to_parse=None):
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
 
-            logging.getLogger("foqus." + __name__).info(
+            _logger.info(
                 "FOQUS consumer moving setup jobs to {0}".format(cleanup)
             )
             guid = 0
@@ -685,7 +700,7 @@ def main(args_to_parse=None):
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
         try:
-            logging.getLogger("foqus." + __name__).info(
+            _logger.info(
                 "FOQUS consumer {0} started, waiting for jobs...".format(consumer_uuid)
             )
             with open("consumer_uuid.txt", "w") as f:
@@ -709,7 +724,7 @@ def main(args_to_parse=None):
                     time.sleep(args.consumer_delay)
                 elif args.consumer_cancel_jobs:
                     # Just switch job to cancel state
-                    logging.getLogger("foqus." + __name__).info(
+                    _logger.info(
                         "Job {0} will be canceled".format(jid)
                     )
                     db.add_message(
@@ -725,7 +740,7 @@ def main(args_to_parse=None):
                     )
                     db.job_change_status(guid, "setup")
                     configContent = db.get_configuration_file(simId)
-                    logging.getLogger("foqus." + __name__).info(
+                    _logger.info(
                         "Job {0} is submitted".format(jid)
                     )
                     db.jobConsumerID(guid, consumer_uuid)
@@ -742,35 +757,35 @@ def main(args_to_parse=None):
                     # Load the session file
                     try:
                         if reset:
-                            logging.getLogger("foqus." + __name__).info(
+                            _logger.info(
                                 "Reset = True, stopping consumers "
                                 "and reloading foqus file {0}".format(sfile)
                             )
                             dat.load(sfile, stopConsumers=True)
                         elif simId != lastSim:
-                            logging.getLogger("foqus." + __name__).info(
+                            _logger.info(
                                 "Reset = False, but simulation id does not"
                                 " match previous, reloading simulation"
                                 " stopping consumers, {0}".format(sfile)
                             )
                             dat.load(sfile, stopConsumers=True)
                         else:
-                            logging.getLogger("foqus." + __name__).info(
+                            _logger.info(
                                 "Same simulation as prev., not reloading"
                             )
                         lastSim = simId
                         # Load the input values
-                        logging.getLogger("foqus." + __name__).info(
+                        _logger.info(
                             "Loading input values. {0}".format(vfile)
                         )
                         dat.loadFlowsheetValues(vfile)
                         # Run graph
                         db.job_change_status(guid, "running")
-                        logging.getLogger("foqus." + __name__).info(
+                        _logger.info(
                             "Moving job {0} to running state".format(jid)
                         )
                     except:
-                        logging.getLogger("foqus." + __name__).exception(
+                        _logger.exception(
                             "Error loading session or session inputs"
                             " for job: {0}".format(jid)
                         )
@@ -796,7 +811,7 @@ def main(args_to_parse=None):
                     if terminate:
                         break
                     if gt.res[0]:
-                        logging.getLogger("foqus." + __name__).debug(
+                        _logger.debug(
                             "GT: %s", gt.res[0]
                         )
                         dat.flowsheet.loadValues(gt.res[0])
@@ -819,7 +834,7 @@ def main(args_to_parse=None):
                             ),
                             guid,
                         )
-                        logging.getLogger("foqus." + __name__).info(
+                        _logger.info(
                             "Job {0} finished with success".format(jid)
                         )
                     else:
@@ -830,7 +845,7 @@ def main(args_to_parse=None):
                             ),
                             guid,
                         )
-                        logging.getLogger("foqus." + __name__).info(
+                        _logger.info(
                             "Job {0} finished with error".format(jid)
                         )
         except KeyboardInterrupt:
@@ -844,7 +859,7 @@ def main(args_to_parse=None):
                     )
                 except:
                     pass
-            logging.getLogger("foqus." + __name__).info(
+            _logger.info(
                 "FOQUS Consumer stopped due to SIGINT"
             )
             try:
@@ -867,7 +882,7 @@ def main(args_to_parse=None):
                     )
                 except:
                     pass
-            logging.getLogger("foqus." + __name__).exception(
+            _logger.exception(
                 "FOQUS Consumer stopped due to exception"
             )
             exit_code = 3
@@ -892,7 +907,7 @@ def main(args_to_parse=None):
                     db.job_change_status(guid, "error")
                 except:
                     pass
-            logging.getLogger("foqus." + __name__).info(
+            _logger.info(
                 "Stopping FOQUS consumer '{0}' terminate status".format(consumer_uuid)
             )
         kat.terminate()
@@ -905,7 +920,7 @@ def main(args_to_parse=None):
     if guiAvail and not args.nogui and load_gui:
         # Start graphical interface unless it is not
         # available or nogui flag given
-        logging.getLogger("foqus." + __name__).debug("Starting GUI")
+        _logger.debug("Starting GUI")
         if args.runUITestScript:
             ts = args.runUITestScript
         else:
@@ -918,9 +933,9 @@ def main(args_to_parse=None):
             showBasicData=args.basic_data,
             ts=ts,
         )
-        logging.getLogger("foqus." + __name__).debug("Exit GUI")
+        _logger.debug("Exit GUI")
     elif not guiAvail and not args.nogui and load_gui:
-        logging.getLogger("foqus." + __name__).error("PyQt5 or Qt not available")
+        _logger.error("PyQt5 or Qt not available")
         exit_code = 2
     ##
     ## Do clean up stuff and exit

@@ -208,9 +208,7 @@ def logException(etype, evalue, etrace):
     except:
         pass
     try:
-        _logger.critical(
-            "unhandled exception", exc_info=(etype, evalue, etrace)
-        )
+        _logger.critical("unhandled exception", exc_info=(etype, evalue, etrace))
         if foqus_application:
             # just in case the exception happened when
             # cursor was set to waiting type set to normal
@@ -361,7 +359,7 @@ def main(args_to_parse=None):
         "--psuade-path",
         dest="psuade_path",
         default="psuade",
-        help="Path to the PSUADE executable. Default is 'psuade'."
+        help="Path to the PSUADE executable. Default is 'psuade'.",
     )
 
     args = parser.parse_args(args=args_to_parse)
@@ -374,9 +372,13 @@ def main(args_to_parse=None):
 
     psuade_exe = shutil.which(args.psuade_path)
     if psuade_exe is None:
-        logging.critical("Executable not found for %r. The application will now exit.", args.psuade_path)
+        _logger.critical(
+            "PSUADE executable not found for %r. The application will now exit. "
+            "For more information about installing PSUADE, refer to the FOQUS documentation at https://foqus.readthedocs.io",
+            args.psuade_path,
+        )
         sys.exit(1)
-    logging.info("PSUADE executable found at %r", psuade_exe)
+    _logger.info("PSUADE executable found at %r", psuade_exe)
 
     # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead
@@ -405,9 +407,7 @@ def main(args_to_parse=None):
             db.consumer_status(args.terminateConsumer, "terminate")
             sys.exit(0)
         except Exception as e:
-            _logger.exception(
-                "Error terminating turbine consumer"
-            )
+            _logger.exception("Error terminating turbine consumer")
             sys.exit(1)
     elif args.addTurbineApp:
         try:
@@ -513,17 +513,11 @@ def main(args_to_parse=None):
                 else:
                     # Fall back on current directory if no config and
                     # now GUI for file selector
-                    _logger.error(
-                        "Using current directory as working directory"
-                    )
+                    _logger.error("Using current directory as working directory")
     # Create working directory directory structure if is not in place
-    _logger.debug(
-        "Working directory set to " + os.getcwd()
-    )
+    _logger.debug("Working directory set to " + os.getcwd())
     if not makeWorkingDirStruct():
-        _logger.critical(
-            "Could not setup working directory, exiting"
-        )
+        _logger.critical("Could not setup working directory, exiting")
         sys.exit(9)
     # Copy files to working directory if needed. (just heat integration
     # gams files)
@@ -546,16 +540,12 @@ def main(args_to_parse=None):
     ##
     ## Load session file if one was specified on command line
     ##
-    _logger.debug(
-        "Load Flowsheet Session: %s", args.load
-    )
+    _logger.debug("Load Flowsheet Session: %s", args.load)
     try:
         if args.load:
             dat.load(args.load)
     except:  # couldn't load the file
-        _logger.exception(
-            "Could not load file specified with --load: " + args.load
-        )
+        _logger.exception("Could not load file specified with --load: " + args.load)
         sys.exit(10)
     ##
     ## Save the values from a flowsheet (only with load option)
@@ -563,9 +553,7 @@ def main(args_to_parse=None):
     if args.saveValues:
         load_gui = False
         if not args.load:
-            _logger.error(
-                "To save values you must load a flowsheet"
-            )
+            _logger.error("To save values you must load a flowsheet")
             sys.exit(11)
         else:
             try:
@@ -578,14 +566,10 @@ def main(args_to_parse=None):
     ##
     ## Load a set of saved values (only with load session option)
     ##
-    _logger.debug(
-        "LoadValues Flowsheet: %s", args.loadValues
-    )
+    _logger.debug("LoadValues Flowsheet: %s", args.loadValues)
     if args.loadValues:
         if not args.load:
-            _logger.error(
-                "To load values you must load a flowsheet"
-            )
+            _logger.error("To load values you must load a flowsheet")
             sys.exit(12)
         else:
             _logger.debug("load values flowsheet")
@@ -641,9 +625,7 @@ def main(args_to_parse=None):
         db.dbFile = os.path.join(
             dat.foqusSettings.turbLiteHome, "Data/TurbineCompactDatabase.sdf"
         )
-        _logger.info(
-            "TurbineLite Database:\n   {0}".format(db.dbFile)
-        )
+        _logger.info("TurbineLite Database:\n   {0}".format(db.dbFile))
         # add 'foqus' app to TurbineLite DB if not already there
         db.add_new_application("foqus")
         # register the consumer in the database
@@ -672,9 +654,7 @@ def main(args_to_parse=None):
         else:
             cleanup = False
         if cleanup:
-            _logger.info(
-                "FOQUS consumer moving running jobs to {0}".format(cleanup)
-            )
+            _logger.info("FOQUS consumer moving running jobs to {0}".format(cleanup))
             guid = 0
             while guid is not None:
                 guid, jid, simId, reset = db.get_job_id(
@@ -686,9 +666,7 @@ def main(args_to_parse=None):
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
 
-            _logger.info(
-                "FOQUS consumer moving setup jobs to {0}".format(cleanup)
-            )
+            _logger.info("FOQUS consumer moving setup jobs to {0}".format(cleanup))
             guid = 0
             while guid is not None:
                 guid, jid, simId, reset = db.get_job_id(
@@ -724,9 +702,7 @@ def main(args_to_parse=None):
                     time.sleep(args.consumer_delay)
                 elif args.consumer_cancel_jobs:
                     # Just switch job to cancel state
-                    _logger.info(
-                        "Job {0} will be canceled".format(jid)
-                    )
+                    _logger.info("Job {0} will be canceled".format(jid))
                     db.add_message(
                         "consumer={0}, canceling job {1}".format(consumer_uuid, jid),
                         guid,
@@ -740,9 +716,7 @@ def main(args_to_parse=None):
                     )
                     db.job_change_status(guid, "setup")
                     configContent = db.get_configuration_file(simId)
-                    _logger.info(
-                        "Job {0} is submitted".format(jid)
-                    )
+                    _logger.info("Job {0} is submitted".format(jid))
                     db.jobConsumerID(guid, consumer_uuid)
                     db.job_prepare(guid, jid, configContent)
                     workingDirectory = os.path.join("test", str(jid))
@@ -770,20 +744,14 @@ def main(args_to_parse=None):
                             )
                             dat.load(sfile, stopConsumers=True)
                         else:
-                            _logger.info(
-                                "Same simulation as prev., not reloading"
-                            )
+                            _logger.info("Same simulation as prev., not reloading")
                         lastSim = simId
                         # Load the input values
-                        _logger.info(
-                            "Loading input values. {0}".format(vfile)
-                        )
+                        _logger.info("Loading input values. {0}".format(vfile))
                         dat.loadFlowsheetValues(vfile)
                         # Run graph
                         db.job_change_status(guid, "running")
-                        _logger.info(
-                            "Moving job {0} to running state".format(jid)
-                        )
+                        _logger.info("Moving job {0} to running state".format(jid))
                     except:
                         _logger.exception(
                             "Error loading session or session inputs"
@@ -811,9 +779,7 @@ def main(args_to_parse=None):
                     if terminate:
                         break
                     if gt.res[0]:
-                        _logger.debug(
-                            "GT: %s", gt.res[0]
-                        )
+                        _logger.debug("GT: %s", gt.res[0])
                         dat.flowsheet.loadValues(gt.res[0])
                     else:
                         dat.flowsheet.errorStat = 19
@@ -834,9 +800,7 @@ def main(args_to_parse=None):
                             ),
                             guid,
                         )
-                        _logger.info(
-                            "Job {0} finished with success".format(jid)
-                        )
+                        _logger.info("Job {0} finished with success".format(jid))
                     else:
                         db.job_change_status(guid, "error")
                         db.add_message(
@@ -845,9 +809,7 @@ def main(args_to_parse=None):
                             ),
                             guid,
                         )
-                        _logger.info(
-                            "Job {0} finished with error".format(jid)
-                        )
+                        _logger.info("Job {0} finished with error".format(jid))
         except KeyboardInterrupt:
             if guid:
                 try:
@@ -859,9 +821,7 @@ def main(args_to_parse=None):
                     )
                 except:
                     pass
-            _logger.info(
-                "FOQUS Consumer stopped due to SIGINT"
-            )
+            _logger.info("FOQUS Consumer stopped due to SIGINT")
             try:
                 gt.terminate()
             except:
@@ -882,9 +842,7 @@ def main(args_to_parse=None):
                     )
                 except:
                     pass
-            _logger.exception(
-                "FOQUS Consumer stopped due to exception"
-            )
+            _logger.exception("FOQUS Consumer stopped due to exception")
             exit_code = 3
             try:
                 gt.terminate()

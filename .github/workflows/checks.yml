@@ -113,7 +113,7 @@ jobs:
           echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
       - name: Set common pytest flags
         run:
-          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
+          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --maxfail=3 --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
       - name: Add pytest coverage flags
         if: matrix.use_coverage
         run:

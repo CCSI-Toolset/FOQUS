@@ -60,7 +60,6 @@ jobs:
           config: .typos.toml
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
-    needs: [spell-check, code-formatting, pylint]
     runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false

@@ -40,6 +40,7 @@ def setup_frame_blank(main_window, flowsheet_session_file, request):
     request.cls.frame = setup_frame
     return setup_frame
 
+
 @pytest.mark.usefixtures("setup_frame_blank")
 class Test_NUSF2:
     @property

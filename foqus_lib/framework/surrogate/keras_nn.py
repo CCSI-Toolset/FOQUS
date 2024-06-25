@@ -41,6 +41,7 @@ from multiprocessing.connection import Client
 from pathlib import Path
 from tokenize import String
 
+from typing import Tuple
 import numpy as np
 import pandas as pd
 import tensorflow as tf  # pylint: disable=import-error
@@ -51,6 +52,20 @@ from foqus_lib.framework.session.session import exePath
 # from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
+
+from foqus_lib.framework.surrogate.scaling import (
+    BaseScaler,
+    LinearScaler,
+    LogScaler,
+    LogScaler2,
+    PowerScaler,
+    PowerScaler2,
+    map_name_to_scaler,
+    scale_dataframe,
+)
+
+# mapping between the human-readable name for the scaling variant
+# and an instance of the corresponding scaler class
 
 
 # custom class to define Keras NN layers
@@ -293,6 +308,14 @@ class surrogateMethod(surrogate):
             desc="Name of output file for model, should have file extension: .keras",
             hint="Enter a custom file name if desired",
         )
+        # add option for normalization_form, make dropdown option
+        self.options.add(
+            name="scaling_function",
+            default="Linear",
+            dtype=str,
+            desc="Scaling/normalization function for input data",
+            validValues=list(map_name_to_scaler.keys()),
+        )
 
     def run(self):
         """
@@ -315,6 +338,9 @@ class surrogateMethod(surrogate):
         input_data, output_data = self.getSelectedInputOutputData()
         self.msgQueue.put(f"input data columns: {input_data.columns}")
         self.msgQueue.put(f"output data columns: {output_data.columns}")
+
+        # extract scaling function option, apply it to the input data
+        # get scaler object
 
         # np.random.seed(46)
         # rn.seed(1342)
@@ -341,22 +367,13 @@ class surrogateMethod(surrogate):
         xdata = input_data
         zdata = output_data
 
-        xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
-        zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
+        scaling_func_option = self.options["scaling_function"].value
 
-        # normalize data using Linear form
-        # users can normalize with any allowed form # manually, and then pass the
-        # appropriate flag to FOQUS from the allowed list:
-        # ["Linear", "Log", "Power", "Log 2", "Power 2"] - see the documentation for
-        # details on the scaling formulations
-        xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
-        zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
-        xdata, zdata = np.array(xdata), np.array(zdata)
-        for i in range(len(xdata)):
-            for j in range(len(xlabels)):
-                xdata[i, j] = (xdata[i, j] - xmin[j]) / (xmax[j] - xmin[j])
-            for j in range(len(zlabels)):
-                zdata[i, j] = (zdata[i, j] - zmin[j]) / (zmax[j] - zmin[j])
+        scaler_instance = map_name_to_scaler[scaling_func_option]
+        xdata, xdata_bounds = scale_dataframe(xdata, scaler_instance)
+        zdata, zdata_bounds = scale_dataframe(zdata, scaler_instance)
+
+        print(f"using scaling function: {scaling_func_option}")
 
         # method to create model
         def create_model():
@@ -370,7 +387,7 @@ class surrogateMethod(surrogate):
                 input_bounds=xdata_bounds,
                 output_bounds=zdata_bounds,
                 normalized=True,
-                normalization_form="Linear",
+                normalization_form=scaling_func_option,
             )
 
             outputs = layers(inputs)  # use network as function outputs = f(inputs)

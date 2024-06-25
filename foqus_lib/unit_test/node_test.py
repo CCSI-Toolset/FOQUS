@@ -29,6 +29,7 @@ from foqus_lib.framework.graph.node import (
     attempt_load_pytorch,
     attempt_load_sklearn,
     attempt_load_smt,
+    attempt_load_jenn,
     attempt_load_sympy,
     attempt_load_tensorflow,
     pymodel_ml_ai,
@@ -119,6 +120,15 @@ class testImports(unittest.TestCase):
         with pytest.raises(ModuleNotFoundError):
             smt_pickle_load(None)
 
+    def test_import_jenn_failure(self):
+
+        # method loaded from node module as * import
+        jenn_pickle_load = attempt_load_jenn(try_imports=False)
+
+        # check that the returned functions print the expected warnings
+        with pytest.raises(ModuleNotFoundError):
+            jenn_pickle_load(None)
+
     def test_import_tensorflow_success(self):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
@@ -190,6 +200,20 @@ class testImports(unittest.TestCase):
         # of confirming that the class (function) types are correct
         with pytest.raises(TypeError):
             smt_pickle_load(
+                None
+            )  # should fail to find 'read' and 'readline' attributes
+
+    def test_import_jenn_success(self):
+        # skip this test if jenn is not available
+        pytest.importorskip("jenn", reason="jenn not installed")
+
+        # method loaded from node module as * import
+        jenn_pickle_load = attempt_load_jenn(try_imports=True)
+
+        # check that the returned functions expect the correct input as a way
+        # of confirming that the class (function) types are correct
+        with pytest.raises(TypeError):
+            jenn_pickle_load(
                 None
             )  # should fail to find 'read' and 'readline' attributes
 
@@ -432,7 +456,7 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_8(self, model_files):  # custom layer with smt model
         # no tests using this fixture should run if smt is not installed
-        pytest.importorskip("smt", reason="sklearn not installed")
+        pytest.importorskip("smt", reason="smt not installed")
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -442,12 +466,34 @@ class TestPymodelMLAI:
         model_pkl = [
             path
             for path in model_files
-            if str(path).endswith("mea_column_model_smt.pkl")
+            if str(path).endswith("mea_column_model_smtgenn.pkl")
         ]
 
         # has a custom layer
         with open(model_pkl[0], "rb") as file:
             model = smt_pickle_load(file)
+
+        return model
+
+    @pytest.fixture(scope="function")
+    def example_9(self, model_files):  # custom layer with jenn model
+        # no tests using this fixture should run if jenn is not installed
+        pytest.importorskip("jenn", reason="jenn not installed")
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
+
+        jenn_pickle_load = attempt_load_jenn()  # alias for load method
+
+        # get model files from previously defined model_files pathlist
+        model_pkl = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_jenn.pkl")
+        ]
+
+        # has a custom layer
+        with open(model_pkl[0], "rb") as file:
+            model = jenn_pickle_load(file)
 
         return model
 
@@ -521,6 +567,14 @@ class TestPymodelMLAI:
         test_pymodel = pymodel_ml_ai(example_8, trainer="smt")
         test_pymodel.run()
 
+    def test_build_and_run_as_expected_9(self, example_9):
+        # only run if jenn is available; test run for jenn example
+        pytest.importorskip("jenn", reason="jenn not installed")
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_9, trainer="jenn")
+        test_pymodel.run()
+
     def test_build_invalid_trainer_type(self, example_1):
         # note, this should never happen since users can never set this value
         with pytest.raises(
@@ -529,7 +583,7 @@ class TestPymodelMLAI:
             "notavalidtype, this should not have occurred. "
             "Please contact the FOQUS developers if this error "
             "occurs; the trainer should be set internally to "
-            "`keras`, `torch`, `sklearn` or `smt` and should not be "
+            "`keras`, `torch`, `sklearn`, `smt`, or `jenn` and should not be "
             "able to take any other value.",
         ):
             test_pymodel = pymodel_ml_ai(example_1, trainer="notavalidtype")
@@ -545,7 +599,7 @@ class TestPymodelMLAI:
             "notavalidtype, this should not have occurred. "
             "Please contact the FOQUS developers if this error "
             "occurs; the trainer should be set internally to "
-            "`keras`, `torch`, `sklearn` or `smt` and should not be "
+            "`keras`, `torch`, `sklearn`, `smt`, or `jenn` and should not be "
             "able to take any other value.",
         ):
             test_pymodel.run()
@@ -1692,11 +1746,44 @@ class TestNode:
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(newModel="mea_column_model_smt", newType=5)
+        node.setSim(newModel="mea_column_model_smtgenn", newType=5)
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model, trainer="smt")
+        inst.run()
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_runPymodelMLAI_example9(self, node, model_files):
+        # skip this test if jenn is not available
+        pytest.importorskip("jenn", reason="jenn not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_jenn", newType=5)
+        node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="jenn")
         inst.run()
 
         for attribute in [

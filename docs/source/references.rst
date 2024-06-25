@@ -64,3 +64,7 @@ L. Buitinck, G. Louppe, M.Blondel, et al., "API design for machine learning soft
 .. _Bouhlel_2019:
 
 M. A. Bouhlel, J. T. Hwang, N. Bartoli, et al., "A Python surrogate modeling framework with derivatives." Advances in Engineering Software, Vol 135 (pp. 102662), September 2019.
+
+.. _Berguin_2019:
+
+S. H. Berguin. "Gradient-Enhanced Neural Network." URL: https://github.com/shb84/JENN/blob/master/docs/theory.pdf.

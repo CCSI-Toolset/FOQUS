@@ -1574,7 +1574,7 @@ class mainWindow(QMainWindow):
             self.dat.foqusSettings.addRecentlyOpenedFile(self.dat.currentFile)
         self.openRecentMainMenu.clear()
         self.openRecentAction = []
-        for i, f in enumerate(self.dat.foqusSettings.getRecentlyOpendFiles()):
+        for i, f in enumerate(self.dat.foqusSettings.getRecentlyOpenedFiles()):
             self.openRecentAction.append(QAction(f, self))
             self.openRecentAction[i].setIcon(QIcon())
             self.openRecentAction[i].triggered.connect(

@@ -847,11 +847,11 @@ class surrogateMethod(surrogate):
                 ignore.extend(np.array(val).flatten())
             af.write("ignore {0}\n".format(" ".join(map(str, ignore))))
             # TOLMEANERROR
-            tme = []
+            tolmeanerror = []
             for x in self.output:
                 val = self.getOutputVarOption("TOLMEANERROR", x)
-                tme.extend(np.array(val).flatten())
-            af.write("tolmeanerror {0}\n".format(" ".join(map(str, tme))))
+                tolmeanerror.extend(np.array(val).flatten())
+            af.write("tolmeanerror {0}\n".format(" ".join(map(str, tolmeanerror))))
             # TOLRELMETRIC
             trm = []
             for x in self.output:

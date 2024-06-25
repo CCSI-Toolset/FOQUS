@@ -1,4 +1,5 @@
-tensorflow
+tensorflow==2.15.1 ; sys_platform == 'darwin'
+tensorflow==2.16.1 ; sys_platform != 'darwin'
 sympy
 torch
 scikit-learn

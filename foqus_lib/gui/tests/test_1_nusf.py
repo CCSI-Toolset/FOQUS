@@ -42,7 +42,7 @@ def setup_frame_blank(main_window, flowsheet_session_file, request):
 
 
 @pytest.mark.usefixtures("setup_frame_blank")
-class TestUSF:
+class TestNUSF:
     @property
     def analysis_dialog(self) -> typing.Union[None, sdoeAnalysisDialog]:
         return self.__class__.frame._analysis_dialog
@@ -50,23 +50,42 @@ class TestUSF:
     def test_run_sdoe(self, qtbot, start_analysis):
         assert self.analysis_dialog is not None
         qtbot.focused = self.analysis_dialog
-        qtbot.click(button="Estimate Runtime")
-        qtbot.wait(1000)
-        qtbot.using(spin_box="Number of Random Starts: n = 10^").enter_value(2)
-        qtbot.wait(1000)
-        qtbot.click(button="Run SDoE")
-        qtbot.wait(10_000)
+        with qtbot.focusing_on(group_box="Desired Design Size and NUSF Weights"):
+            qtbot.using(spin_box="Design Size").enter_value(10)
+            dropdown_1, dropdown_2 = qtbot.locate(combo_box=..., index=[1, 2])
+            qtbot.using(dropdown_1).set_option("10")
+            qtbot.using(dropdown_2).set_option("30")
+        with qtbot.focusing_on(group_box="Generate Design"):
+            with qtbot.focusing_on(table=...) as table:
+                qtbot.select_row(3)
+                qtbot.using(column="Type").set_option("Weight")
+            qtbot.click(button="Estimate Runtime")
+
+        with qtbot.focusing_on(group_box="SDoE Progress"):
+            qtbot.using(combo_box="Number of Random Starts: n =").set_option("10")
+            run_button = qtbot.locate_widget(button="Run SDoE")
+        with qtbot.searching_within(self.analysis_dialog):
+            with qtbot.searching_within(group_box="Created Designs"):
+                created_designs_table = qtbot.locate_widget(table=any)
+
+        def created_designs_table_is_populated() -> bool:
+            return created_designs_table.rowCount() > 0
+
+        qtbot.using(run_button).click()
+
+        qtbot.wait_until(created_designs_table_is_populated, timeout=120_000)
         with qtbot.searching_within(self.analysis_dialog):
             with qtbot.searching_within(group_box="Created Designs"):
                 with qtbot.focusing_on(table=any):
-                    qtbot.select_row(0)
-                    with qtbot.waiting_for_modal(timeout=10_000):
-                        qtbot.using(column="Plot SDoE").click()
-                        with qtbot.searching_within(sdoePreview):
-                            with qtbot.searching_within(group_box="Plots"):
-                                qtbot.click(button="Plot SDoE")
-                                qtbot.wait(1000)
-                            qtbot.click(button="OK")
+                    for i in range(created_designs_table.rowCount()):
+                        qtbot.select_row(i)
+                        with qtbot.waiting_for_modal(timeout=10_000):
+                            qtbot.using(column="Plot SDoE").click()
+                            with qtbot.searching_within(sdoePreview):
+                                with qtbot.searching_within(group_box="Plots"):
+                                    qtbot.click(button="Plot SDoE")
+                                    qtbot.wait(1000)
+                                qtbot.click(button="OK")
 
     @pytest.fixture(scope="class")
     def start_analysis(self, qtbot, foqus_examples_dir):
@@ -75,28 +94,15 @@ class TestUSF:
 
         qtbot.focused = self.frame
         with qtbot.file_selection(
-            foqus_examples_dir / "tutorial_files/SDOE/SDOE_Ex1_Candidates.csv"
+            foqus_examples_dir / "tutorial_files/SDOE/NUSFex1.csv"
         ):
             qtbot.click(button="Load Existing\n Set")
-        with qtbot.focusing_on(self.frame.filesTable):
-            qtbot.select_row(0)
-            with qtbot.waiting_for_modal(timeout=10_000):
-                qtbot.using(column="Visualize").click()
-                with qtbot.searching_within(sdoePreview):
-                    with qtbot.searching_within(group_box="Plots"):
-                        qtbot.click(button="Plot SDoE")
-                        qtbot.wait(1000)
-                    qtbot.click(button="OK")
         qtbot.click(button="Continue")
-        qtbot.wait(1000)
-        with qtbot.focusing_on(self.frame.aggFilesTable):
-            qtbot.select_row(0)
-            with qtbot.waiting_for_modal(timeout=10_000):
-                qtbot.using(column="Visualize").click()
-                with qtbot.searching_within(sdoePreview):
-                    with qtbot.searching_within(group_box="Plots"):
-                        qtbot.click(button="Plot SDoE")
-                        qtbot.wait(1000)
-                    qtbot.click(button="OK")
+        with qtbot.searching_within(group_box="Design Construction") as gb:
+            with qtbot.searching_within(table=...) as t:
+                qtbot.select_row(3)
+                qtbot.using(column="Descriptor").set_option(
+                    "Non-Uniform Space Filling (NUSF)"
+                )
         qtbot.click(button="Open SDoE Dialog")
         qtbot.wait_until(has_dialog, timeout=10_000)

@@ -60,7 +60,6 @@ jobs:
           config: .typos.toml
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
-    needs: [spell-check, code-formatting, pylint]
     runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
@@ -87,7 +86,9 @@ jobs:
             os-version: windows-2019
           - python-version: '3.10'  # avoid uploading coverage for full matrix
             use_coverage: true
-          - python-version: '3.10'  # this is to avoid installing optional dependencies in all environments
+          - python-version: '3.10'  # install ML AI dependencies with coverage run
+            optional-dependencies: -r requirements-mlai.txt
+          - python-version: '3.11'  # install ML AI dependencies with a newer Python version
             optional-dependencies: -r requirements-mlai.txt
     env:
       # uncomment this to debug Qt initialization errors
@@ -111,7 +112,7 @@ jobs:
           echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
       - name: Set common pytest flags
         run:
-          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
+          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --maxfail=3 --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
       - name: Add pytest coverage flags
         if: matrix.use_coverage
         run:

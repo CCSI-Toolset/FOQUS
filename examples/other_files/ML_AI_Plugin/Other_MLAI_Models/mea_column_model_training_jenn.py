@@ -112,7 +112,7 @@ def create_model(x_train, y_train, grad_train):
 # Main code
 
 # import data
-data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
+data = pd.read_csv(r"../MEA_carbon_capture_dataset_mimo.csv")
 grad0_data = pd.read_csv(r"gradients_output0.csv", index_col=0)  # ignore 1st col
 grad1_data = pd.read_csv(r"gradients_output1.csv", index_col=0)  # ignore 1st col
 

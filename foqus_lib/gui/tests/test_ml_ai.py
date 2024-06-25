@@ -62,7 +62,8 @@ def test_model_files_are_present(model_files: List[Path]):
 
 
 @pytest.fixture(
-    scope="class", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
+    scope="class",
+    params=["other_files/ML_AI_Plugin/Supported_Keras_Models/mea_column_model.foqus"],
 )
 def flowsheet_session_file(foqus_examples_dir: Path, request) -> Path:
     return foqus_examples_dir / request.param
@@ -155,7 +156,7 @@ class TestMLAIPluginFlowsheetRun:
     def test_load_and_run_mealinearnorm(self, active_session, simnode):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(2)
+        simnode.simNameBox.setCurrentIndex(1)
         assert simnode.simNameBox.currentText() == "mea_column_model"
 
         def test_flowsheet_run_successful(
@@ -170,7 +171,7 @@ class TestMLAIPluginFlowsheetRun:
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(3)
+        simnode.simNameBox.setCurrentIndex(2)
         assert simnode.simNameBox.currentText() == "mea_column_model_customnormform"
 
         def test_flowsheet_run_successful(
@@ -181,11 +182,11 @@ class TestMLAIPluginFlowsheetRun:
         ):
             assert text_when_success in statusbar_message
 
-    def test_load_and_run_arnocustomlayer(self, active_session, simnode):
+    def test_load_and_run_meanocustomlayer(self, active_session, simnode):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(1)
-        assert simnode.simNameBox.currentText() == "AR_nocustomlayer"
+        simnode.simNameBox.setCurrentIndex(8)
+        assert simnode.simNameBox.currentText() == "mea_column_model_nocustomlayer"
 
         def test_flowsheet_run_successful(
             self,
@@ -199,7 +200,7 @@ class TestMLAIPluginFlowsheetRun:
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(6)
+        simnode.simNameBox.setCurrentIndex(5)
         assert (
             simnode.simNameBox.currentText()
             == "mea_column_model_customnormform_savedmodel"
@@ -217,7 +218,7 @@ class TestMLAIPluginFlowsheetRun:
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(4)
+        simnode.simNameBox.setCurrentIndex(3)
         assert (
             simnode.simNameBox.currentText() == "mea_column_model_customnormform_json"
         )
@@ -234,7 +235,7 @@ class TestMLAIPluginFlowsheetRun:
         pytest.importorskip("torch", reason="torch not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(5)
+        simnode.simNameBox.setCurrentIndex(4)
         assert (
             simnode.simNameBox.currentText()
             == "mea_column_model_customnormform_pytorch"
@@ -252,7 +253,7 @@ class TestMLAIPluginFlowsheetRun:
         pytest.importorskip("sklearn", reason="sklearn not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(7)
+        simnode.simNameBox.setCurrentIndex(6)
         assert (
             simnode.simNameBox.currentText()
             == "mea_column_model_customnormform_scikitlearn"
@@ -283,7 +284,7 @@ class TestMLAIPluginFlowsheetRun:
     def test_load_and_run_meajenn(self, active_session, simnode):
         pytest.importorskip("jenn", reason="jenn not installed")
         # set sim name and confirm it's the correct model
-        simnode.simNameBox.setCurrentIndex(8)
+        simnode.simNameBox.setCurrentIndex(7)
         assert simnode.simNameBox.currentText() == "mea_column_model_jenn"
 
         def test_flowsheet_run_successful(

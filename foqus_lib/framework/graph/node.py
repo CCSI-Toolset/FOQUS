@@ -53,6 +53,7 @@ def attempt_load_tensorflow(try_imports=True):
 
         load = tf.keras.models.load_model
         json_load = tf.keras.models.model_from_json
+        TFSM_load = tf.keras.layers.TFSMLayer
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
@@ -70,7 +71,13 @@ def attempt_load_tensorflow(try_imports=True):
                 "kwargs={kwargs} but `tensorflow` is not available"
             )
 
-    return load, json_load
+        def TFSM_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `tensorflow` is not available"
+            )
+
+    return load, json_load, TFSM_load
 
 
 def attempt_load_sympy(try_imports=True):
@@ -215,7 +222,7 @@ def attempt_load_jenn(try_imports=True):
 
 # pickle is loaded identically twice so that sklearn, smt, and jenn can load
 # or fail independently of each other
-load, json_load = attempt_load_tensorflow()
+load, json_load, TFSM_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 torch_load, torch_tensor, torch_float = attempt_load_pytorch()
 skl_pickle_load = attempt_load_sklearn()
@@ -298,18 +305,26 @@ class NodeEx(foqusException):
 
 
 class pymodel_ml_ai(pymodel):
-    def __init__(self, model, trainer):
+    def __init__(self, model, trainer, keras_has_custom_layer=True):
         pymodel.__init__(self)
         self.model = model  # attach it to self so we can call it in the run method
         self.trainer = trainer  # attach it to self so we can call it in the run method
+        self.keras_has_custom_layer = keras_has_custom_layer
 
         # determine the ML model type
+        # default custom layer object to None unless one exists
+        custom_layer = None
+
         if self.trainer == "keras":
-            # set the custom layer object
-            custom_layer = self.model.layers[1]
+            # set the custom layer object if it exists
+            if self.keras_has_custom_layer:
+                custom_layer = self.model.layers[1]
             # set the model input and output sizes
             model_input_size = np.shape(self.model.inputs[0])[1]
             model_output_size = np.shape(self.model.outputs[0])[1]
+        elif self.trainer == "TFSM":
+            model_input_size = self.model.variables[0].shape[0]
+            model_output_size = self.model.variables[-1].shape[0]
 
         elif self.trainer == "torch":
             # find the custom layer object, if it exists - there's probably a more direct way to do this
@@ -343,21 +358,24 @@ class pymodel_ml_ai(pymodel):
 
         elif self.trainer == "sklearn":
             # set the custom layer object
-            custom_layer = self.model.custom
+            if hasattr(self.model, "custom"):
+                custom_layer = self.model.custom
             # set the model input and output sizes
             model_input_size = self.model.n_features_in_
             model_output_size = self.model.n_outputs_
 
         elif self.trainer == "smt":
             # set the custom layer object
-            custom_layer = self.model.custom
+            if hasattr(self.model, "custom"):
+                custom_layer = self.model.custom
             # set the model input and output sizes
             model_input_size = self.model.nx
             model_output_size = self.model.ny
 
         elif self.trainer == "jenn":
             # set the custom layer object
-            custom_layer = self.model.custom
+            if hasattr(self.model, "custom"):
+                custom_layer = self.model.custom
             # set the model input and output sizes
             model_input_size = self.model.parameters.n_x
             model_output_size = self.model.parameters.n_y
@@ -372,10 +390,13 @@ class pymodel_ml_ai(pymodel):
                 "any other value."
             )
 
-        self.custom_layer = (
-            custom_layer  # attach it to self so we can call it in the run method
-        )
+        if custom_layer is not None:
+            self.custom_layer = (
+                custom_layer  # attach it to self so we can call it in the run method
+            )
         # attempt to retrieve required information from loaded model, and set defaults otherwise
+        # self.custom_layer not existing and attributes of self.custom_layer not existing throw same error
+        # and will be caught by exceptions
         for i in range(model_input_size):
             try:
                 input_label = self.custom_layer.input_labels[i]
@@ -672,6 +693,8 @@ class pymodel_ml_ai(pymodel):
             self.scaled_outputs = self.model.predict(
                 np.array(self.scaled_inputs, ndmin=2)
             )[0]
+        elif self.trainer == "TFSM":
+            self.scaled_outputs = self.model(np.array(self.scaled_inputs, ndmin=2))[0]
         elif self.trainer == "torch":
             self.scaled_outputs = (
                 self.model(torch_tensor(self.scaled_inputs, dtype=torch_float))
@@ -1240,6 +1263,9 @@ class Node:
                         optSet=NodeOptionSets.SINTER_OPTIONS,
                     )
         elif self.isModelML:
+            # assume a custom layer exists unless the model form indicates otherwise
+            # for Keras models when expected attriutes don't exist
+            self.keras_has_custom_layer = True
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
             if "user_ml_ai_models" not in os.getcwd():
@@ -1247,7 +1273,13 @@ class Node:
 
             # check which type of file Keras needs to load
             if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
-                extension = ".h5"
+                extension = (
+                    ".h5"  # deprecated, include for back-compatibility and user warning
+                )
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".keras")
+            ):
+                extension = ".keras"
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".json")
             ):
@@ -1258,7 +1290,7 @@ class Node:
                 os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
             ):
                 extension = ".pkl"  # this is for Sci Kit Learn, SMT, and JENN models
-            else:  # assume it's a folder with no extension
+            else:  # assume it's a SavedModel folder with no extension
                 extension = ""
 
             if extension == ".pt":  # use Pytorch loading syntax
@@ -1315,6 +1347,13 @@ class Node:
                         "sklearn MLPRegressor, smt GENN, and JENN objects are "
                         "currently supported."
                     )
+            elif extension == "":  # legacy SavedModel folder with no extension
+                # this format must be loaded via TFSMLayer, and any custom layer will be lost
+                # essentially same case as .keras or .h5 with no custom layer
+                # should still be supported, use TFSM load method
+                self.model = TFSM_load(str(self.modelName), call_endpoint="serve")
+                trainer = "TFSM"
+                self.keras_has_custom_layer = False
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1335,6 +1374,7 @@ class Node:
                     )
                     self.model = load(str(self.modelName) + extension)
                     trainer = "keras"
+                    self.keras_has_custom_layer = False
             else:  # model is a json file, use read method to load dictionary
                 with open(str(self.modelName) + extension, "r") as json_file:
                     loaded_json = json_file.read()
@@ -1357,9 +1397,10 @@ class Node:
                     )
                     self.model = json_load(loaded_json)  # load architecture
                     trainer = "keras"
+                    self.keras_has_custom_layer = False
                 finally:
                     self.model.load_weights(
-                        str(self.modelName) + "_weights.h5"
+                        str(self.modelName) + "_weights.weights.h5"
                     )  # load pretrained weights
             os.chdir(cwd)  # reset to original working directory
             inst = pymodel_ml_ai(self.model, trainer)
@@ -1833,7 +1874,13 @@ class Node:
 
             # check which type of file Keras needs to load
             if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
-                extension = ".h5"
+                extension = (
+                    ".h5"  # deprecated, include for back-compatibility and user warning
+                )
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".keras")
+            ):
+                extension = ".keras"
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".json")
             ):
@@ -1901,6 +1948,13 @@ class Node:
                         "sklearn MLPRegressor, smt GENN, and JENN objects are "
                         "currently supported."
                     )
+            elif extension == "":  # legacy SavedModel folder with no extension
+                # this format must be loaded via TFSMLayer, and any custom layer will be lost
+                # essentially same case as .keras or .h5 with no custom layer
+                # should still be supported, use TFSM load method
+                self.model = TFSM_load(str(self.modelName), call_endpoint="serve")
+                trainer = "TFSM"
+                self.keras_has_custom_layer = False
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1921,6 +1975,7 @@ class Node:
                     )
                     self.model = load(str(self.modelName) + extension)
                     trainer = "keras"
+                    self.keras_has_custom_layer = False
             else:  # model is a json file, use read method to load dictionary
                 with open(str(self.modelName) + extension, "r") as json_file:
                     loaded_json = json_file.read()
@@ -1943,9 +1998,10 @@ class Node:
                     )
                     self.model = json_load(loaded_json)  # load architecture
                     trainer = "keras"
+                    self.keras_has_custom_layer = False
                 finally:
                     self.model.load_weights(
-                        str(self.modelName) + "_weights.h5"
+                        str(self.modelName) + "_weights.weights.h5"
                     )  # load pretrained weights
             os.chdir(cwd)  # reset to original working directory
             self.pyModel = pymodel_ml_ai(self.model, trainer)

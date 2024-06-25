@@ -20,13 +20,15 @@ launched.
 
 - ML_AI – Selecting this model type in the Node Editor displays available
   neural network models; this tool currently supports TensorFlow Keras
-  model files saved in Hierarchical Data Format 5 (.h5), the standard
-  Keras SavedModel format (folder containing .pb data files), or serialized
-  to an architecture dictionary (.json) with separately saved model weights
-  (.h5). Additionally, this tool supports PyTorch models saved in the standard
-  format (.pt), and Scikit-learn and Surrogate Modeling Toolbox models serialized
-  in the standard Python pickle format (.pkl). The examples folder contains demonstrative training and class scripts for models containing no custom layer (see below for more information on adding custom layers), a custom layer with a preset normalization option
-  and a custom layer with a custom normalization function, as well as models
+  model files saved in the standard Keras 3 format (.keras) as well as the
+  legancy Hierarchical Data Format 5 (.h5), the legacyKeras SavedModel format
+  (folder containing .pb data files), or serialized to an architecture dictionary (.json)
+  with separately saved model weights(.h5). Additionally, this tool supports PyTorch models
+  saved in the standardformat (.pt), and Scikit-learn and Surrogate Modeling Toolbox models
+  serializedin the standard Python pickle format (.pkl). The examples folder contains
+  demonstrative training and class scripts for models containing no custom layer (see below
+  for more information on adding custom layers), a custom layer with a preset normalization
+  option and a custom layer with a custom normalization function, as well as models
   saved in all supported file formats. To use this tool, users must train and
   export a machine learning model and place the file in the appropriate folder
   *user_ml_ai_plugins* in the working directory, as shown below. Optionally,
@@ -54,9 +56,12 @@ https://www.tensorflow.org/install.
 
 When importing TensorFlow Keras models, users should ensure their Python environment
 contains the same Keras package version used to train the model files. TensorFlow
-offers limited compatibility between versions. The example files include models
-trained with TensorFlow 2.3 and 2.7; users with TensorFlow 2.7 should use the 2.7
-models.
+offers limited compatibility between versions. The current supported example models
+were trained with TensorFlow 2.16.1. The deprecated example models were trained in older
+version, including TensorFlow 2.3, 2.7, and 2.10, and are not guaranteed to run in the
+latest FOQUS installation. Models saved or exported as legacy SavedModel files are not
+compatible with Keras 3, and are loaded internally as TFSM (TensorFlow SavedModel) layers.
+This means that models in the SavedModel format cannot have custom layers attached.
 
 The ML AI Plugin supports adding neural networks of either type to FOQUS
 nodes; if a custom object is needed, only the Functional API supports
@@ -91,11 +96,8 @@ derivative predictions, leading to better accuracy on fewer training points comp
 non-gradient-enhanced models. Gradient methods are applicable when training use cases where
 system data is generally known, such as continuous physics-based problems like aerodynamics.
 If gradient data is not known, users may run a gradient generation tool provided within FOQUS
-and can consults the tool documentation here: :ref:`gengrad`. Users may find further information
-on GENN models within Surrogate Modeling Toolbox in the documentation:
-https://smt.readthedocs.io/en/stable/_src_docs/surrogate_models/genn.html. SMT GENN model training
-leverages an external dependency JENN (Jacobian-Enhanced Neural Networks) package which may also be
-utilized independently. Users may find further information on JENN models in the documentation: https://pypi.org/project/jenn/.
+and can consults the tool documentation here: :ref:`gengrad`. Users may find further information on GENN models within Surrogate Modeling Toolbox in the documentation:
+https://smt.readthedocs.io/en/stable/_src_docs/surrogate_models/genn.html. SMT GENN model training leverages an external dependency JENN (Jacobian-Enhanced Neural Networks) package which may also be utilized independently. Users may find further information on JENN models in the documentation: https://pypi.org/project/jenn/.
 
 The examples files located in *FOQUS.examples.other_files.ML_AI_Plugin* show how users
 may train new models or re-save loaded models with a custom layer.
@@ -258,20 +260,19 @@ replacing *example_model* with the desired model name:
 - Creating a callable object, *super(example_model, self).__init__()*
 - Defining the class CONFIG, *config = super(example_model, self).get_config()*
 - Creating the model, *layers = example_model(*
-- Saving the model, *model.save('example_model.h5')*
-- The file names of the .h5 model file and custom class script.
+- Saving the model, *model.save('example_model.keras')*
+- The file names of the .keras model file and custom class script.
 
 See the example files in *FOQUS.examples.other_files.ML_AI_Plugin* for complete syntax
 and usage. The folder contains a second model with no custom layer to demonstrate the
 plugin defaults. The default output values are not calculated, so the node should be run
 to obtain the correct output values for the entered inputs.
 
-To run the models, copy the appropriate model files or folders ('h5_model.h5',
+To run the models, copy the appropriate model files or folders ('keras_model.keras',
 'saved_model/', 'json_model.json', 'json_model_weights.h5') and any custom layer
 scripts ('model_name.py') into the working directory folder 'user_ml_ai_models'.
 As mentioned earlier, PyTorch, Scikit-learn and Surrogate Modeling Toolbox models only require the model file ('pt_model.pt', 'skl_model.pkl', 'smt_model.pkl', or 'jenn_model.pkl').
-For example, the model name below is 'mea_column_model' and is saved in H5 format,
-and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.h5*
+For example, the model name below is 'mea_column_model' and is saved in the standard Keras 3 format, and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.keras*
 and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to
 *FOQUS-wd.user_ml_ai_models*. For users with older versions of TensorFlow who wish to
 test the exampleodels, some model files are provided in versions 2.3 and 2.7 as well as
@@ -279,11 +280,7 @@ test the exampleodels, some model files are provided in versions 2.3 and 2.7 as 
 loading models trained in version 2.3 using version 2.5, or loading models trained in
 version 2.8 using version 2.10 is supported).
 
-To distinguish between H5 models and json models with H5 weight files, FOQUS requires the
-convention ('model1.h5', 'model1.py') and ('model2.json', 'model2_weights.h5', 'model2.py')
-when naming model files. Users should note that defining network layers and training the
-network is independent of saved file format, and only the code after `model.summary()`
-in the script below will change. See the 'training_customnormform' example scripts
+To distinguish between legacy Keras H5 models and json models with H5 weight files, FOQUS requires the convention ('model1.h5', 'model1.py') and ('model2.json', 'model2_weights.h5', 'model2.py') when naming model files. Users should note that defining network layers and training the network is independent of saved file format, and only the code after `model.summary()` in the script below will change. See the 'training_customnormform' example scripts
 for specific syntax to save models as each Keras file format and non-Keras file type.
 
 
@@ -327,8 +324,8 @@ for specific syntax to save models as each Keras file format and non-Keras file 
    >>>         self.output_labels = output_labels
    >>>         self.input_bounds = input_bounds
    >>>         self.output_bounds = output_bounds
-   >>>         self.normalized = True  # FOQUS will read this and adjust accordingly
-   >>>         self.normalization_form = 'Linear'  # tells FOQUS which scaling form to use
+   >>>         self.normalized = normalized  # FOQUS will read this and adjust accordingly
+   >>>         self.normalization_form = normalization_form  # tells FOQUS which scaling form to use
 
            # create lists to contain new layer objects
    >>>         self.dense_layers = []  # hidden or output layers
@@ -430,7 +427,7 @@ for specific syntax to save models as each Keras file format and non-Keras file 
    >>> model.summary()
 
    # save model
-   >>> model.save('mea_column_model.h5')
+   >>> model.save('mea_column_model.keras')
 
 After training and saving the model, the files should be placed in the
 working directory folder as shown below; if FOQUS cannot find the custom class

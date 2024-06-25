@@ -339,7 +339,7 @@ def generate_gradients(
 
 
 if __name__ == "__main__":
-    data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
+    data = pd.read_csv(r"../MEA_carbon_capture_dataset_mimo.csv")
     data_array = np.array(data, ndmin=2)
     n_x = 6
 

@@ -15,6 +15,7 @@
 from importlib import resources
 from pathlib import Path
 
+
 from foqus_lib.framework.sdoe import sdoe
 
 
@@ -24,7 +25,19 @@ def test_run_irsf():
     copy_from_package("candidates_irsf.csv")
     copy_from_package(config_file)
 
-    result = sdoe.run(config_file=config_file, nd=nd, test=False)
+    _, results, _ = sdoe.run(config_file=config_file, nd=nd, test=False)
+
+    expected_keys = [
+        "pareto_front",
+        "design_id",
+        "des",
+        "mode",
+        "design_size",
+        "num_restarts",
+        "num_designs",
+    ]
+
+    assert list(results.keys()) == expected_keys
 
 
 def test_run_usf():
@@ -34,7 +47,21 @@ def test_run_usf():
     copy_from_package("candidates_usf.csv")
     copy_from_package(config_file)
 
-    result = sdoe.run(config_file=config_file, nd=nd, test=False)
+    _, results, _ = sdoe.run(config_file=config_file, nd=nd, test=False)
+
+    expected_keys = [
+        "best_cand",
+        "best_index",
+        "best_val",
+        "best_dmat",
+        "dmat_cols",
+        "mode",
+        "design_size",
+        "num_restarts",
+        "elapsed_time",
+    ]
+
+    assert list(results.keys()) == expected_keys
 
 
 def test_run_nusf():
@@ -43,7 +70,28 @@ def test_run_nusf():
     copy_from_package("candidates_nusf.csv")
     copy_from_package(config_file)
 
-    result = sdoe.run(config_file=config_file, nd=nd, test=False)
+    _, results, _ = sdoe.run(config_file=config_file, nd=nd, test=False)
+
+    # keep last mwr value available
+    for key in results.keys():
+        mwr_key = key
+
+    expected_keys = [
+        "best_cand_scaled",
+        "best_cand",
+        "best_index",
+        "best_val",
+        "best_mdpts",
+        "best_mties",
+        "best_dmat",
+        "mode",
+        "design_size",
+        "num_restarts",
+        "mwr",
+        "elapsed_time",
+    ]
+
+    assert list(results[mwr_key].keys()) == expected_keys
 
 
 def copy_from_package(file_name: str) -> None:

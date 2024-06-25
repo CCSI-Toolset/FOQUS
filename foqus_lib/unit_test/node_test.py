@@ -13,6 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import re
 import sys
 import unittest
 from collections import OrderedDict
@@ -139,7 +140,12 @@ class testImports(unittest.TestCase):
 
         # check that the returned function expects the correct input as a way
         # of confirming that the class (function) type is correct
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            TypeError,
+            match=re.escape(
+                "stat: path should be string, bytes, os.PathLike or integer, not NoneType"
+            ),
+        ):
             load(None)  # expects Keras 3 file, should throw format error
         with pytest.raises(TypeError):
             json_load(None)  # expects JSON object, should throw type error

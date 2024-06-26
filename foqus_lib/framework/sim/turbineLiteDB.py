@@ -58,8 +58,8 @@ class turbineLiteDB:
         self.conn = None
         self.close_after = close_after
         self.dbFile = (
-            "C:\\Program Files (x86)"
-            "\\Turbine\\Lite\\Data\\TurbineCompactDatabase.sdf"
+            core.TurbineLiteDependencyTracker.load().path
+            "\\Data\\TurbineCompactDatabase.sdf"
         )
 
     def __del__(self):

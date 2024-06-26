@@ -24,6 +24,7 @@ import uuid
 
 import adodbapi
 import adodbapi.apibase
+from foqus_lib import core
 
 adodbapi.adodbapi.defaultCursorLocation = 2  # adodbapi.adUseServer
 

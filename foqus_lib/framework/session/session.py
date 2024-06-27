@@ -41,7 +41,7 @@ from foqus_lib.framework.optimizer.optimization import optimization as junk
 from foqus_lib.framework.plugins import pluginSearch
 from foqus_lib.framework.pymodel import pymodel
 from foqus_lib.framework.sampleResults.results import Results
-from foqus_lib.framework.sim.turbineConfiguration import *
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 from foqus_lib.framework.surrogate import surrogate
 from foqus_lib.framework.surrogate.surrogate import surrogate as junk2
 from foqus_lib.framework.uq.LocalExecutionModule import *

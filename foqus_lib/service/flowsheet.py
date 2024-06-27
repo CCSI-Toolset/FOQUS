@@ -858,7 +858,6 @@ class FlowsheetControl:
         dat = None
         while not self._stop:
             ret = None
-            _log.debug("pop job")
             try:
                 ret = self.pop_job(db, VisibilityTimeout=VisibilityTimeout)
             except FOQUSJobException as ex:
@@ -1072,7 +1071,7 @@ class FlowsheetControl:
         )
 
         if not response.get("Messages", None):
-            _log.info("Job Queue is Empty")
+            _log.debug("Job Queue is Empty")
             self.increment_metric_queue_peeks(state="empty")
             return
 

@@ -30,7 +30,7 @@ import uuid
 
 from foqus_lib import core
 import foqus_lib.framework.optimizer.problem as oprob
-from foqus_lib.framework.graph.graph import *
+from foqus_lib.framework.graph.graph import Graph,GraphEx
 from foqus_lib.framework.graph.node import nodeModelTypes
 from foqus_lib.framework.ml_ai_models import mlaiSearch
 from foqus_lib.framework.optimizer import problem

@@ -17,7 +17,7 @@
 Joshua Boverhof, Lawrence Berkeley National Labs, 2024
 """
 import os, shutil, logging
-from foqus_lib.framework.session.session import generalSettings as FoqusSettings
+#from foqus_lib.framework.session.session import generalSettings as FoqusSettings
 
 
 class DependencyTracker:
@@ -106,7 +106,7 @@ class ExecutableDependencyTracker(DependencyTracker):
         if instance is not None:
             return instance
         instance = cls()
-        if not os.path.isfile(instance.path()):
+        if not os.path.isdir(instance.path()):
             raise RuntimeError("%r:  Failed to Load Dependency" %(instance))
         if not os.access(filename, os.X_OK):
             raise RuntimeError("%r:  Dependency Path is not Executable:  %s" %(instance.path()))
@@ -157,7 +157,7 @@ class WindowsPackageDependencyTracker(DependencyTracker):
     def load(cls):
         instance = cls.windows_packages_available.get(cls.package_name)
         instance = instance or cls()
-        if not os.path.isfile(instance.path):
+        if not os.path.isdir(instance.path):
             if cls.required:
                 raise RuntimeError("Install Path Does Not Exist: %s" %(instance.path))
             if instance.package_name not in cls.windows_packages_unavailable:
@@ -191,7 +191,7 @@ class TurbineLiteDependencyTracker(WindowsPackageDependencyTracker):
     elif plugin.nomad is False: print("nomand unavailable")
     """
     package_name = "TurbineLite"
-    install_path = "C:\\Program Files\\Turbine\\Lite"
+    install_path = "C:/Program Files/Turbine/Lite"
 
 
     @property

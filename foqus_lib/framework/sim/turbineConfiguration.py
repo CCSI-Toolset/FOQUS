@@ -369,6 +369,7 @@ class TurbineConfiguration:
 
         sinter_process_log = open("%s_sinter_log.txt" % app, "a")
         sinter_process_log.write("starting consumer\n")
+        _log.info("executing process: %s", f)
         proc = subprocess.Popen(
             [f],
             stdout=sinter_process_log,

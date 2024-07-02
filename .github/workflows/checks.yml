@@ -128,13 +128,13 @@ jobs:
           name: pytest-dir-${{ matrix.os }}-py${{ matrix.python-version }}
           path: ${{ env.PYTEST_BASETEMP }}
           retention-days: 7
-    - name: Upload coverage report as job artifact
-      if: always() && matrix.use_coverage
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report-${{ matrix.os }}
-        path: coverage.xml
-        if-no-files-found: error
+      - name: Upload coverage report as job artifact
+        if: always() && matrix.use_coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.os }}
+          path: coverage.xml
+          if-no-files-found: error
 
   upload-coverage:
     name: Upload coverage report (Codecov)

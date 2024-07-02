@@ -53,7 +53,7 @@ def main_window_params(request):
     }
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def main_window(foqus_session, main_window_params):
     "Main window object, initialized once per pytest session."
     from foqus_lib import foqus

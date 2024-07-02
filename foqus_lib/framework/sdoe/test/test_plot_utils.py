@@ -18,11 +18,9 @@ from importlib import resources
 from pathlib import Path
 from unittest import mock
 
-import matplotlib.pyplot as plt
 import pandas as pd
-import pytest
 
-from foqus_lib.framework.sdoe import df_utils, nusf, plot_utils, sdoe
+from foqus_lib.framework.sdoe import df_utils, nusf, plot_utils
 
 
 @mock.patch("foqus_lib.framework.sdoe.plot_utils.plt")

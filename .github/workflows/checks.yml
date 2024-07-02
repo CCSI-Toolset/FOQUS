@@ -128,7 +128,7 @@ jobs:
           path: ${{ env.PYTEST_BASETEMP }}
           retention-days: 7
       - name: Upload coverage report to Codecov
-        if: matrix.use_coverage
+        if: always() && matrix.use_coverage
         uses: codecov/codecov-action@v3
 
   pylint:

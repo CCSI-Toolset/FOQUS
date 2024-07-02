@@ -12,22 +12,20 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import os
 import numpy as np
 import pandas as pd
 import random as rn
-import torch
-import torch.nn as nn
+import tensorflow as tf
 
 # set seed values for reproducibility
+os.environ["PYTHONHASHSEED"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = (
+    ""  # changing "" to "0" or "-1" may solve import issues
+)
 np.random.seed(46)
 rn.seed(1342)
-torch.manual_seed(62)
-torch.cuda.manual_seed(62)
-torch.cuda.manual_seed_all(62)
-torch.backends.cudnn.benchmark = False
-torch.backends.cudnn.deterministic = True
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
+tf.random.set_seed(62)
 
 # Example follows the sequence below:
 # 1) Code at end of file to import data and create model
@@ -38,12 +36,20 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 # 4) Back to create_model() to compile and train model
 # 5) Back to code at end of file to save, load and test model
 
-# custom class to define Pytorch NN layers
+# custom class to define Keras NN layers
+# note that this model is identical to mea_column_model in every aspect
+# except for normalization, but needs a unique class name for the Keras
+# registry - otherwise this will throw errors when both are loaded in FOQUS
 
 
-class mea_column_model_customnormform_pytorch(nn.Module):
+@tf.keras.utils.register_keras_serializable()
+class mea_column_model_customnormform(tf.keras.layers.Layer):
     def __init__(
         self,
+        n_hidden=1,
+        n_neurons=12,
+        layer_act="relu",
+        out_act="sigmoid",
         input_labels=None,
         output_labels=None,
         input_bounds=None,
@@ -55,8 +61,14 @@ class mea_column_model_customnormform_pytorch(nn.Module):
     ):
 
         super(
-            mea_column_model_customnormform_pytorch, self
+            mea_column_model_customnormform, self
         ).__init__()  # create callable object
+
+        # add attributes from training settings
+        self.n_hidden = n_hidden
+        self.n_neurons = n_neurons
+        self.layer_act = layer_act
+        self.out_act = out_act
 
         # add attributes from model data
         self.input_labels = input_labels
@@ -71,58 +83,73 @@ class mea_column_model_customnormform_pytorch(nn.Module):
             normalization_function  # tells FOQUS scaling formula to use
         )
 
-    def forward(self, x):
+        # create lists to contain new layer objects
+        self.dense_layers = []  # hidden or output layers
+        self.dropout = []  # for large number of neurons, certain neurons
+        # can be randomly dropped out to reduce overfitting
+
+        for layer in range(self.n_hidden):
+            self.dense_layers.append(
+                tf.keras.layers.Dense(self.n_neurons, activation=self.layer_act)
+            )
+
+        self.dense_layers_out = tf.keras.layers.Dense(2, activation=self.out_act)
+
+    # define network layer connections
+    def call(self, inputs):
+
+        x = inputs  # single input layer, input defined in create_model()
+        for layer in self.dense_layers:  # hidden layers
+            x = layer(x)  # h1 = f(input), h2 = f(h1), ... using act func
+        for layer in self.dropout:  # no dropout layers used in this example
+            x = layer(x)
+        x = self.dense_layers_out(x)  # single output layer, output = f(h_last)
+
         return x
 
-
-class main_model(nn.Module):
-    def __init__(self, input_features=6, hidden=20, out_features=2):
-        super().__init__()
-        self.linear = nn.Linear(input_features, hidden)
-        self.relu = nn.ReLU(inplace=False)
-        self.sigmoid = nn.Sigmoid()
-        self.out = nn.Linear(hidden, out_features)
-        self.custom = mea_column_model_customnormform_pytorch(
-            input_labels=xlabels,
-            output_labels=zlabels,
-            input_bounds=xdata_bounds,
-            output_bounds=zdata_bounds,
-            normalized=True,
-            normalization_form="Custom",
-            normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
+    # attach attributes to class CONFIG
+    def get_config(self):
+        config = super(mea_column_model_customnormform, self).get_config()
+        config.update(
+            {
+                "n_hidden": self.n_hidden,
+                "n_neurons": self.n_neurons,
+                "layer_act": self.layer_act,
+                "out_act": self.out_act,
+                "input_labels": self.input_labels,
+                "output_labels": self.output_labels,
+                "input_bounds": self.input_bounds,
+                "output_bounds": self.output_bounds,
+                "normalized": self.normalized,
+                "normalization_form": self.normalization_form,
+                "normalization_function": self.normalization_function,
+            }
         )
-
-    def forward(self, x):
-        x = self.linear(x)
-        x = self.relu(x)
-        x = self.out(x)
-        x = self.custom(x)
-
-        return x
+        return config
 
 
 # method to create model
-def create_model(x_train, z_train):
+def create_model(data):
 
-    model = main_model(
-        input_features=len(xlabels), hidden=20, out_features=len(zlabels)
+    inputs = tf.keras.Input(shape=(np.shape(data)[1],))  # create input layer
+
+    layers = mea_column_model_customnormform(  # define the rest of network using our custom class
+        input_labels=xlabels,
+        output_labels=zlabels,
+        input_bounds=xdata_bounds,
+        output_bounds=zdata_bounds,
+        normalized=True,
+        normalization_form="Custom",
+        normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
     )
-    loss_function = nn.MSELoss()
-    optimizer = torch.optim.RMSprop(model.parameters(), lr=0.01)
-    epochs = 500
-    final_losses = []
 
-    for i in range(epochs):
-        i = i + 1
-        y_pred = model.forward(x_train)
-        loss = loss_function(y_pred, z_train)
-        final_losses.append(loss)
-        if i == 1 or i % 25 == 0:
-            print("Epoch number: {} and the loss : {}".format(i, loss.item()))
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-    model.eval()  # evaluates the weights, not a specific output
+    outputs = layers(inputs)  # use network as function outputs = f(inputs)
+
+    model = tf.keras.Model(inputs=inputs, outputs=outputs)  # create model
+
+    model.compile(loss="mse", optimizer="RMSprop", metrics=["mae", "mse"])
+
+    model.fit(xdata, zdata, epochs=500, verbose=0)  # train model
 
     return model
 
@@ -130,12 +157,12 @@ def create_model(x_train, z_train):
 # Main code
 
 # import data
-data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
+data = pd.read_csv(r"../MEA_carbon_capture_dataset_mimo.csv")
 
 xdata = data.iloc[:, :6]  # there are 6 input variables/columns
 zdata = data.iloc[:, 6:]  # the rest are output variables/columns
 xlabels = xdata.columns.tolist()  # set labels as a list (default) from pandas
-zlabels = zdata.columns.tolist()  # is a set of IndexedDataSeries objects
+zlabels = zdata.columns.tolist()  #    is a set of IndexedDataSeries objects
 xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
 zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
 
@@ -155,22 +182,15 @@ for i in range(len(xdata)):
 
 model_data = np.concatenate(
     (xdata, zdata), axis=1
-)  # PyTorch requires a Numpy array as input
+)  # Keras requires a Numpy array as input
 
 # define x and z data, not used but will add to variable dictionary
 xdata = model_data[:, :-2]
 zdata = model_data[:, -2:]
 
 # create model
-x_train = torch.from_numpy(xdata).float().to(device)
-z_train = torch.from_numpy(zdata).float().to(device)
-model = create_model(x_train=x_train, z_train=z_train)
+model = create_model(xdata)
+model.summary()
 
-print(model)
-
-x = torch.tensor(xdata, dtype=torch.float)
-zfit = model(x).detach().numpy()
-
-# save model as PT format
-model_scripted = torch.jit.script(model)
-model_scripted.save("mea_column_model_customnormform_pytorch.pt")
+# save model as H5
+model.save("mea_column_model_customnormform.h5")

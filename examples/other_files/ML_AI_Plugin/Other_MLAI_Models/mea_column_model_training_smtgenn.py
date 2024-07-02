@@ -104,7 +104,7 @@ def create_model(x_train, y_train):
 # Main code
 
 # import data
-data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
+data = pd.read_csv(r"../MEA_carbon_capture_dataset_mimo.csv")
 
 xdata = data.iloc[:, :6]  # there are 6 input variables/columns
 ydata = data.iloc[:, 6:]  # the rest are output variables/columns

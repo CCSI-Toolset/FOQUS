@@ -14,7 +14,11 @@ simulation model such as: Excel, Aspen plus, Aspen custom modeler, etc.
 Note: Before starting this tutorial the ALAMO product must be downloaded
 from the products page on the CCSI website. The path for the ALAMO
 executable file must be set in FOQUS settings (see Section
-:ref:`section.settings`).
+:ref:`section.settings`). Some installations may have two executables;
+**alamo.exe** is the main executable for accessing the ALAMO trainer,
+and **alamo-ui.exe** is a second executable for launching the stand-alone
+user interface application. The **ALAMO EXE** path should be set as the path
+to the main executable.
 
 The FOQUS file (**Surrogate_Tutorial_1.foqus**),
 where Steps 1 to 42 of this tutorial have been completed

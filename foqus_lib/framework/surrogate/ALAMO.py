@@ -619,7 +619,7 @@ class surrogateMethod(surrogate):
             self.msgQueue.put("SAMPLER:           " + str(adaptive))
             self.msgQueue.put("UQ Driver File:    " + uq_file)
             self.msgQueue.put("------------------------------------")
-            # If using adaptive sampleing open a network socket to listen
+            # If using adaptive sampling open a network socket to listen
             if adaptive:
                 listener = listen.foqusListener(self.dat)
                 listener.setInputs(self.input)

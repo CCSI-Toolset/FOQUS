@@ -77,7 +77,11 @@ Options in the **Settings, FOQUS** tab are described below.
    required to use the iREVEAL surrogate model module.
 
 #. **ALAMO EXE** is the path to the ALAMO executable. This is required
-   to use the ALAMO surrogate model module.
+   to use the ALAMO surrogate model module. Some installations may have two
+   executables; **alamo.exe** is the main executable for accessing the ALAMO
+   trainer, and **alamo-ui.exe** is a second executable for launching the
+   stand-alone user interface application. The **ALAMO EXE** path should be
+   set as the path to the main executable.
 
 #. **RScript Path** is the path to the RScript executable. This is
    required for surrogate model modules that use R as a platform.

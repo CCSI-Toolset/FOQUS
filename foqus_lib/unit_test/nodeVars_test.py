@@ -100,12 +100,12 @@ class testNodeVarsSteady(unittest.TestCase):
 
     def testScaleLog(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
         var.value = 4.12
         var.scaling = "Log"
         var.scale()
-        self.assertAlmostEqual(var.scaled, 4.3986, places=3)
+        self.assertAlmostEqual(var.scaled, 2.8614, places=3)
 
     def testScalePower(self):
         var = self.makeVar()
@@ -145,9 +145,9 @@ class testNodeVarsSteady(unittest.TestCase):
 
     def testUnScaleLog(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
-        var.scaled = 4.3986
+        var.scaled = 2.8614
         var.scaling = "Log"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12, places=3)

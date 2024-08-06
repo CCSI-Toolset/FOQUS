@@ -91,90 +91,90 @@ class testNodeVarsSteady(unittest.TestCase):
 
     def testScaleLinear(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
         var.value = 4.12
         var.scaling = "Linear"
         var.scale()
-        self.assertAlmostEqual(var.scaled, 1.3)
+        self.assertAlmostEqual(var.scaled, 0.9217, places=3)
 
     def testScaleLog(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
         var.value = 4.12
         var.scaling = "Log"
         var.scale()
-        self.assertAlmostEqual(var.scaled, 4.3986, places=3)
+        self.assertAlmostEqual(var.scaled, 2.8614, places=3)
 
     def testScalePower(self):
         var = self.makeVar()
-        var.min = 0
+        var.min = 0.1
         var.max = 2
         var.value = 0.2
         var.scaling = "Power"
         var.scale()
-        self.assertAlmostEqual(var.scaled, 0.0591, places=3)
+        self.assertAlmostEqual(var.scaled, 0.0330, places=3)
 
     def testScaleLog2(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
         var.value = 4.12
         var.scaling = "Log 2"
         var.scale()
-        self.assertAlmostEqual(var.scaled, 3.3646, places=3)
+        self.assertAlmostEqual(var.scaled, 2.6235, places=3)
 
     def testScalePower2(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
         var.value = 4.12
         var.scaling = "Power 2"
         var.scale()
-        self.assertAlmostEqual(var.scaled, 0.3877, places=3)
+        self.assertAlmostEqual(var.scaled, 0.2627, places=3)
 
     def testUnScaleLinear(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
-        var.scaled = 1.3
+        var.scaled = 0.9217
         var.scaling = "Linear"
         var.unscale()
-        self.assertAlmostEqual(var.value, 4.12)
+        self.assertAlmostEqual(var.value, 4.12, places=3)
 
     def testUnScaleLog(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
-        var.scaled = 4.3986
+        var.scaled = 2.8614
         var.scaling = "Log"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12, places=3)
 
     def testUnScalePower(self):
         var = self.makeVar()
-        var.min = 0
+        var.min = 0.1
         var.max = 2
-        var.scaled = 0.059080120451
+        var.scaled = 0.0330
         var.scaling = "Power"
         var.unscale()
         self.assertAlmostEqual(var.value, 0.2, places=3)
 
     def testUnScaleLog2(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
-        var.scaled = 3.3646
+        var.scaled = 2.6235
         var.scaling = "Log 2"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12, places=3)
 
     def testUnScalePower2(self):
         var = self.makeVar()
-        var.min = 1
+        var.min = 2
         var.max = 25
-        var.scaled = 0.3877365362129
+        var.scaled = 0.2627
         var.scaling = "Power 2"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12, places=3)

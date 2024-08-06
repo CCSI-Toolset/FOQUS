@@ -725,7 +725,7 @@ class NodeVars(object):
             elif self.scaling == "Linear":
                 out = val * (self.max - self.min) / 10.0 + self.min
             elif self.scaling == "Log":
-                out = math.pow(self.min * (self.max / self.min), (val / 10.0))
+                out = self.min * math.pow((self.max / self.min), (val / 10.0))
             elif self.scaling == "Power":
                 out = math.log10(
                     (val / 10.0) * (math.pow(10, self.max) - math.pow(10, self.min))

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1138</width>
-    <height>758</height>
+    <width>1440</width>
+    <height>847</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -381,7 +381,7 @@
                  <string>DMF Server</string>
                 </property>
                </item>
-			   <item>
+               <item>
                 <property name="text">
                  <string>ML_AI</string>
                 </property>
@@ -441,15 +441,15 @@
         <item>
          <widget class="QToolBox" name="toolBox">
           <property name="currentIndex">
-           <number>1</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="page">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1096</width>
-             <height>385</height>
+             <width>365</width>
+             <height>296</height>
             </rect>
            </property>
            <attribute name="label">
@@ -749,8 +749,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1096</width>
-             <height>385</height>
+             <width>260</width>
+             <height>147</height>
             </rect>
            </property>
            <attribute name="label">
@@ -924,8 +924,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>89</height>
+             <width>103</width>
+             <height>103</height>
             </rect>
            </property>
            <attribute name="label">
@@ -950,6 +950,82 @@
                </property>
               </column>
              </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_4">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>1370</width>
+             <height>339</height>
+            </rect>
+           </property>
+           <attribute name="label">
+            <string>Aspen Configuration Parameters</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QLabel" name="configFile_static">
+                  <property name="text">
+                   <string>Configuration File</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="configFile_edit">
+                  <property name="text">
+                   <string>\Program Files (x86)\Turbine\Lite\Consumers\AspenSinterConsumerConsole.xml</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="configFileBrowse_button">
+                  <property name="text">
+                   <string>Browse...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="configTable">
+                <column>
+                 <property name="text">
+                  <string>Parameter</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Value</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Description</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>

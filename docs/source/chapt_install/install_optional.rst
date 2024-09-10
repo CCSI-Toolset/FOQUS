@@ -56,12 +56,12 @@ Install Turbine and SimSinter (Windows Only)
   * SimSinter
 
     1. In "Settings" (see Figure 1 below) go to the "FOQUS" tab
-    2. Modify the "SimSinter Home" field to point to the directory you installed SimSinter. For installations of SimSinter 3.x or higher this will most likely be `C:\Program Files\CCSI\SimSinter`. For older versions of SimSinter this will most likely be `C:\Program Files (x86)\CCSI\SimSinter`
+    2. Modify the "SimSinter Home" field to point to the directory you installed SimSinter. For installations of SimSinter 3.x or higher this will most likely be ```C:\Program Files\CCSI\SimSinter``. For older versions of SimSinter this will most likely be ``C:\Program Files (x86)\CCSI\SimSinter``
 
   * TurbineLite
 
     1. In "Settings" (see Figure 1 below) go to the "Turbine" tab
-    2. In the "TurbineLite (local)" section modify the "TurbineLite Home" field to point to the directory you installed TurbineLite. For installations of TurbineLite 3.x or higher this will most likely be `C:\Program Files\Turbine\Lite`. For older versions of SimSinter this will most likely be `C:\Program Files (x86)\Turbine\Lite`
+    2. In the "TurbineLite (local)" section modify the "TurbineLite Home" field to point to the directory you installed TurbineLite. For installations of TurbineLite 3.x or higher this will most likely be ``C:\Program Files\Turbine\Lite``. For older versions of SimSinter this will most likely be ``C:\Program Files (x86)\Turbine\Lite``
 
 Install ALAMO
 ^^^^^^^^^^^^^

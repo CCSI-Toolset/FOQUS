@@ -449,7 +449,7 @@
              <x>0</x>
              <y>0</y>
              <width>3370</width>
-             <height>879</height>
+             <height>367</height>
             </rect>
            </property>
            <attribute name="label">
@@ -750,7 +750,7 @@
              <x>0</x>
              <y>0</y>
              <width>3370</width>
-             <height>879</height>
+             <height>367</height>
             </rect>
            </property>
            <attribute name="label">
@@ -925,7 +925,7 @@
              <x>0</x>
              <y>0</y>
              <width>3370</width>
-             <height>879</height>
+             <height>367</height>
             </rect>
            </property>
            <attribute name="label">
@@ -959,7 +959,7 @@
              <x>0</x>
              <y>0</y>
              <width>3370</width>
-             <height>879</height>
+             <height>367</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1004,28 +1004,23 @@
               </item>
              </layout>
             </item>
-            <item>
+            <item alignment="Qt::AlignTop">
              <widget class="QTableWidget" name="configTable">
               <row>
                <property name="text">
-                <string/>
+                <string>TimeOutIterations</string>
                </property>
               </row>
               <row>
                <property name="text">
-                <string/>
+                <string>TimeOutSetupIterations</string>
                </property>
               </row>
               <row>
                <property name="text">
-                <string/>
+                <string>TimePostInitIterations</string>
                </property>
               </row>
-              <column>
-               <property name="text">
-                <string>Parameter</string>
-               </property>
-              </column>
               <column>
                <property name="text">
                 <string>Value</string>
@@ -1038,21 +1033,13 @@
               </column>
               <item row="0" column="0">
                <property name="text">
-                <string>TimeOutIterations</string>
-               </property>
-               <property name="flags">
-                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-               </property>
-              </item>
-              <item row="0" column="1">
-               <property name="text">
                 <string/>
                </property>
                <property name="flags">
                 <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable</set>
                </property>
               </item>
-              <item row="0" column="2">
+              <item row="0" column="1">
                <property name="text">
                 <string/>
                </property>
@@ -1062,21 +1049,13 @@
               </item>
               <item row="1" column="0">
                <property name="text">
-                <string>TimeOutSetupIterations</string>
-               </property>
-               <property name="flags">
-                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-               </property>
-              </item>
-              <item row="1" column="1">
-               <property name="text">
                 <string/>
                </property>
                <property name="flags">
                 <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable</set>
                </property>
               </item>
-              <item row="1" column="2">
+              <item row="1" column="1">
                <property name="text">
                 <string/>
                </property>
@@ -1086,21 +1065,13 @@
               </item>
               <item row="2" column="0">
                <property name="text">
-                <string>TimePostInitIterations</string>
-               </property>
-               <property name="flags">
-                <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
-               </property>
-              </item>
-              <item row="2" column="1">
-               <property name="text">
                 <string/>
                </property>
                <property name="flags">
                 <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable</set>
                </property>
               </item>
-              <item row="2" column="2">
+              <item row="2" column="1">
                <property name="text">
                 <string/>
                </property>
@@ -1137,6 +1108,19 @@
            </layout>
           </widget>
          </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>

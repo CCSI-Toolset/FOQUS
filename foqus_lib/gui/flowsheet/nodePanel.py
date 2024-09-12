@@ -53,9 +53,12 @@ class nodeDock(_nodeDock, _nodeDockUI):
     waiting = QtCore.pyqtSignal()  # indicates a task is going take a while
     notwaiting = QtCore.pyqtSignal()  # indicates a wait is over
 
-    parameterCol = 0
-    valueCol = 1
-    descriptionCol = 2
+    timeoutRow = 0
+    setupRow = 1
+    initRow = 2
+
+    valueCol = 0
+    descriptionCol = 1
 
     def __init__(self, dat, parent=None):
         """
@@ -96,6 +99,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.sim_mapping = None
         self.configFileBrowse_button.clicked.connect(self.loadConfigFile)
         self.config_file = None
+        self.vals = None
         self.starts = None
         self.ends = None
         self.updateConfigTable()
@@ -879,6 +883,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
 
         current_vals, current_starts, current_ends = get_config_vals(text_dict)
 
+        self.vals = current_vals
         self.starts = current_starts
         self.ends = current_ends
 
@@ -907,19 +912,31 @@ class nodeDock(_nodeDock, _nodeDockUI):
 
         # Get values from table
         new_vals = {
-            "timeout": self.configTable.item(0, 1).text(),
-            "setup": self.configTable.item(1, 1).text(),
-            "init": self.configTable.item(2, 1).text(),
+            "timeout": self.configTable.item(self.timeoutRow, self.valueCol).text(),
+            "setup": self.configTable.item(self.setupRow, self.valueCol).text(),
+            "init": self.configTable.item(self.initRow, self.valueCol).text(),
         }
 
         # Perform the replacement
         content = self.config_file
+        extra_idx = {"timeout": 0, "setup": 0, "init": 0}
+
+        timeout_digits_diff = int(math.log10(int(new_vals["timeout"]))) - int(
+            math.log10(int(self.vals["timeout"]))
+        )
+        extra_idx["setup"] = timeout_digits_diff
+
+        setup_digits_diff = int(math.log10(int(new_vals["setup"]))) - int(
+            math.log10(int(self.vals["setup"]))
+        )
+        extra_idx["init"] = timeout_digits_diff + setup_digits_diff
+
         for key in new_vals:
             # Insert new_text at start_index
             content = (
-                content[: self.starts[key]]
+                content[: self.starts[key] + extra_idx[key]]
                 + str(new_vals[key])
-                + content[self.starts[key] + len(str(new_vals[key])) :]
+                + content[self.ends[key] + extra_idx[key] :]
             )
 
         # Write the modified content back to the file

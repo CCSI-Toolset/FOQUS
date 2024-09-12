@@ -942,3 +942,14 @@ class nodeDock(_nodeDock, _nodeDockUI):
         # Write the modified content back to the file
         with open(self.configFile_edit.text(), "w", encoding="utf-8") as file:
             file.write(content)
+
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Aspen Consumer Configuration File")
+        dirname = os.path.dirname(self.configFile_edit.text())
+        msgBox.setText(
+            "The Aspen Consumer configuration file has been successfully updated.\n"
+            "\nPlease make sure your changes are correct before loading it into Aspen.\n"
+            "\nA backup of the old version has been saved in the directory below:\n"
+            "\n" + dirname
+        )
+        msgBox.exec_()

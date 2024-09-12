@@ -18,7 +18,7 @@ Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
 beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the surrogate class.
 
-* Plugin wprapper for the ACOSSO surrogate model builer.
+* Plugin wrapper for the ACOSSO surrogate model builder.
 * ACOSSO is executed in R and a working R install with the quadprog
   package is required.  The user must install R
 * ACOSSO Ref:

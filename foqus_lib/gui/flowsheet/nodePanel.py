@@ -19,14 +19,24 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import ast
 import os
+import re
 import platform
 import types
 from configparser import RawConfigParser
 from io import StringIO
+from shutil import copyfile
+import time
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QAbstractItemView, QInputDialog, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QInputDialog,
+    QLineEdit,
+    QMessageBox,
+    QFileDialog,
+    QTableWidgetItem,
+)
 
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.graph.node import *
@@ -42,6 +52,13 @@ class nodeDock(_nodeDock, _nodeDockUI):
     redrawFlowsheet = QtCore.pyqtSignal()  # request flowsheet redraw
     waiting = QtCore.pyqtSignal()  # indicates a task is going take a while
     notwaiting = QtCore.pyqtSignal()  # indicates a wait is over
+
+    timeoutRow = 0
+    setupRow = 1
+    initRow = 2
+
+    valueCol = 0
+    descriptionCol = 1
 
     def __init__(self, dat, parent=None):
         """
@@ -80,6 +97,14 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.nodeNameBox.setEditable(False)
         self.synhi = PythonHighlighter(self.pyCode.document())
         self.sim_mapping = None
+        self.configFileBrowse_button.clicked.connect(self.loadConfigFile)
+        self.config_file = None
+        self.vals = None
+        self.starts = None
+        self.ends = None
+        self.updateConfigTable()
+        self.updateConfig_button.setEnabled(False)
+        self.updateConfig_button.clicked.connect(self.updateConfigFile)
 
     def changeNode(self, index):
         newNode = self.nodeNameBox.currentText()
@@ -787,3 +812,144 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.applyChanges()
         event.accept()
         self.mw.toggleNodeEditorAction.setChecked(False)
+
+    def loadConfigFile(self):
+
+        # Get file name
+        if platform.system() == "Windows":
+            _allFiles = "*.*"
+        else:
+            _allFiles = "*"
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self,
+            "Open Configuration File",
+            "",
+            "Extensible Markup Language (XML) (*.xml)",
+        )
+        if len(fileName) == 0:
+            return
+
+        if fileName.endswith(".xml"):
+            try:
+                with open(fileName, "r", encoding="utf-8") as file:
+                    self.config_file = file.read()
+                self.configFile_edit.setText(fileName)
+                self.updateConfigTable()
+            except Exception as e:
+                QMessageBox.critical(
+                    self,
+                    "File Error",
+                    f"Error: {e}",
+                )
+
+        else:
+            QMessageBox.critical(
+                self,
+                "Incorrect file extension",
+                "Please make sure an XML file with Aspen Consumer Configuration "
+                "information has been selected.",
+            )
+
+    def updateConfigTable(self):
+        if self.config_file is not None:
+            timeout_text = '<setting name="TimeOutIterations" serializeAs="String">'
+            setup_text = '<setting name="TimeOutSetupIterations" serializeAs="String">'
+            init_text = '<setting name="TimePostInitIterations" serializeAs="String">'
+            text_dict = {
+                "timeout": timeout_text,
+                "setup": setup_text,
+                "init": init_text,
+            }
+        else:
+            return
+
+        def get_config_vals(text_dictionary):
+            vals = {"timeout": None, "setup": None, "init": None}
+            starts = {"timeout": None, "setup": None, "init": None}
+            ends = {"timeout": None, "setup": None, "init": None}
+            for key, text in text_dictionary.items():
+                pattern = re.compile(rf"{re.escape(text)}\s*<value>(.*?)</value>")
+                matches = pattern.finditer(self.config_file)
+
+                for match in matches:
+                    start_index = match.start(1)
+                    end_index = match.end(1)
+                    current_val = self.config_file[start_index:end_index]
+                starts[key] = start_index
+                ends[key] = end_index
+                vals[key] = current_val
+
+            return vals, starts, ends
+
+        current_vals, current_starts, current_ends = get_config_vals(text_dict)
+
+        self.vals = current_vals
+        self.starts = current_starts
+        self.ends = current_ends
+
+        # Update table rows
+        for row, key in enumerate(current_vals):
+            self.updateConfigTableRow(row, current_vals[key])
+
+        self.updateConfig_button.setEnabled(True)
+
+    def updateConfigTableRow(self, row, text):
+        item = self.configTable.item(row, self.valueCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(text)
+        item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        flags = item.flags()
+        mask = QtCore.Qt.ItemIsEnabled
+        item.setFlags(flags | mask)
+        self.configTable.setItem(row, self.valueCol, item)
+
+    def updateConfigFile(self):
+        # Backup current XML file
+        config_file, ext = os.path.splitext(self.configFile_edit.text())
+        backup_file = config_file + "-backup-" + str(time.time()) + ext
+        copyfile(self.configFile_edit.text(), backup_file)
+
+        # Get values from table
+        new_vals = {
+            "timeout": self.configTable.item(self.timeoutRow, self.valueCol).text(),
+            "setup": self.configTable.item(self.setupRow, self.valueCol).text(),
+            "init": self.configTable.item(self.initRow, self.valueCol).text(),
+        }
+
+        # Perform the replacement
+        content = self.config_file
+        extra_idx = {"timeout": 0, "setup": 0, "init": 0}
+
+        timeout_digits_diff = int(math.log10(int(new_vals["timeout"]))) - int(
+            math.log10(int(self.vals["timeout"]))
+        )
+        extra_idx["setup"] = timeout_digits_diff
+
+        setup_digits_diff = int(math.log10(int(new_vals["setup"]))) - int(
+            math.log10(int(self.vals["setup"]))
+        )
+        extra_idx["init"] = timeout_digits_diff + setup_digits_diff
+
+        for key in new_vals:
+            # Insert new_text at start_index
+            content = (
+                content[: self.starts[key] + extra_idx[key]]
+                + str(new_vals[key])
+                + content[self.ends[key] + extra_idx[key] :]
+            )
+
+        # Write the modified content back to the file
+        with open(self.configFile_edit.text(), "w", encoding="utf-8") as file:
+            file.write(content)
+
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Aspen Consumer Configuration File")
+        dirname = os.path.dirname(self.configFile_edit.text())
+        msgBox.setText(
+            "The Aspen Consumer configuration file has been successfully updated.\n"
+            "\nPlease make sure your changes are correct before loading it into Aspen.\n"
+            "\nA backup of the old version has been saved in the directory below:\n"
+            "\n" + dirname
+        )
+        msgBox.exec_()

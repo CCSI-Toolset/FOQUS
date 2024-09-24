@@ -274,8 +274,8 @@ Aspen Configuration Parameters
 Users can modify some Aspen Consumer configuration parameters in the Node Editor panel. They can
 browse to the location of the AspenSinterConsumerConsole.xml file using the **Browse...** button.
 For installations of SimSinter 3.x or higher this will most likely be
-``C:\Program Files\CCSI\SimSinter``. For older versions of SimSinter this will most likely be
-``C:\Program Files (x86)\CCSI\SimSinter``.
+``C:\Program Files\Turbine\Lite\Consumers``. For older versions of SimSinter this will most likely be
+``C:\Program Files (x86)\Turbine\Lite\Consumers``.
 
 Once the correct XML file has been selected, the table will be populated with the current values for
 **TimeOutIterations**, **TimeOutSetupIterations** and **TimePostInitIterations**.

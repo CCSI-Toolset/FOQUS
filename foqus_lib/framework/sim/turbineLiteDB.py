@@ -61,7 +61,7 @@ class turbineLiteDB:
         self.close_after = close_after
         self.dbFile = os.path.join(
             core.TurbineLiteDependencyTracker.load().path,
-            "/Data/TurbineCompactDatabase.sdf"
+            "/Data/TurbineCompactDatabase.sdf",
         )
 
     def __del__(self):

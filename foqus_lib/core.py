@@ -17,21 +17,21 @@
 Joshua Boverhof, Lawrence Berkeley National Labs, 2024
 """
 import os, shutil, logging
-#from foqus_lib.framework.session.session import generalSettings as FoqusSettings
+
+# from foqus_lib.framework.session.session import generalSettings as FoqusSettings
 
 
 class DependencyTracker:
     @classmethod
     def available(cls):
-        """ Returns set of available packages
-        """
+        """Returns set of available packages"""
         raise NotImplementedError()
 
     @classmethod
     def unavailable(cls):
-        """ Returns set of unavailable packages
-        """
+        """Returns set of unavailable packages"""
         raise NotImplementedError()
+
 
 class ModuleDependencyTracker:
     """tracks imported python modules"""
@@ -79,8 +79,10 @@ class ModuleDependencyTracker:
     def module(self):
         return self._module
 
+
 class ExecutableDependencyTracker(DependencyTracker):
     """tracks optional executables"""
+
     executables_available = dict()
     executables_unavailable = dict()
     executable_name = None
@@ -107,10 +109,13 @@ class ExecutableDependencyTracker(DependencyTracker):
             return instance
         instance = cls()
         if not os.path.isdir(instance.path()):
-            raise RuntimeError("%r:  Failed to Load Dependency" %(instance))
+            raise RuntimeError("%r:  Failed to Load Dependency" % (instance))
         if not os.access(filename, os.X_OK):
-            raise RuntimeError("%r:  Dependency Path is not Executable:  %s" %(instance.path()))
+            raise RuntimeError(
+                "%r:  Dependency Path is not Executable:  %s" % (instance.path())
+            )
         cls.executables_available[instance.executable_name] = instance
+
 
 class PsuadeDependencyTracker(ExecutableDependencyTracker):
     """
@@ -118,19 +123,20 @@ class PsuadeDependencyTracker(ExecutableDependencyTracker):
     if plugin == None:  print("unavailable")
     elif plugin.nomad is False: print("nomand unavailable")
     """
+
     required = False
     executable_name = "psuade"
     default_path = "C:/Program Files (x86)/psuade_project 1.7.5/bin/psuade.exe"
+
     def path(self):
-        return (
-            shutil.which("psuade")
-            or self.default_path
-        )
+        return shutil.which("psuade") or self.default_path
+
 
 class RScriptDependencyTracker(ExecutableDependencyTracker):
     required = False
     executable_name = "Rscript.exe"
     default_path = "C:\\Program Files\\R\\R-3.1.2\\bin\\x64\\Rscript.exe"
+
     @classmethod
     def path(self):
         return shutil.which(cls.executable_name) or cls.default_path
@@ -159,10 +165,14 @@ class WindowsPackageDependencyTracker(DependencyTracker):
         instance = instance or cls()
         if not os.path.isdir(instance.path):
             if cls.required:
-                raise RuntimeError("Install Path Does Not Exist: %s" %(instance.path))
+                raise RuntimeError("Install Path Does Not Exist: %s" % (instance.path))
             if instance.package_name not in cls.windows_packages_unavailable:
-                cls.windows_packages_unavailable[instance.package_name] = cls.windows_packages_unavailable
-            logging.getLogger().warning("Install Path Does Not Exist: %s" %(instance.path))
+                cls.windows_packages_unavailable[instance.package_name] = (
+                    cls.windows_packages_unavailable
+                )
+            logging.getLogger().warning(
+                "Install Path Does Not Exist: %s" % (instance.path)
+            )
         cls.windows_packages_available[instance.package_name] = instance
         return instance
 
@@ -170,12 +180,14 @@ class WindowsPackageDependencyTracker(DependencyTracker):
     def path(cls):
         raise NotImplementedError()
 
+
 class SimSinterDependencyTracker(WindowsPackageDependencyTracker):
     """
     plugin = PsuadeDependencyTracker.load()
     if plugin == None:  print("unavailable")
     elif plugin.nomad is False: print("nomand unavailable")
     """
+
     package_name = "SimSinter"
     install_path = "C:/Program Files/CCSI/SimSinter"
 
@@ -190,9 +202,9 @@ class TurbineLiteDependencyTracker(WindowsPackageDependencyTracker):
     if plugin == None:  print("unavailable")
     elif plugin.nomad is False: print("nomand unavailable")
     """
+
     package_name = "TurbineLite"
     install_path = "C:/Program Files/Turbine/Lite"
-
 
     @property
     def path(self):

@@ -62,21 +62,25 @@ _log = logging.getLogger("foqus.foqus_lib.service.flowsheet")
 class FoqusCloudWatchLogHandler(watchtower.CloudWatchLogHandler):
     @functools.lru_cache(maxsize=0)
     def _get_machine_name(self):
-       return FOQUSAWSConfig.get_instance().instance_id
+        return FOQUSAWSConfig.get_instance().instance_id
+
     @functools.lru_cache(maxsize=0)
     def _get_user(self):
-       return FOQUSAWSConfig.get_instance().get_user()
+        return FOQUSAWSConfig.get_instance().get_user()
+
     def _get_stream_name(self, message):
-        return '/user/%s/ec2/%s' %(self._get_user(), self._get_machine_name())
+        return "/user/%s/ec2/%s" % (self._get_user(), self._get_machine_name())
+
 
 def _applyLogSettings(self_gs):
     # Short circuit FOQUS logging setup
     region_name = FOQUSAWSConfig.get_instance().get_region()
-    os.environ['AWS_DEFAULT_REGION'] = region_name
+    os.environ["AWS_DEFAULT_REGION"] = region_name
     with open(os.path.join(WORKING_DIRECTORY, "logging.yaml")) as log_config:
         config_yml = log_config.read()
         config_dict = yaml.safe_load(config_yml)
         logging.config.dictConfig(config_dict)
+
 
 def _set_working_dir(wdir):
     global _log, WORKING_DIRECTORY

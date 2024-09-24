@@ -79,7 +79,7 @@ class opt(optimization):
             "    text-indent: -22px ;\n"
             "}\n"
             "</head>\n"
-            "<p><b>PSUADE Optimiation Library</b></p></html>"
+            "<p><b>PSUADE Optimization Library</b></p></html>"
         )
         self.available = True
         self.description = "PSUADE Optimization solvers"

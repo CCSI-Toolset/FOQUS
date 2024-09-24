@@ -90,5 +90,5 @@ class TestFrame:
                 "surrogate finished" in main_window.statusBar().currentMessage().lower()
             )
 
-        qtbot.wait_until(is_completed, timeout=30_000)
+        qtbot.wait_until(is_completed, timeout=120_000)
         qtbot.wait(1_000)

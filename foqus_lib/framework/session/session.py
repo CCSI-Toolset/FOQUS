@@ -953,7 +953,7 @@ class generalSettings:
         working directory
 
         ignoreWDirSetting: allows the settings file to be saved in
-            the $HOME or %APPDATA% location regaurdless of the
+            the $HOME or %APPDATA% location regardless of the
             setting to save the options in the working directory.
             this allows FOQUS to create a main settings file if
             it doesn't exist.  Aside from that the

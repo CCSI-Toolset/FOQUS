@@ -60,7 +60,6 @@ jobs:
           config: .typos.toml
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
-    needs: [spell-check, code-formatting, pylint]
     runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
@@ -87,7 +86,9 @@ jobs:
             os-version: windows-2019
           - python-version: '3.10'  # avoid uploading coverage for full matrix
             use_coverage: true
-          - python-version: '3.10'  # this is to avoid installing optional dependencies in all environments
+          - python-version: '3.10'  # install ML AI dependencies with coverage run
+            optional-dependencies: -r requirements-mlai.txt
+          - python-version: '3.11'  # install ML AI dependencies with a newer Python version
             optional-dependencies: -r requirements-mlai.txt
     env:
       # uncomment this to debug Qt initialization errors
@@ -111,7 +112,7 @@ jobs:
           echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
       - name: Set common pytest flags
         run:
-          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
+          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --maxfail=3 --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
       - name: Add pytest coverage flags
         if: matrix.use_coverage
         run:
@@ -127,9 +128,37 @@ jobs:
           name: pytest-dir-${{ matrix.os }}-py${{ matrix.python-version }}
           path: ${{ env.PYTEST_BASETEMP }}
           retention-days: 7
+      - name: Upload coverage report as job artifact
+        if: always() && matrix.use_coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.os }}
+          path: coverage.xml
+          if-no-files-found: error
+
+  upload-coverage:
+    name: Upload coverage report (Codecov)
+    needs: [pytest]
+    runs-on: ubuntu-latest
+    steps:
+      # the checkout step is needed to have access to codecov.yml
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-report-*
       - name: Upload coverage report to Codecov
-        if: matrix.use_coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          verbose: true
+          # NOTE: secrets are not available for pull_request workflows
+          # However, as of 2024-02-10, Codecov is still allowing tokenless upload from PRs
+          # but does require token for other workflows e.g. merge to `main`
+          # see https://github.com/codecov/codecov-action/issues/1274#issuecomment-1934437359
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # pinning version after v0.7.0 broke tokenless upload
+          # see codecov/codecov-action#1487
+          version: v0.7.2
 
   pylint:
     name: pylint (py${{ matrix.python-version }})

@@ -73,6 +73,8 @@ to the `ALAMO Home Page <https://sahinidis.coe.gatech.edu/alamo>`_.
 Download ALAMO and request a license from the `ALAMO download page
 <https://minlp.com/alamo-downloads>`_.
 
+The path to the ALAMO executable will need to be set in the "Settings" panel. Some installations may have two executables; **alamo.exe** is the main executable for accessing the ALAMO trainer, and **alamo-ui.exe** is a second executable for launching the stand-alone user interface application. The **ALAMO EXE** path should be set as the path to the main executable.
+
 
 Install NLopt
 ^^^^^^^^^^^^^

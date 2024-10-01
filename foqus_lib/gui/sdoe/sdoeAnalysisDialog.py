@@ -178,10 +178,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.progress2_groupBox.setHidden(True)
 
         # spin box bounds
-        self.minDesignSize_spin.setMaximum(len(candidateData.getInputData()))
-        self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()))
-        self.designSize_spin.setMaximum(len(candidateData.getInputData()))
-        self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()))
+        self.minDesignSize_spin.setMaximum(len(candidateData.getInputData()) - 1)
+        self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()) - 1)
+        self.designSize_spin.setMaximum(len(candidateData.getInputData()) - 1)
+        self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()) - 1)
         self.ncand_samplesIRSF_spin.setRange(1, len(candidateData.getInputData()))
         self.ncand_samplesIRSF_spin.setValue(
             int(0.1 * len(candidateData.getInputData()))

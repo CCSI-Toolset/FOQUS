@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>3440</width>
+    <width>2560</width>
     <height>1387</height>
    </rect>
   </property>
@@ -441,14 +441,14 @@
         <item>
          <widget class="QToolBox" name="toolBox">
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="page">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>3370</width>
+             <width>2490</width>
              <height>367</height>
             </rect>
            </property>
@@ -749,7 +749,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>3370</width>
+             <width>2490</width>
              <height>367</height>
             </rect>
            </property>
@@ -924,8 +924,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>3370</width>
-             <height>879</height>
+             <width>2490</width>
+             <height>367</height>
             </rect>
            </property>
            <attribute name="label">
@@ -958,7 +958,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>3370</width>
+             <width>2490</width>
              <height>367</height>
             </rect>
            </property>
@@ -978,7 +978,7 @@
               <item>
                <widget class="QLineEdit" name="configFile_edit">
                 <property name="text">
-                 <string>\Program Files (x86)\Turbine\Lite\Consumers\AspenSinterConsumerConsole.xml</string>
+                 <string>C:\Program Files\Turbine\Lite\Consumers\AspenSinterConsumerConsole.xml</string>
                 </property>
                </widget>
               </item>

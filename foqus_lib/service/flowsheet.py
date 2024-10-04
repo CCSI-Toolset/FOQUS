@@ -82,9 +82,17 @@ def _applyLogSettings(self_gs):
         logging.config.dictConfig(config_dict)
 
 
-def _set_working_dir(wdir):
+def _set_working_dir(wdir, override=False):
+    """Set working directory, apply settings and log configuration.
+    Parameters:
+        override: Change the user configuration location and log settings.
+    """
     global _log, WORKING_DIRECTORY
     WORKING_DIRECTORY = wdir
+    # if override:
+    #     FoqusSettings.getUserConfigLocation = _get_user_config_location
+    #     FoqusSettings.applyLogSettings = _applyLogSettings
+        
     log_dir = os.path.join(wdir, "logs")
     try:
         os.makedirs(log_dir)
@@ -104,10 +112,6 @@ def _set_working_dir(wdir):
 def _get_user_config_location(*args, **kw):
     _log.debug("USER CONFIG: %s", str(args))
     return os.path.join(WORKING_DIRECTORY, "foqus.cfg")
-
-
-FoqusSettings.getUserConfigLocation = _get_user_config_location
-FoqusSettings.applyLogSettings = _applyLogSettings
 
 
 def getfilenames(jid):
@@ -770,7 +774,7 @@ class FlowsheetControl:
     def _set_working_directory(cls, working_dir=WORKING_DIRECTORY):
         if cls._is_set_working_directory:
             return
-        _set_working_dir(working_dir)
+        _set_working_dir(working_dir, override=True)
         cls._is_set_working_directory = True
 
     def stop(self):

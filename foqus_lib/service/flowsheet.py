@@ -92,7 +92,7 @@ def _set_working_dir(wdir, override=False):
     # if override:
     #     FoqusSettings.getUserConfigLocation = _get_user_config_location
     #     FoqusSettings.applyLogSettings = _applyLogSettings
-        
+
     log_dir = os.path.join(wdir, "logs")
     try:
         os.makedirs(log_dir)

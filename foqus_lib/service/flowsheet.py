@@ -35,10 +35,10 @@ import urllib.parse
 import urllib.request
 import uuid
 from os.path import expanduser
+import functools
 import boto3
 import botocore.exceptions
 import watchtower
-import functools
 import yaml
 
 from turbine.commands import turbine_simulation_script

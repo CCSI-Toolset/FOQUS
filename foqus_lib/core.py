@@ -38,7 +38,7 @@ class ModuleDependencyTracker:
 
     python_modules_available = {}
     python_modules_unavailable = {}
-    module = None
+    python_module_name = None
 
     @classmethod
     def available(cls):
@@ -59,7 +59,7 @@ class ModuleDependencyTracker:
         except ModuleNotFoundError:
             cls.python_modules_unavailable[instance.python_module_name] = instance
             raise
-        self._module = eval(instance.python_module_name)
+        instance._module = eval(instance.python_module_name)
         cls.python_modules_available[instance.python_module_name] = instance
         return instance
 
@@ -108,9 +108,9 @@ class ExecutableDependencyTracker(DependencyTracker):
         if instance is not None:
             return instance
         instance = cls()
-        if not os.path.isdir(instance.path()):
+        if not os.path.isfile(instance.path()):
             raise RuntimeError("%r:  Failed to Load Dependency" % (instance))
-        if not os.access(filename, os.X_OK):
+        if not os.access(instance.path(), os.X_OK):
             raise RuntimeError(
                 "%r:  Dependency Path is not Executable:  %s" % (instance.path())
             )
@@ -138,7 +138,7 @@ class RScriptDependencyTracker(ExecutableDependencyTracker):
     default_path = "C:\\Program Files\\R\\R-3.1.2\\bin\\x64\\Rscript.exe"
 
     @classmethod
-    def path(self):
+    def path(cls):
         return shutil.which(cls.executable_name) or cls.default_path
 
 

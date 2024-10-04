@@ -20,7 +20,6 @@ Joshua Boverhof, Lawrence Berkeley National Lab
 """
 import errno
 import json
-import yaml
 import logging
 import logging.config
 import optparse
@@ -36,11 +35,11 @@ import urllib.parse
 import urllib.request
 import uuid
 from os.path import expanduser
-
 import boto3
 import botocore.exceptions
 import watchtower
 import functools
+import yaml
 
 from turbine.commands import turbine_simulation_script
 from foqus_lib.framework.foqusException.foqusException import *

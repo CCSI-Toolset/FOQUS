@@ -268,6 +268,28 @@ contains the columns: Name, Value, Unit, Type, Description, and Tags.
 The value of the outputs may not correspond to the inputs until the
 simulation has been run.
 
+Aspen Configuration Parameters
+------------------------------
+
+Users can modify some Aspen Consumer configuration parameters in the Node Editor panel. They can
+browse to the location of the AspenSinterConsumerConsole.xml file using the **Browse...** button.
+For installations of SimSinter 3.x or higher this will most likely be
+``C:\Program Files\Turbine\Lite\Consumers``. For older versions of SimSinter this will most likely be
+``C:\Program Files (x86)\Turbine\Lite\Consumers``.
+
+Once the correct XML file has been selected, the table will be populated with the current values for
+**TimeOutIterations**, **TimeOutSetupIterations** and **TimePostInitIterations**.
+
+Users can edit any of these three values and when they are ready click the **Update Configuration
+Parameters** button. The current XML file will get updated with the new values and a backup copy
+of the old version will get saved in the same location.
+
+.. figure:: ../figs/nodeEditor_AspenConfig.png
+   :alt: Aspen Configuration Parameters
+   :name: fig.node.editor.aspen.config.parameters
+
+   Aspen Configuration Parameters
+
 Node Script
 -----------
 

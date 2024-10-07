@@ -256,10 +256,7 @@ def main(args_to_parse=None):
     logging.getLogger("foqus").setLevel(logging.DEBUG)
     logging.getLogger("turbine").setLevel(logging.DEBUG)
     sys.excepthook = logException  # for unhandled exception logging
-    try:
-        turbine.commands._setup_logging.done = True
-    except:
-        _logger.exception("Cannot find turbine module")
+    turbine.commands._setup_logging.done = True
     app = None  # Qt application if I need to display message boxes.
     ## Setup the command line arguments
     parser = argparse.ArgumentParser()

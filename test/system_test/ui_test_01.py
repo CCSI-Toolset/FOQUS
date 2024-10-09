@@ -157,7 +157,7 @@ def add_UQ_okay(MainWin=MainWin):
 
 
 def uq_sampling_scheme(MainWin=MainWin):
-    """Setup up an enseble sampling scheme, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme, stops timer once window comes up"""
     global timers, exit_code, getButton, go
     w = MainWin.app.activeWindow()
     if "SimSetup" in str(type(w)):
@@ -268,7 +268,7 @@ try:  # Catch any exception and stop all timers before finishing up
         assert self.flowsheet.errorStat == 0
         _log.info("SUCCESS: Test03: Flowsheet run")
 
-        # 4) Start to add a UQ enseble, but cancel it.
+        # 4) Start to add a UQ ensemble, but cancel it.
         MainWin.uqSetupAction.trigger()
         if not go():
             break

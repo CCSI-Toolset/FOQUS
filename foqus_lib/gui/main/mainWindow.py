@@ -293,7 +293,7 @@ class mainWindow(QMainWindow):
         This function enables or disables forms that allow editing
         of the flowsheet or other session data while something is
         running in another thread.  This is to prevent
-        inconsitencies when a problem is running but the problem
+        inconsistencies when a problem is running but the problem
         or flowsheet have been changed in the meantime
         ---args---
         b: bool true to enable false to disable

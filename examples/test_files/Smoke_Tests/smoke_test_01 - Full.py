@@ -74,7 +74,7 @@ def add_UQ_okay(MainWin=MainWin, getButton=getButton, timers=timers):
 
 
 def uq_sampling_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     if "SimSetup" in str(type(w)):
         timers["uq_sampling_scheme"].stop()

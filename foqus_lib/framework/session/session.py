@@ -28,8 +28,9 @@ import shutil
 import sys
 import uuid
 
+from foqus_lib import core
 import foqus_lib.framework.optimizer.problem as oprob
-from foqus_lib.framework.graph.graph import *
+from foqus_lib.framework.graph.graph import Graph, GraphEx
 from foqus_lib.framework.graph.node import nodeModelTypes
 from foqus_lib.framework.ml_ai_models import mlaiSearch
 from foqus_lib.framework.optimizer import problem
@@ -40,7 +41,7 @@ from foqus_lib.framework.optimizer.optimization import optimization as junk
 from foqus_lib.framework.plugins import pluginSearch
 from foqus_lib.framework.pymodel import pymodel
 from foqus_lib.framework.sampleResults.results import Results
-from foqus_lib.framework.sim.turbineConfiguration import *
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 from foqus_lib.framework.surrogate import surrogate
 from foqus_lib.framework.surrogate.surrogate import surrogate as junk2
 from foqus_lib.framework.uq.LocalExecutionModule import *
@@ -770,7 +771,7 @@ class generalSettings:
         self.working_dir_override = False
         self.working_dir = ""
         self.new_working_dir = ""
-        self.simsinter_path = "C:/Program Files (x86)/CCSI/SimSinter"
+        self.simsinter_path = core.SimSinterDependencyTracker.load().path
         self.psuade_path = (
             shutil.which("psuade")
             or "C:/Program Files (x86)/psuade_project 1.7.5/bin/psuade.exe"
@@ -791,7 +792,7 @@ class generalSettings:
         self.turbineRemoteReSub = 0  # number of times to resubmit failed
         # jobs to Turbine when running remote
         self.aspenVersion = 2  # 0 = none, 1 = 7.3, 2 = 7.3.2 or higher
-        self.turbLiteHome = "C:\\Program Files (x86)\\Turbine\\Lite"
+        self.turbLiteHome = core.TurbineLiteDependencyTracker.load().path
         self.rScriptPath = "C:\\Program Files\\R\\R-3.1.2\\bin\\x64\\Rscript.exe"
         self.logFormat = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
         self.logRotate = False

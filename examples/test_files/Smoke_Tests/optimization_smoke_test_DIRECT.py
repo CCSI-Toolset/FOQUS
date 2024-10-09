@@ -142,7 +142,7 @@ def msg_no(MainWin=MainWin, getButton=getButton, timers=timers):
 
 
 def start_opt_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     if "optMonitor" in str(type(w)):
         timers["start_opt_scheme"].stop()

@@ -164,7 +164,7 @@ def add_UQ_yes(MainWin=MainWin, getButton=getButton, timers=timers):
 
 
 def uq_sampling_scheme_MC(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme with Monte Carlo, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with Monte Carlo, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Monte Carlo"
@@ -188,7 +188,7 @@ def uq_sampling_scheme_MC(MainWin=MainWin, getButton=getButton, timers=timers, g
 
 
 def uq_sampling_scheme_QMC(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme with Quasi Monte Carlo, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with Quasi Monte Carlo, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Quasi Monte Carlo/Lognormal Dist"
@@ -214,7 +214,7 @@ def uq_sampling_scheme_QMC(MainWin=MainWin, getButton=getButton, timers=timers, 
 
 
 def uq_sampling_scheme_LH(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme with Latin Hypercube, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with Latin Hypercube, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Latin Hypercube/Triangle Distribution"
@@ -238,7 +238,7 @@ def uq_sampling_scheme_LH(MainWin=MainWin, getButton=getButton, timers=timers, g
 
 
 def uq_sampling_scheme_OA(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme with Orthogonal Array, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with Orthogonal Array, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Orthogonal Array/Gamma Distribution"
@@ -262,7 +262,7 @@ def uq_sampling_scheme_OA(MainWin=MainWin, getButton=getButton, timers=timers, g
 
 
 def uq_sampling_scheme_MD(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme with Morris Design, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with Morris Design, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Morris Design/Beta Distribution"
@@ -288,7 +288,7 @@ def uq_sampling_scheme_MD(MainWin=MainWin, getButton=getButton, timers=timers, g
 
 
 def uq_sampling_scheme_GMD(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme with Generalized Morris Design, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with Generalized Morris Design, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Generalized Morris Design/Exponential Distribution"
@@ -314,7 +314,7 @@ def uq_sampling_scheme_GMD(MainWin=MainWin, getButton=getButton, timers=timers, 
 
 
 def uq_sampling_scheme_GS(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
-    """Setup up an enseble sampling scheme with Gradient Sample, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with Gradient Sample, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Gradient Sample/Weibull Distribution"
@@ -340,7 +340,7 @@ def uq_sampling_scheme_GS(MainWin=MainWin, getButton=getButton, timers=timers, g
 def uq_sampling_scheme_METIS(
     MainWin=MainWin, getButton=getButton, timers=timers, go=go
 ):
-    """Setup up an enseble sampling scheme with METIS, stops timer once window comes up"""
+    """Setup up an ensemble sampling scheme with METIS, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "METIS"

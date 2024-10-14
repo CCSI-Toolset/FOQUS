@@ -18,12 +18,14 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import os
+import os.path
 import threading
 import time
 import uuid
 
 import adodbapi
 import adodbapi.apibase
+from foqus_lib import core
 
 adodbapi.adodbapi.defaultCursorLocation = 2  # adodbapi.adUseServer
 
@@ -57,9 +59,9 @@ class turbineLiteDB:
     def __init__(self, close_after=True):
         self.conn = None
         self.close_after = close_after
-        self.dbFile = (
-            "C:\\Program Files (x86)"
-            "\\Turbine\\Lite\\Data\\TurbineCompactDatabase.sdf"
+        self.dbFile = os.path.join(
+            core.TurbineLiteDependencyTracker.load().path,
+            "/Data/TurbineCompactDatabase.sdf",
         )
 
     def __del__(self):

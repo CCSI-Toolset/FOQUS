@@ -35,11 +35,13 @@ import urllib.parse
 import urllib.request
 import uuid
 from os.path import expanduser
-
+import functools
 import boto3
 import botocore.exceptions
-from turbine.commands import turbine_simulation_script
+import watchtower
+import yaml
 
+from turbine.commands import turbine_simulation_script
 from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.graph.nodeVars import NodeVarEx, NodeVarListEx
@@ -51,14 +53,45 @@ from foqus_lib.framework.session.session import session as Session
 WORKING_DIRECTORY = os.path.abspath(
     os.environ.get("FOQUS_SERVICE_WORKING_DIR", "\\ProgramData\\foqus_service")
 )
-DEBUG = False
+
 CURRENT_JOB_DIR = None
 _log = logging.getLogger("foqus.foqus_lib.service.flowsheet")
 
 
-def _set_working_dir(wdir):
+class FoqusCloudWatchLogHandler(watchtower.CloudWatchLogHandler):
+    @functools.lru_cache(maxsize=0)
+    def _get_machine_name(self):
+        return FOQUSAWSConfig.get_instance().instance_id
+
+    @functools.lru_cache(maxsize=0)
+    def _get_user(self):
+        return FOQUSAWSConfig.get_instance().get_user()
+
+    def _get_stream_name(self, message):
+        return "/user/%s/ec2/%s" % (self._get_user(), self._get_machine_name())
+
+
+def _applyLogSettings(self_gs):
+    # Short circuit FOQUS logging setup
+    region_name = FOQUSAWSConfig.get_instance().get_region()
+    os.environ["AWS_DEFAULT_REGION"] = region_name
+    with open(os.path.join(WORKING_DIRECTORY, "logging.yaml")) as log_config:
+        config_yml = log_config.read()
+        config_dict = yaml.safe_load(config_yml)
+        logging.config.dictConfig(config_dict)
+
+
+def _set_working_dir(wdir, override=False):
+    """Set working directory, apply settings and log configuration.
+    Parameters:
+        override: Change the user configuration location and log settings.
+    """
     global _log, WORKING_DIRECTORY
     WORKING_DIRECTORY = wdir
+    # if override:
+    #     FoqusSettings.getUserConfigLocation = _get_user_config_location
+    #     FoqusSettings.applyLogSettings = _applyLogSettings
+
     log_dir = os.path.join(wdir, "logs")
     try:
         os.makedirs(log_dir)
@@ -69,7 +102,6 @@ def _set_working_dir(wdir):
     FoqusSettings().applyLogSettings()
 
     _log = logging.getLogger("foqus.foqus_lib.service.flowsheet")
-    _log.setLevel(logging.DEBUG)
     _log.info("Working Directory: %s", WORKING_DIRECTORY)
     logging.getLogger("boto3").setLevel(logging.ERROR)
     logging.getLogger("botocore").setLevel(logging.ERROR)
@@ -79,9 +111,6 @@ def _set_working_dir(wdir):
 def _get_user_config_location(*args, **kw):
     _log.debug("USER CONFIG: %s", str(args))
     return os.path.join(WORKING_DIRECTORY, "foqus.cfg")
-
-
-FoqusSettings.getUserConfigLocation = _get_user_config_location
 
 
 def getfilenames(jid):
@@ -463,7 +492,6 @@ class FOQUSAWSConfig:
     def _get(self, key):
         v = self._d.get(key)
         assert v, "UserData/MetaData Missing Key(%s): %s" % (key, str(self._d))
-        _log.debug("FOQUSAWSConfig._get: %s = %s" % (key, v))
         return v
 
     def get_region(self):
@@ -745,7 +773,7 @@ class FlowsheetControl:
     def _set_working_directory(cls, working_dir=WORKING_DIRECTORY):
         if cls._is_set_working_directory:
             return
-        _set_working_dir(working_dir)
+        _set_working_dir(working_dir, override=True)
         cls._is_set_working_directory = True
 
     def stop(self):
@@ -837,7 +865,6 @@ class FlowsheetControl:
         dat = None
         while not self._stop:
             ret = None
-            _log.debug("pop job")
             try:
                 ret = self.pop_job(db, VisibilityTimeout=VisibilityTimeout)
             except FOQUSJobException as ex:
@@ -1051,7 +1078,7 @@ class FlowsheetControl:
         )
 
         if not response.get("Messages", None):
-            _log.info("Job Queue is Empty")
+            _log.debug("Job Queue is Empty")
             self.increment_metric_queue_peeks(state="empty")
             return
 

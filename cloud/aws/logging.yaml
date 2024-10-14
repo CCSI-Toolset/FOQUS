@@ -1,0 +1,38 @@
+# Default AWS Config
+version: 1
+disable_existing_loggers: False
+formatters:
+  simple_formatter:
+      format: "%(levelname)-8s - %(asctime)12s - %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    stream: ext://sys.stdout
+    formatter: simple_formatter
+  logfile:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    filename: watchtower.log
+    maxBytes: 1000000
+    backupCount: 3
+    formatter: simple_formatter
+  watchtower:
+    #class: watchtower.CloudWatchLogHandler
+    class: foqus_lib.service.flowsheet.FoqusCloudWatchLogHandler
+    level: DEBUG
+    log_group_name: foqus-cloud-service
+    #log_stream_name: "{machine_name}-{strftime:%y-%m-%d}"
+    log_stream_name: "{machine_name}"
+    send_interval: 10
+    create_log_group: True
+    formatter: simple_formatter
+root:
+  level: DEBUG
+  propagate: True
+  handlers: [console, logfile, watchtower]
+loggers:
+  botocore:
+    level: WARN
+  urllib3:
+    level: WARN

@@ -53,6 +53,7 @@ from turbine.commands.requests_base import (
     read_configuration,
 )
 
+from foqus_lib import core
 import foqus_lib.framework.sim.process_management as _pm
 from foqus_lib.framework.foqusException.foqusException import *
 
@@ -238,7 +239,7 @@ class TurbineConfiguration:
         self.user = ""
         self.pwd = ""
         self.turbVer = "Lite"  # Lite, Remote or ....
-        self.turbineLiteHome = "C:\\Program Files (x86)\\Turbine\\Lite"
+        self.turbineLiteHome = core.TurbineLiteDependencyTracker.load().path
         self.consumers = {}
         self.consumerCountDict = {}
         self.reloadTurbine()
@@ -368,6 +369,7 @@ class TurbineConfiguration:
 
         sinter_process_log = open("%s_sinter_log.txt" % app, "a")
         sinter_process_log.write("starting consumer\n")
+        _log.info("executing process: %s", f)
         proc = subprocess.Popen(
             [f],
             stdout=sinter_process_log,

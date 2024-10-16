@@ -17,6 +17,7 @@ import pytest
 
 from foqus_lib.gui.main.mainWindow import mainWindow
 from foqus_lib.gui.surrogate.surrogateFrame import surrogateFrame
+from PyQt5.QtWidgets import QComboBox
 
 pytestmark = pytest.mark.gui
 
@@ -56,6 +57,16 @@ class TestFrame:
             # "ACOSSO",
         ],
     )
+    @pytest.mark.parametrize(
+        "scaling_variant",
+        [
+            '"Linear"',
+            '"Log"',
+            '"Log2"',
+            '"Power"',
+            '"Power2"',
+        ],
+    )
     def test_run_surrogate(
         self,
         qtbot,
@@ -63,6 +74,7 @@ class TestFrame:
         main_window: mainWindow,
         name: str,
         required_import: str,
+        scaling_variant: str,
     ):
         qtbot.focused = frame
         pytest.importorskip(required_import, reason=f"{required_import} not available")
@@ -81,6 +93,10 @@ class TestFrame:
             qtbot.click(button="Select All")
         with qtbot.focusing_on(group_box="Output Variables"):
             qtbot.click(button="Select All")
+        qtbot.select_tab("Method Settings")
+        with qtbot.focusing_on(table=any):
+            qtbot.select_row("scaling_function")
+            qtbot.using(column="Value").set_option(scaling_variant)
         qtbot.select_tab("Execution")
         run_button, stop_button = qtbot.locate(button=any, index=[0, 1])
         run_button.click()

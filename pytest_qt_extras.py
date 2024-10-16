@@ -589,6 +589,10 @@ class TableRowSearch(_SerializableMixin):
                 raise InvalidMatchError(
                     f"row index {hint} out of range: (count: {count})"
                 )
+        elif isinstance(hint, str):
+            matching_items = table.findItems(hint, QtCore.Qt.MatchExactly)
+            InvalidMatchError.check(matching_items, expected=1)
+            idx = int(matching_items[0].row())
         elif hint is None:
             if count == 1:
                 idx = 0

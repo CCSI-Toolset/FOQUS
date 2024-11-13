@@ -29,7 +29,6 @@ import threading
 from multiprocessing.connection import Listener
 
 
-
 class foqusListener2(threading.Thread):
     """
     A multiprocessing listener to allow FOQUS to be controlled over a socket

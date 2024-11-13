@@ -177,7 +177,6 @@ def attempt_load_smt(try_imports=True):
         # smt should be installed, but not required for non ML/AI models
         import pickle
 
-
         smt_pickle_load = pickle.load
 
     # throw warning if manually failed for test or if package actually not available
@@ -198,7 +197,6 @@ def attempt_load_jenn(try_imports=True):
         assert try_imports  # if False will auto-trigger exceptions
         # jenn should be installed, but not required for non ML/AI models
         import pickle
-
 
         jenn_pickle_load = pickle.load
 

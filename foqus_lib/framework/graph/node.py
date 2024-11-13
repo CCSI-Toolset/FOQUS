@@ -1259,7 +1259,7 @@ class Node:
                     )
         elif self.isModelML:
             # assume a custom layer exists unless the model form indicates otherwise
-            # for Keras models when expected attriutes don't exist
+            # for Keras models when expected attributes don't exist
             self.keras_has_custom_layer = True
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()

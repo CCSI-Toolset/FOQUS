@@ -19,7 +19,6 @@ import shutil
 import sys
 from multiprocessing.connection import Client
 
-import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PyQt5 import QtCore, uic
@@ -30,7 +29,6 @@ from PyQt5.QtWidgets import (
     QFileDialog,
     QGroupBox,
     QMessageBox,
-    QRadioButton,
     QTableWidgetItem,
     QVBoxLayout,
 )

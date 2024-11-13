@@ -23,27 +23,17 @@ text).  They also need to have a .py extension and inherit the optimization clas
 Anuja Deshpande, KeyLogic Systems, Inc. - NETL
 """
 
-import copy
-import csv
 import logging
 import math
-import os
-import pickle
-import queue
-import sys
 import time
-import traceback
 
 import numpy
 
-from foqus_lib.framework.graph.nodeVars import NodeVars
-from foqus_lib.framework.graph.OptGraphOptim import optim, optimObj
 from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the Snobfit module is available and import it if possible.
 # If not the Snobfit plug-in will not be available.
 try:
-    import SQCommon
     import SQSnobFit
 
     snobfit_available = True

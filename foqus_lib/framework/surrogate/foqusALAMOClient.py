@@ -23,11 +23,8 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import sys
-import time
 from multiprocessing.connection import Client
 
-import numpy as np
 
 if __name__ == "__main__":
     inputFile = "input.txt"

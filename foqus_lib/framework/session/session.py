@@ -30,20 +30,17 @@ import uuid
 
 from foqus_lib import core
 import foqus_lib.framework.optimizer.problem as oprob
-from foqus_lib.framework.graph.graph import Graph, GraphEx
-from foqus_lib.framework.graph.node import nodeModelTypes
+from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.ml_ai_models import mlaiSearch
 from foqus_lib.framework.optimizer import problem
 
 # these are just imported so py2exe will pick them up since they
 # are used only in plugins
-from foqus_lib.framework.optimizer.optimization import optimization as junk
 from foqus_lib.framework.plugins import pluginSearch
 from foqus_lib.framework.pymodel import pymodel
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 from foqus_lib.framework.surrogate import surrogate
-from foqus_lib.framework.surrogate.surrogate import surrogate as junk2
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.SampleData import *

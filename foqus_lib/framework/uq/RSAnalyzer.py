@@ -17,7 +17,6 @@ import math
 import os
 import platform
 import re
-import subprocess
 import tempfile
 
 import numpy as np
@@ -28,7 +27,6 @@ from .Distribution import Distribution
 from .LocalExecutionModule import LocalExecutionModule
 from .Model import Model
 from .Plotter import Plotter
-from .RawDataAnalyzer import RawDataAnalyzer
 from .ResponseSurfaces import ResponseSurfaces
 from .SampleData import SampleData
 from .SamplingMethods import SamplingMethods

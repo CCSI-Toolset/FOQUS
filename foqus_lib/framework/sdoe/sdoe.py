@@ -16,7 +16,6 @@ import configparser
 import logging
 import os
 import platform
-import re
 import tempfile
 import time
 from typing import Tuple, Dict

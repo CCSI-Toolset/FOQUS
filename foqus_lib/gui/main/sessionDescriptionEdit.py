@@ -14,7 +14,7 @@
 #################################################################################
 import os
 
-from PyQt5 import QtCore, QtGui, uic
+from PyQt5 import QtGui, uic
 
 mypath = os.path.dirname(__file__)
 _sessionDescriptionDialogUI, _sessionDescriptionDialog = uic.loadUiType(

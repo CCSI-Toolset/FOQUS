@@ -18,11 +18,6 @@ import os
 # print(sys.path)
 # sys.path.append('/Users/a241211/Documents/CCSI/Solvents/RCode/SolventFit/');
 # sys.path.append('/Users/a241211/Documents/CCSI/Solvents/RCode/SolventFit/foqus_lib/framework/uq/');
-import shutil
-import subprocess
-import sys
-
-import numpy as np
 
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.Distribution import *

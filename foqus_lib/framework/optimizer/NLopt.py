@@ -25,16 +25,9 @@ text).  They also need to have a .py extension and inherit the optimization clas
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import copy  # too lazy to sort out which I really need in here
-import csv
 import logging
 import math
-import os
-import pickle
-import queue
-import sys
 import time  # Some of these things are left over from CMA-ES
-import traceback
 
 import numpy
 

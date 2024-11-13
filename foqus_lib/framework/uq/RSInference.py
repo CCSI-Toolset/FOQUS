@@ -12,17 +12,15 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import abc
 import copy
 import os
 import platform
-import subprocess
 import tempfile
 
 import numpy as np
 
 # from PySide import QtCore, QtGui
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 from scipy.stats import beta, expon, gamma, lognorm, norm, triang, weibull_min
 
 from .Common import Common

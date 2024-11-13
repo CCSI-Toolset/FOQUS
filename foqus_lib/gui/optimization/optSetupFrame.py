@@ -18,13 +18,11 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import copy
-import json
 import os
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QDialog, QMessageBox
+from PyQt5.QtWidgets import QDialog
 
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.graph.graph import *

@@ -15,7 +15,6 @@
 #
 # FOQUS_PYMODEL_PLUGIN
 
-import logging
 import subprocess
 
 import numpy

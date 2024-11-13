@@ -23,13 +23,11 @@ import copy
 import csv
 import json
 import logging
-import math
 import operator
 import time
 from functools import reduce
 
 from foqus_lib.framework.at_dict.at_dict import AtDict
-from foqus_lib.framework.foqusOptions.optionList import optionList
 
 
 class objectiveFunction(object):

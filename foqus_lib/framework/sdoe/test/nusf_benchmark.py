@@ -15,7 +15,6 @@
 #################################################################################
 import time
 
-import numpy as np
 import pandas as pd
 from dask.distributed import Client
 

@@ -21,13 +21,10 @@ import ast
 import copy
 import json
 import os
-import sys
-from collections import OrderedDict
 
 # Check that the win32com module is available and import it if possible.
 # If not, the module will not be used.
 try:
-    import win32com
     from win32com import client as win32
 
     module_available = True

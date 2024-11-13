@@ -20,7 +20,7 @@
 """
 import os
 
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5 import QtGui, QtWidgets, uic
 
 mypath = os.path.dirname(__file__)
 _dashFrameUI, _dashFrame = uic.loadUiType(os.path.join(mypath, "Dash_UI.ui"))

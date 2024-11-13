@@ -105,12 +105,10 @@ Methods:
 
 import collections.abc
 import json
-import numbers
 
 import numpy
 
 from .Distribution import *
-from .SamplingMethods import SamplingMethods
 
 
 class Model:

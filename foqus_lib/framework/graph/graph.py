@@ -22,11 +22,8 @@ John Eslick, Carnegie Mellon University, 2014
 """
 
 import copy
-import csv
 import logging
 import math
-import multiprocessing.dummy as multiprocessing
-import queue
 import sys
 import threading
 import time

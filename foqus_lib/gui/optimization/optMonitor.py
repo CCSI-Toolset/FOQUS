@@ -20,7 +20,6 @@ import math
 import os
 import time
 
-import matplotlib
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure

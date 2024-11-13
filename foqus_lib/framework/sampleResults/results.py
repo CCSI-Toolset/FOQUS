@@ -23,7 +23,6 @@ import datetime
 import json
 import logging
 import re
-import time
 from collections import OrderedDict
 from io import StringIO
 

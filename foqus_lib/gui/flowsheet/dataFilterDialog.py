@@ -19,25 +19,21 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import json
 import logging
 import os
 
 _log = logging.getLogger("foqus.{}".format(__name__))
 
 from PyQt5 import uic
-from PyQt5.QtCore import QDataStream, QEvent, QObject, QSize, Qt
-from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QDataStream, QEvent, QObject, Qt
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QApplication,
     QInputDialog,
     QLineEdit,
     QMessageBox,
-    QSplitter,
 )
 
-import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.sampleResults.results import *
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 

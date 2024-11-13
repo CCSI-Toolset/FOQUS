@@ -21,9 +21,6 @@ import ast
 import os
 import re
 import platform
-import types
-from configparser import RawConfigParser
-from io import StringIO
 from shutil import copyfile
 import time
 

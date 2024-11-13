@@ -28,7 +28,6 @@ import logging
 import signal
 import sys
 import time
-import uuid
 import traceback
 import turbine
 

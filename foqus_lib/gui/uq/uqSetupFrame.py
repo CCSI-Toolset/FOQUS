@@ -20,10 +20,9 @@ import platform
 import numpy
 from PyQt5 import QtCore, QtGui, uic
 from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
-from PyQt5.QtGui import QColor, QCursor
+from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
     QApplication,
-    QButtonGroup,
     QDialog,
     QInputDialog,
     QMenu,

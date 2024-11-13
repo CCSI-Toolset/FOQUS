@@ -23,7 +23,6 @@ import json
 import logging
 import math
 import os
-from collections import OrderedDict
 from importlib import import_module
 
 import numpy as np
@@ -178,7 +177,6 @@ def attempt_load_smt(try_imports=True):
         # smt should be installed, but not required for non ML/AI models
         import pickle
 
-        import smt
 
         smt_pickle_load = pickle.load
 
@@ -201,7 +199,6 @@ def attempt_load_jenn(try_imports=True):
         # jenn should be installed, but not required for non ML/AI models
         import pickle
 
-        import jenn
 
         jenn_pickle_load = pickle.load
 

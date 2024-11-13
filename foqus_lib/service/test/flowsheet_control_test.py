@@ -22,7 +22,6 @@ John Eslick, Carnegie Mellon University, 2014
 import io
 import json
 import os
-import urllib.request
 import uuid
 from shutil import copyfile
 from urllib.parse import urlparse
@@ -38,7 +37,7 @@ from foqus_lib.framework.session.session import session
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 
 try:
-    from unittest.mock import MagicMock, PropertyMock, patch
+    from unittest.mock import MagicMock, patch
 except ImportError:
     from mock import MagicMock, patch
 

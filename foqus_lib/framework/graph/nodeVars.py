@@ -21,12 +21,10 @@ John Eslick, Carnegie Mellon University, 2014
 """
 
 import copy
-import json
 import logging
 import math
 from collections import OrderedDict
 
-import numpy as np
 
 from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.uq.Distribution import Distribution

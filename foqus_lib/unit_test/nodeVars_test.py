@@ -14,10 +14,7 @@
 #################################################################################
 import copy
 import json
-import traceback
 import unittest
-
-import numpy
 
 from foqus_lib.framework.graph.nodeVars import *
 

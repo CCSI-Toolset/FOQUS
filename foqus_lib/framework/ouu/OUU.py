@@ -15,16 +15,14 @@
 import os
 import platform
 import re
-import subprocess
 import tempfile
 
 import numpy as np
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 
 from foqus_lib.framework.uq.Common import Common
 from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
-from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 from foqus_lib.framework.uq.SampleData import SampleData
 from foqus_lib.framework.uq.SamplingMethods import SamplingMethods

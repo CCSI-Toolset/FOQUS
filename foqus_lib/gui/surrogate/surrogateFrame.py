@@ -24,13 +24,12 @@ John Eslick, Carnegie Mellon University, 2014
 
 import math
 import os
-import shutil
 import time
 import traceback
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTableWidget
+from PyQt5.QtWidgets import QMessageBox, QTableWidget
 
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.session.hhmmss import *

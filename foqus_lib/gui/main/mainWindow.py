@@ -18,14 +18,9 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import array
-import collections
 import functools
 import logging
-import math
 import os
-import platform
-import subprocess
 import time
 from configparser import *
 
@@ -41,14 +36,12 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from foqus_lib.framework import optimizer
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.session.hhmmss import *
 from foqus_lib.framework.session.session import *
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework.sintervectorize.SinterFileVectorize import *
 from foqus_lib.framework.uq.Model import *
-from foqus_lib.gui import icons_rc
 from foqus_lib.gui.basic_data.basicDataParentFrame import *
 from foqus_lib.gui.dialogs.variableBrowser import *
 from foqus_lib.gui.flowsheet.dataBrowserDialog import *

@@ -19,14 +19,9 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import copy
-import importlib
 import logging
-import os
 import queue
-import sys
 import threading
-import traceback
 
 from foqus_lib.framework.foqusOptions.optionList import optionList
 

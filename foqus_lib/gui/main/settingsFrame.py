@@ -18,14 +18,12 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import logging
 import os
-import pickle  # not sure why this is here probably remove
 import re
 import shutil
 import subprocess
 import time
 import xml.etree.ElementTree as ET
 from io import StringIO
-from pprint import pprint
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox

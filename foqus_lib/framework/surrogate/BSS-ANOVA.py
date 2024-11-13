@@ -26,23 +26,15 @@ text).  They also need to have a .py extension and inherit the surrogate class.
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import copy
 import json
 import logging
 import os
-import queue
-import re
 import shutil
 import subprocess
 import sys
-import threading
 import time
-import traceback
-from multiprocessing.connection import Client
 
-import numpy as np
 
-from foqus_lib.framework.listen import listen
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 

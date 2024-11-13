@@ -12,13 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import copy
-import json
-import os
-import traceback
 import unittest
-
-import numpy
 
 from foqus_lib.framework.sim.turbineConfiguration import *
 

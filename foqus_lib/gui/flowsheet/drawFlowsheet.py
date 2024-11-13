@@ -18,7 +18,6 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import math
-import types
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import (

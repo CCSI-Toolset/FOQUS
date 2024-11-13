@@ -23,7 +23,6 @@ import json
 import logging
 import math
 import os
-from collections import OrderedDict
 from importlib import import_module
 
 import numpy as np
@@ -178,8 +177,6 @@ def attempt_load_smt(try_imports=True):
         # smt should be installed, but not required for non ML/AI models
         import pickle
 
-        import smt
-
         smt_pickle_load = pickle.load
 
     # throw warning if manually failed for test or if package actually not available
@@ -200,8 +197,6 @@ def attempt_load_jenn(try_imports=True):
         assert try_imports  # if False will auto-trigger exceptions
         # jenn should be installed, but not required for non ML/AI models
         import pickle
-
-        import jenn
 
         jenn_pickle_load = pickle.load
 
@@ -1264,7 +1259,7 @@ class Node:
                     )
         elif self.isModelML:
             # assume a custom layer exists unless the model form indicates otherwise
-            # for Keras models when expected attriutes don't exist
+            # for Keras models when expected attributes don't exist
             self.keras_has_custom_layer = True
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()

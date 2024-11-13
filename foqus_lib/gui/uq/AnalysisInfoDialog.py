@@ -13,7 +13,6 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import copy
-from collections import OrderedDict
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont

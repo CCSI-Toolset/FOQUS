@@ -24,15 +24,7 @@ text).  They also need to have a .py extension and inherit the optimization clas
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import copy
-import csv
-import logging
-import math
-import os
-import queue
-import sys
 import time
-import traceback
 
 import numpy
 

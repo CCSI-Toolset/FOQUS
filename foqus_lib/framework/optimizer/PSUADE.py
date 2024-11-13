@@ -19,21 +19,13 @@ beginning of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 
 """
-import copy
-import csv
 import logging
-import math
-import os
-import queue
-import sys
 
 #
 # PSUADE
 #
 import time
-import traceback
 
-import numpy
 
 from foqus_lib.framework.optimizer.optimization import optimization
 

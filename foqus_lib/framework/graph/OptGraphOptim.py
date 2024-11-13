@@ -12,9 +12,6 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import math
-import time
-
 import numpy
 
 from foqus_lib.framework.graph.edge import *

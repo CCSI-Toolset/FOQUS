@@ -14,16 +14,13 @@
 #################################################################################
 import os
 import platform
-import subprocess
 import tempfile
 
 from PyQt5 import QtWidgets
 
 from .Common import Common
 from .LocalExecutionModule import LocalExecutionModule
-from .Plotter import Plotter
 from .SampleData import SampleData
-from .SamplingMethods import SamplingMethods
 
 
 class SampleRefiner:

@@ -23,11 +23,9 @@ from PyQt5.QtWidgets import (
     QApplication,
     QCheckBox,
     QFileDialog,
-    QLabel,
     QMainWindow,
     QMessageBox,
     QTableWidgetItem,
-    QVBoxLayout,
 )
 
 from foqus_lib.framework.solventfit.SolventFit import SolventFit
@@ -37,9 +35,7 @@ from foqus_lib.framework.uq.ResponseSurfaces import *
 from foqus_lib.framework.uq.RSInference import *
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-from foqus_lib.gui.uq import RSCombos
 
 mypath = os.path.dirname(__file__)
 _solventFitSetupFrameUI, _solventFitSetupFrame = uic.loadUiType(

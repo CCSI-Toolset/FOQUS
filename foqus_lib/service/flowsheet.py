@@ -22,11 +22,8 @@ import errno
 import json
 import logging
 import logging.config
-import optparse
 import os
-import signal
 import socket
-import sys
 import threading
 import time
 import traceback
@@ -34,7 +31,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
-from os.path import expanduser
 import functools
 import boto3
 import botocore.exceptions
@@ -44,7 +40,7 @@ import yaml
 from turbine.commands import turbine_simulation_script
 from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.graph.graph import Graph
-from foqus_lib.framework.graph.nodeVars import NodeVarEx, NodeVarListEx
+from foqus_lib.framework.graph.nodeVars import NodeVarListEx
 from foqus_lib.framework.plugins import pluginSearch
 from foqus_lib.framework.pymodel import pymodel
 from foqus_lib.framework.session.session import generalSettings as FoqusSettings

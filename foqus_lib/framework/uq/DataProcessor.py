@@ -14,7 +14,6 @@
 #################################################################################
 import os
 import platform
-import subprocess
 import tempfile
 
 from .Common import Common

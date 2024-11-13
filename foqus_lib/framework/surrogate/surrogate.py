@@ -21,7 +21,6 @@ from typing import Tuple
 
 import pandas as pd
 
-import foqus_lib.framework.uq.SurrogateParser
 from foqus_lib.framework.foqusOptions.optionList import optionList
 
 

@@ -14,8 +14,6 @@
 #################################################################################
 from collections import OrderedDict
 
-import numpy
-
 from foqus_lib.framework.graph.nodeVars import *
 
 

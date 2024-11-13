@@ -20,7 +20,6 @@ https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
 from May 8, 2015
 """
 
-import sys
 
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QColor, QFont, QSyntaxHighlighter, QTextCharFormat

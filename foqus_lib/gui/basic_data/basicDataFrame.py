@@ -12,16 +12,12 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import logging
 import os
-import platform
-import subprocess
-from io import StringIO
-from urllib.request import urlopen
 
 if os.name == "nt":
     try:
-        import win32process
+        # Not entirely sure why this is here (ksb 2024-11)
+        import win32process  # pylint: disable=unused-import
     except:
         pass
 

@@ -15,24 +15,14 @@
 """SinterVectorizeDialog.py
 * dialog to vectorize SimSinter (.json) files
 """
-import json
-import logging
 import os
-import subprocess
-import sys
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import (
     QDialog,
-    QFileDialog,
-    QInputDialog,
-    QLineEdit,
-    QMessageBox,
-    QTextEdit,
 )
 
 import foqus_lib.framework.sintervectorize.SinterFileVectorize as sv
-import foqus_lib.gui.helpers.guiHelpers as gh
 
 mypath = os.path.dirname(__file__)
 _SinterVectorizeDialogUI, _SinterVectorizeDialog = uic.loadUiType(

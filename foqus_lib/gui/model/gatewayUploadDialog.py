@@ -17,11 +17,9 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import json
 import logging
 import os
 import subprocess
-import sys
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox

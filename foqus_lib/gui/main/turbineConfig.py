@@ -19,12 +19,11 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import os
 
-from PyQt5 import QtCore, uic
+from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from foqus_lib.framework.sim.turbineConfiguration import (
     TurbineConfiguration,
-    TurbineInterfaceEx,
 )
 
 mypath = os.path.dirname(__file__)

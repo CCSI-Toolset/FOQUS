@@ -18,9 +18,8 @@ from typing import Dict, List, Optional, Tuple, TypedDict, Union
 import dask.bag as db
 import numpy as np
 import pandas as pd  # only used for the final output of criterion
-from scipy.stats import rankdata
 
-from .distance import compute_dist, compute_min_params
+from .distance import compute_min_params
 from .nusf import compute_dmat, scale_xs, scale_y, update_min_dist
 
 

@@ -14,8 +14,6 @@
 #################################################################################
 import os
 import platform
-import re
-import subprocess
 import tempfile
 
 import numpy as np

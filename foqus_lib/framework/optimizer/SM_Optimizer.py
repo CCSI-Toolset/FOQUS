@@ -23,34 +23,22 @@ text).  They also need to have a .py extension and inherit the optimization clas
 Anuja Deshpande, KeyLogic Systems, Inc. - NETL
 """
 
-import copy
-import csv
 import importlib
 import logging
 import math
 import os
-import pickle
-import queue
 import re
-import shutil
 import subprocess
-import sys
-import threading
 import time
-import traceback
 
 import numpy as np
 
 try:
-    import win32api  # used to get short file name for alamo sim exe
     import win32process
 except:
     pass
 
-from foqus_lib.framework.graph.edge import edge, edgeConnect
-from foqus_lib.framework.graph.nodeVars import NodeVars
 from foqus_lib.framework.optimizer.optimization import optimization
-from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
 # Check that the required pyomo, pyDOE, and smt packages are available for the surrogate based optimization plugin and import it.
@@ -61,22 +49,15 @@ try:
     # to make pylint happy without affecting the existing runtime behavior
     import pyutilib.subprocess.GlobalData
     from pyomo.environ import (
-        ConcreteModel,
-        Constraint,
         ConstraintList,
         Objective,
-        PositiveReals,
         Var,
-        exp,
-        log,
         value,
     )
     from pyomo.opt import SolverFactory
 
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
     from pyDOE import *
-    from pyomo.core.expr import current as EXPR
-    from pyomo.core.expr.current import clone_expression
     from smt.sampling_methods import LHS
 
     packages_available = True

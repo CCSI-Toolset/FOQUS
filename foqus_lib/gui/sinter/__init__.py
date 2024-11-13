@@ -12,4 +12,3 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from .sinter_config import SinterConfigMainWindow

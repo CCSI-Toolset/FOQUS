@@ -19,7 +19,6 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import json
-import logging
 
 import numpy as np
 from PyQt5 import QtCore

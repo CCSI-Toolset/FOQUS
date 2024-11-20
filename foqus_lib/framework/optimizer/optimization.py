@@ -25,8 +25,6 @@ import threading
 
 from foqus_lib.framework.foqusOptions.optionList import optionList
 
-from .problem import *
-
 
 class optimization(threading.Thread):
     """

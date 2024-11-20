@@ -14,7 +14,10 @@
 #################################################################################
 import unittest
 
-from foqus_lib.framework.graph.nodeVars import *
+from foqus_lib.framework.graph.nodeVars import (
+    NodeVarList,
+    NodeVars,
+)
 
 
 class testNodeVarListSteady(unittest.TestCase):

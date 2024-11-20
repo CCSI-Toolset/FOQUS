@@ -20,7 +20,7 @@ surrogate model plugins.
 John Eslick, Carnegie Mellon University, 2014
 """
 
-from foqus_lib.framework.foqusOptions.option import *
+from foqus_lib.framework.foqusOptions.option import option
 
 
 class optionList(dict):

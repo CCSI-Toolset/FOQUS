@@ -15,9 +15,9 @@
 import json
 import os
 import unittest
+import numpy
 
-from foqus_lib.framework.graph.graph import *
-
+from foqus_lib.framework.graph.graph import Graph
 
 class testMassBalance(unittest.TestCase):
     def loadGraph(self, fname):

@@ -14,8 +14,5 @@
 #################################################################################
 import unittest
 
-from foqus_lib.framework.sim.turbineConfiguration import *
-
-
 class turbineLiteTest(unittest.TestCase):
     pass

@@ -54,7 +54,7 @@ try:
     from pyomo.opt import SolverFactory
 
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
-    import pyDOE    # pylint: disable=unused-import
+    import pyDOE  # pylint: disable=unused-import
     from smt.sampling_methods import LHS
 
     packages_available = True

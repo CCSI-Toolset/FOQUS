@@ -108,7 +108,7 @@ import json
 
 import numpy
 
-from .Distribution import *
+from .Distribution import Distribution
 
 
 class Model:

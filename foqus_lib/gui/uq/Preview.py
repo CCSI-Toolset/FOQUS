@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
 )
 
-from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.Common import Common
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.RSInference import RSInferencer
 from foqus_lib.framework.uq.Visualizer import Visualizer

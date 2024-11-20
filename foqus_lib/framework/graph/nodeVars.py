@@ -26,7 +26,7 @@ import math
 from collections import OrderedDict
 
 
-from foqus_lib.framework.foqusException.foqusException import *
+from foqus_lib.framework.foqusException.foqusException import foqusException
 from foqus_lib.framework.uq.Distribution import Distribution
 
 ivarScales = [  # list of scaling options for input variables

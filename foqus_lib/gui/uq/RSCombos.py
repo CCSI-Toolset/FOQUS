@@ -12,14 +12,15 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import os
 import time
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox, QFileDialog, QSpinBox
 
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.RSAnalyzer import *
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 
 
 class RSCombo1(QComboBox):

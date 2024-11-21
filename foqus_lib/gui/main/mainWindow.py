@@ -22,47 +22,46 @@ import functools
 import logging
 import os
 import time
-from configparser import *
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import (
     QAction,
     QActionGroup,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
     QMainWindow,
     QMenu,
+    QMessageBox,
     QStackedWidget,
     QToolBar,
     QWidget,
 )
 
-from foqus_lib.framework.graph.graph import *
-from foqus_lib.framework.session.hhmmss import *
-from foqus_lib.framework.session.session import *
-from foqus_lib.framework.sim.turbineConfiguration import *
-from foqus_lib.framework.sintervectorize.SinterFileVectorize import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.gui.basic_data.basicDataParentFrame import *
-from foqus_lib.gui.dialogs.variableBrowser import *
-from foqus_lib.gui.flowsheet.dataBrowserDialog import *
-from foqus_lib.gui.flowsheet.drawFlowsheet import *
-from foqus_lib.gui.flowsheet.edgePanel import *
-from foqus_lib.gui.flowsheet.flowsheetSettingsDialog import *
-from foqus_lib.gui.flowsheet.nodePanel import *
-from foqus_lib.gui.heatIntegration.heatIntegrationFrame import *
-from foqus_lib.gui.help.helpBrowser import *
-from foqus_lib.gui.main.Dash import *
-from foqus_lib.gui.main.saveMetadataDialog import *
-from foqus_lib.gui.main.sessionDescriptionEdit import *
-from foqus_lib.gui.main.settingsFrame import *
-from foqus_lib.gui.model.gatewayUploadDialog import *
-from foqus_lib.gui.optimization.optSetupFrame import *
-from foqus_lib.gui.ouu.ouuSetupFrame import *
-from foqus_lib.gui.sdoe.sdoeSetupFrame import *
-from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import *
-from foqus_lib.gui.surrogate.surrogateFrame import *
-from foqus_lib.gui.uq.updateUQModelDialog import *
-from foqus_lib.gui.uq.uqSetupFrame import *
+from foqus_lib.framework.graph.graph import Graph
+from foqus_lib.framework.graph.node import NodeEx
+from foqus_lib.framework.session.hhmmss import hhmmss
+from foqus_lib.gui.basic_data.basicDataParentFrame import basicDataParentFrame
+from foqus_lib.gui.dialogs.variableBrowser import variableBrowser
+from foqus_lib.gui.flowsheet.dataBrowserDialog import dataBrowserDialog
+from foqus_lib.gui.flowsheet.drawFlowsheet import drawFlowsheet
+from foqus_lib.gui.flowsheet.edgePanel import edgeDock
+from foqus_lib.gui.flowsheet.flowsheetSettingsDialog import flowsheetSettingsDialog
+from foqus_lib.gui.flowsheet.nodePanel import nodeDock
+from foqus_lib.gui.heatIntegration.heatIntegrationFrame import heatIntegrationFrame
+from foqus_lib.gui.help.helpBrowser import helpBrowserDock
+from foqus_lib.gui.main.Dash import dashFrame
+from foqus_lib.gui.main.saveMetadataDialog import saveMetadataDialog
+from foqus_lib.gui.main.sessionDescriptionEdit import sessionDescriptionDialog
+from foqus_lib.gui.main.settingsFrame import settingsFrame
+from foqus_lib.gui.model.gatewayUploadDialog import gatewayUploadDialog
+from foqus_lib.gui.optimization.optSetupFrame import optSetupFrame
+from foqus_lib.gui.ouu.ouuSetupFrame import ouuSetupFrame
+from foqus_lib.gui.sdoe.sdoeSetupFrame import sdoeSetupFrame
+from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import SinterVectorizeDialog
+from foqus_lib.gui.surrogate.surrogateFrame import surrogateFrame
+from foqus_lib.gui.uq.uqSetupFrame import uqSetupFrame
 
 _log = logging.getLogger("foqus." + __name__)
 

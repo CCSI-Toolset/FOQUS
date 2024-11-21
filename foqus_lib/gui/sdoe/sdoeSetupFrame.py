@@ -14,24 +14,29 @@
 #################################################################################
 import copy
 import logging
+import math
 import os
 import platform
 import shutil
 import time
 from datetime import datetime
 
+import numpy as np
 import pandas as pd
 from PyQt5 import QtCore, QtGui, uic
-from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
+from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize, Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QApplication,
     QCheckBox,
+    QComboBox,
     QDialog,
+    QFileDialog,
     QMenu,
     QMessageBox,
     QPushButton,
+    QStackedLayout,
     QStyle,
     QStyledItemDelegate,
     QTableWidgetItem,
@@ -39,15 +44,16 @@ from PyQt5.QtWidgets import (
 
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.DataProcessor import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.RSValidation import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.DataProcessor import DataProcessor
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
+from foqus_lib.framework.uq.RSValidation import RSValidation
+from foqus_lib.framework.uq.SampleData import SampleData
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-from foqus_lib.gui.sdoe.odoeSimSetup import *
-from foqus_lib.gui.sdoe.sdoeSimSetup import *
-from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
+from foqus_lib.gui.sdoe.odoeSimSetup import odoeSimSetup
+from foqus_lib.gui.sdoe.sdoeSimSetup import sdoeSimSetup
+from foqus_lib.gui.sdoe.updateSDOEModelDialog import updateSDOEModelDialog
 from foqus_lib.gui.uq import RSCombos
 from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
 
@@ -1316,7 +1322,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                         color = inputRefinedColor
                     item.setBackground(color)
                     self.deleteTable.setItem(r, c + 1, item)
-            if isinstance(self.outputData, numpy.ndarray):
+            if isinstance(self.outputData, np.ndarray):
                 for c in range(self.nOutputs):  # populate output values
                     item = self.deleteTable.item(r, self.nInputs + c + 1)
                     if item is None:
@@ -1362,7 +1368,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             for r in range(self.deleteScrollRow - 1, self.deleteScrollRow + 14):
                 item = self.deleteTable.item(r + 1, self.nInputs + c + 1)
                 if item is not None:
-                    if isinstance(self.outputData, numpy.ndarray) and not numpy.isnan(
+                    if isinstance(self.outputData, np.ndarray) and not np.isnan(
                         self.outputData[r][c]
                     ):
                         item.setText(self.format % self.outputData[r][c])
@@ -1414,11 +1420,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         inVars = []
         outVars = []
         if vars:
-            vars = numpy.array(vars)
-            k = numpy.where(vars < nInputs)
+            vars = np.array(vars)
+            k = np.where(vars < nInputs)
             inVars = vars[k]
             inVars = inVars.tolist()
-            k = numpy.where(vars >= nInputs)
+            k = np.where(vars >= nInputs)
             outVars = vars[k]
             outVars = outVars.tolist()
             outVars = [x - nInputs for x in outVars]
@@ -1561,8 +1567,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         runState = data.getRunState()
 
         if len(outputData) == 0:
-            outputData = numpy.empty((nSamples, nOutputs))
-            outputData[:] = numpy.NAN
+            outputData = np.empty((nSamples, nOutputs))
+            outputData[:] = np.NAN
         for outputNum in range(nOutputs):
             for sampleNum in range(nSamples):
                 item = self.deleteTable.item(sampleNum + 1, outputNum + nInputs + 1)
@@ -1573,7 +1579,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 if outputNum == nOutputs - 1:
                     hasNan = False
                     for c in range(nOutputs):
-                        if numpy.isnan(outputData[sampleNum, c]):
+                        if np.isnan(outputData[sampleNum, c]):
                             hasNan = True
                     if not hasNan:
                         runState[sampleNum] = True

@@ -13,9 +13,11 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
 import shutil
 import sys
 
+import numpy as np
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QCursor
@@ -29,12 +31,10 @@ from PyQt5.QtWidgets import (
 )
 
 from foqus_lib.framework.solventfit.SolventFit import SolventFit
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.RSInference import *
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.SamplingMethods import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.RSInference import RSInferencer
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 mypath = os.path.dirname(__file__)

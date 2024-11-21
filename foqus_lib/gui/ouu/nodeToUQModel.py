@@ -12,8 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from foqus_lib.framework.graph.graph import *
-from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.uq.Model import Model
 
 
 def nodeToUQModel(name, node):

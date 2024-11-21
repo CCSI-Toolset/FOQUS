@@ -26,9 +26,9 @@ from matplotlib.figure import Figure
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QWidget
 
-from foqus_lib.framework.session.hhmmss import *
+from foqus_lib.framework.session.hhmmss import hhmmss
 
-from .optMessageWindow import *
+from .optMessageWindow import optMessageWindow
 
 mypath = os.path.dirname(__file__)
 _optMonitorUI, _optMonitor = uic.loadUiType(os.path.join(mypath, "optMonitor_UI.ui"))

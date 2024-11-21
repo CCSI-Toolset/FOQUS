@@ -15,12 +15,12 @@
 import csv
 import os
 
+from foqus_lib.framework.uq.Common import Common
+
 # print(sys.path)
 # sys.path.append('/Users/a241211/Documents/CCSI/Solvents/RCode/SolventFit/');
 # sys.path.append('/Users/a241211/Documents/CCSI/Solvents/RCode/SolventFit/foqus_lib/framework/uq/');
 
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.Distribution import *
 
 # from Distribution import *
 # from Common import *

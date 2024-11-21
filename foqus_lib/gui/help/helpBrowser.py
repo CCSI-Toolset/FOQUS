@@ -36,8 +36,8 @@ from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMainWindow, QMessageBox, QTextBrowser
 
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-from foqus_lib.help.helpPath import *
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import PythonHighlighter
+from foqus_lib.help.helpPath import helpPath
 
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = uic.loadUiType(

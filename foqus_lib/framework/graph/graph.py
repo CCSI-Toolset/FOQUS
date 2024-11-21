@@ -24,6 +24,7 @@ John Eslick, Carnegie Mellon University, 2014
 import copy
 import logging
 import math
+import os
 import sys
 import threading
 import time
@@ -33,12 +34,12 @@ import numpy
 import pandas
 
 import foqus_lib.framework.sampleResults.results as resultList
-from foqus_lib.framework.graph.edge import *  # Edge and variable connection classes
-from foqus_lib.framework.graph.node import *  # Node, input var and output var classes
+from foqus_lib.framework.foqusException.foqusException import foqusException
+from foqus_lib.framework.graph.edge import edge
+from foqus_lib.framework.graph.node import Node, NodeEx
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
-from foqus_lib.framework.graph.nodeVars import *
-from foqus_lib.framework.graph.OptGraphOptim import *  # Objective function calculation class
-from foqus_lib.framework.sim.turbineConfiguration import *
+from foqus_lib.framework.graph.nodeVars import NodeVarList, NodeVarVectorList
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 
 _log = logging.getLogger("foqus." + __name__)
 

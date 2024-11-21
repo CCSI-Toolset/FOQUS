@@ -19,8 +19,8 @@ import shutil
 
 import numpy as np
 
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.Distribution import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.Plotter import Plotter
 from foqus_lib.framework.uq.RSInference import RSInferencer
 

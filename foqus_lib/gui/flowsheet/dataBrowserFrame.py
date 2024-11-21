@@ -21,8 +21,15 @@ John Eslick, Carnegie Mellon University, 2014
 import os
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QInputDialog, QLineEdit, QMenu,
-                             QMessageBox)
+from PyQt5.QtWidgets import (
+    QAction,
+    QApplication,
+    QFileDialog,
+    QInputDialog,
+    QLineEdit,
+    QMenu,
+    QMessageBox,
+)
 
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 from foqus_lib.gui.flowsheet.columns import columnsDialog

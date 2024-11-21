@@ -18,8 +18,17 @@ import platform
 import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QComboBox, QFileDialog,
-                             QMessageBox, QSpinBox, QTableWidget, QTableWidgetItem)
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QCheckBox,
+    QComboBox,
+    QFileDialog,
+    QMessageBox,
+    QSpinBox,
+    QTableWidget,
+    QTableWidgetItem,
+)
 
 from foqus_lib.framework.uq.Common import Common
 from foqus_lib.framework.uq.Distribution import Distribution

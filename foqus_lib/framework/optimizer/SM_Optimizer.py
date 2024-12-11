@@ -41,7 +41,7 @@ except:
 from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
-# Check that the required pyomo, pyDOE, and smt packages are available for the surrogate based optimization plugin and import it.
+# Check that the required pyomo and smt packages are available for the surrogate based optimization plugin and import it.
 # If not the Surrogate Based Optimization plug-in will not be available.
 try:
     import pyutilib.subprocess.GlobalData
@@ -54,7 +54,6 @@ try:
     from pyomo.opt import SolverFactory
 
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
-    import pyDOE  # pylint: disable=unused-import
     from smt.sampling_methods import LHS
 
     packages_available = True

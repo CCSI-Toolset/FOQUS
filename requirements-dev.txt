@@ -10,6 +10,7 @@
 #   occurring with Pylint 3
 pylint==2.17.7;python_version=="3.8"
 astroid==2.15.8;python_version=="3.8"
+PyQt5-sip==12.15.0;python_version=="3.8"
 pylint==3.1.0;python_version>"3.8"
 astroid==3.1.0;python_version>"3.8"
 

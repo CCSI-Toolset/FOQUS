@@ -6,11 +6,6 @@
 # - also pinning the version for Astroid (used by pylint to analyze the AST)
 #   since there can be significant differences between (non-major) versions,
 #   both in terms of behavior and performance
-# - we need to use Pylint 2 with Python 3.8 b/c of a critical error (stack overflow)
-#   occurring with Pylint 3
-pylint==2.17.7;python_version=="3.8"
-astroid==2.15.8;python_version=="3.8"
-PyQt5-sip==12.15.0;python_version=="3.8"
 pylint==3.1.0;python_version>"3.8"
 astroid==3.1.0;python_version>"3.8"
 

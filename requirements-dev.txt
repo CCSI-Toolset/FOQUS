@@ -6,8 +6,8 @@
 # - also pinning the version for Astroid (used by pylint to analyze the AST)
 #   since there can be significant differences between (non-major) versions,
 #   both in terms of behavior and performance
-pylint==3.1.0;python_version>"3.8"
-astroid==3.1.0;python_version>"3.8"
+pylint==3.1.0
+astroid==3.1.0
 
 pytest<8.1
 ### coverage
@@ -20,8 +20,6 @@ addheader==0.3.2
 pytest-qt==4.2.*
 python-slugify
 oyaml
-# singledispatchmethod needed for < 3.8
-singledispatchmethod;python_version<"3.8"
 hypothesis 
 
 sphinx

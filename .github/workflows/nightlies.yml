@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - '3.8'
           - '3.9'
+          - '3.12'
         os:
           - linux
           - win64
@@ -47,7 +47,7 @@ jobs:
             pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
           - foqus-install-target: stable
             os: win64
-            python-version: '3.8'
+            python-version: '3.9'
 
     steps: 
       - name: Set up Conda

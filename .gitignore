@@ -54,3 +54,5 @@ logging.conf
 logs
 turbine.cfg
 user_plugins
+turbine_aws.cfg
+user_ml_ai_models/__init__.py

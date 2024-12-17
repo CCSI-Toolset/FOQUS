@@ -32,8 +32,8 @@ from PyQt5.QtWidgets import (
 )
 
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
-from foqus_lib.gui.flowsheet.columns import *
-from foqus_lib.gui.flowsheet.dataModel import *
+from foqus_lib.gui.flowsheet.columns import columnsDialog
+from foqus_lib.gui.flowsheet.dataModel import dataModel
 
 from . import dataFilterDialog
 

@@ -14,8 +14,6 @@
 #################################################################################
 from collections import OrderedDict
 
-from foqus_lib.framework.graph.nodeVars import *
-
 
 class pymodel:
     def __init__(self):

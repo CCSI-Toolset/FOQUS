@@ -13,19 +13,25 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
 
-# from InferenceDialog_UI import Ui_Dialog
+import numpy as np
 from PyQt5 import QtCore, uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QColor, QCursor
+from PyQt5.QtWidgets import (
+    QApplication,
+    QCheckBox,
+    QFileDialog,
+    QMessageBox,
+    QTableWidgetItem,
+)
 
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.RSInference import *
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.SamplingMethods import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+from foqus_lib.framework.uq.RSInference import RSInference, RSInferencer
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 from . import RSCombos

@@ -20,10 +20,10 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import os
 
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog
 
-from foqus_lib.gui.flowsheet.dataBrowserFrame import *
+from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
 
 mypath = os.path.dirname(__file__)
 _dataBrowserDialogUI, _dataBrowserDialog = uic.loadUiType(

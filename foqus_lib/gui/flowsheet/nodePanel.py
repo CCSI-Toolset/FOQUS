@@ -18,28 +18,31 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 import ast
+import logging
+import math
 import os
-import re
 import platform
-from shutil import copyfile
+import re
 import time
+from shutil import copyfile
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import (
     QAbstractItemView,
+    QFileDialog,
     QInputDialog,
     QLineEdit,
     QMessageBox,
-    QFileDialog,
     QTableWidgetItem,
 )
 
 import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.framework.graph.node import *
+from foqus_lib.framework.graph.node import NodeEx
+from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from foqus_lib.framework.uq.Distribution import Distribution
-from foqus_lib.gui.dialogs.tagSelectDialog import *
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
+from foqus_lib.gui.dialogs.tagSelectDialog import tagSelectDialog
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import PythonHighlighter
 
 mypath = os.path.dirname(__file__)
 _nodeDockUI, _nodeDock = uic.loadUiType(os.path.join(mypath, "nodePanel_UI.ui"))

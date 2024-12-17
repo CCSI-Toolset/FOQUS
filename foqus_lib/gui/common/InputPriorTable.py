@@ -13,6 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
 
 import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal
@@ -29,8 +30,10 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
 )
 
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.uq.SampleData import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.Distribution import Distribution
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
 
 
 class InputPriorTable(QTableWidget):

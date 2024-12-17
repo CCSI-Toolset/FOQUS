@@ -53,7 +53,7 @@ from turbine.commands.requests_base import (
 
 from foqus_lib import core
 import foqus_lib.framework.sim.process_management as _pm
-from foqus_lib.framework.foqusException.foqusException import *
+from foqus_lib.framework.foqusException.foqusException import foqusException
 
 _log = logging.getLogger("foqus." + __name__)
 

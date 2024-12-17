@@ -37,8 +37,6 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 
-from foqus_lib.framework.graph import *
-
 
 class fsScene(QGraphicsScene):
     """

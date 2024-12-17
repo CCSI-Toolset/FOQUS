@@ -16,6 +16,8 @@ import configparser
 import os
 from datetime import datetime
 
+import numpy as np
+
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
@@ -33,7 +35,7 @@ from foqus_lib.framework.sdoe.df_utils import load
 from foqus_lib.framework.sdoe.plot_utils import plot_pareto
 
 from .sdoePreview import Window, sdoePreview
-from .sdoeSetupFrame import *
+from .sdoeSetupFrame import QComboBox, LocalExecutionModule
 
 mypath = os.path.dirname(__file__)
 _sdoeAnalysisDialogUI, _sdoeAnalysisDialog = uic.loadUiType(

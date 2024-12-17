@@ -38,7 +38,7 @@ import watchtower
 import yaml
 
 from turbine.commands import turbine_simulation_script
-from foqus_lib.framework.foqusException.foqusException import *
+from foqus_lib.framework.foqusException.foqusException import foqusException
 from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.graph.nodeVars import NodeVarListEx
 from foqus_lib.framework.plugins import pluginSearch

@@ -20,11 +20,12 @@ John Eslick, Carnegie Mellon University, 2014
 Keith Beattie, Lawrence Berkeley National Labs, 2020
 """
 
+# Imports
 import argparse
 import json
 import logging
-
-# Imports
+import os
+import shutil
 import signal
 import sys
 import time
@@ -34,7 +35,12 @@ import turbine
 # FOQUS imports
 import foqus_lib.version.version as ver  # foqus version and other info
 from foqus_lib.framework.listen.listen import foqusListener2
-from foqus_lib.framework.session.session import *
+from foqus_lib.framework.session.session import (
+    generalSettings,
+    makeWorkingDirStruct,
+    makeWorkingDirFiles,
+    session,
+)
 from foqus_lib.gui.make_shortcut import makeShortcut
 
 loadGUI = False

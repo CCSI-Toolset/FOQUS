@@ -41,12 +41,9 @@ except:
 from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
-# Check that the required pyomo, pyDOE, and smt packages are available for the surrogate based optimization plugin and import it.
+# Check that the required pyomo and smt packages are available for the surrogate based optimization plugin and import it.
 # If not the Surrogate Based Optimization plug-in will not be available.
-
 try:
-    # add direct imports (in addition to existing wildcard import)
-    # to make pylint happy without affecting the existing runtime behavior
     import pyutilib.subprocess.GlobalData
     from pyomo.environ import (
         ConstraintList,
@@ -57,13 +54,12 @@ try:
     from pyomo.opt import SolverFactory
 
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
-    from pyDOE import *
     from smt.sampling_methods import LHS
 
     packages_available = True
-except ImportError:
-    logging.getLogger("foqus." + __name__).info(
-        "Failed to import the required packages for SM Optimizer solver"
+except ImportError as ie:
+    logging.getLogger("foqus." + __name__).warn(
+        "Failed to import the required packages for SM Optimizer solver: " + str(ie)
     )
     packages_available = False
 

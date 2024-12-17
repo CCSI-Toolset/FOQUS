@@ -35,28 +35,31 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
 )
 
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.CorrelationAnalysis import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.ParameterScreening import *
-from foqus_lib.framework.uq.RawDataAnalyzer import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.RSSensitivityAnalysis import *
-from foqus_lib.framework.uq.RSUncertaintyAnalysis import *
-from foqus_lib.framework.uq.RSValidation import *
-from foqus_lib.framework.uq.RSVisualization import *
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.SensitivityAnalysis import *
-from foqus_lib.framework.uq.UncertaintyAnalysis import *
-from foqus_lib.framework.uq.Visualization import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.CorrelationAnalysis import CorrelationAnalysis
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.ParameterScreening import ParameterScreening
+from foqus_lib.framework.uq.RawDataAnalyzer import RawDataAnalyzer
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
+from foqus_lib.framework.uq.RSInference import RSInference
+from foqus_lib.framework.uq.RSSensitivityAnalysis import RSSensitivityAnalysis
+from foqus_lib.framework.uq.RSUncertaintyAnalysis import RSUncertaintyAnalysis
+from foqus_lib.framework.uq.RSValidation import RSValidation
+from foqus_lib.framework.uq.RSVisualization import RSVisualization
+from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
+from foqus_lib.framework.uq.SensitivityAnalysis import SensitivityAnalysis
+from foqus_lib.framework.uq.UncertaintyAnalysis import UncertaintyAnalysis
+from foqus_lib.framework.uq.UQAnalysis import UQAnalysis
+from foqus_lib.framework.uq.UQRSAnalysis import UQRSAnalysis
+from foqus_lib.framework.uq.Visualization import Visualization
 from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 from . import RSCombos
-from .AnalysisInfoDialog import *
-from .InferenceDialog import *
+from .AnalysisInfoDialog import AnalysisInfoDialog
+from .InferenceDialog import InferenceDialog
 
 mypath = os.path.dirname(__file__)
 _AnalysisDialogUI, _AnalysisDialog = uic.loadUiType(

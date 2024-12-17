@@ -32,8 +32,8 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QMessageBox, QTableWidget
 
 import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.framework.session.hhmmss import *
-from foqus_lib.gui.flowsheet.dataBrowserFrame import *
+from foqus_lib.framework.session.hhmmss import hhmmss
+from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
 
 mypath = os.path.dirname(__file__)
 _surrogateFrameUI, _surrogateFrame = uic.loadUiType(

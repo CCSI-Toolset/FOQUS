@@ -19,7 +19,7 @@ import numpy as np
 from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem
 
-from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 
 mypath = os.path.dirname(__file__)
 _updateSDOEModelDialogUI, _updateSDOEModelDialog = uic.loadUiType(

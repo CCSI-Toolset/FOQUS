@@ -28,8 +28,8 @@ from io import StringIO
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
 
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.gui.main.turbineConfig import *
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.gui.main.turbineConfig import turbineConfig
 
 if os.name == "nt":
     import win32process

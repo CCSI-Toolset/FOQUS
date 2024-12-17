@@ -19,8 +19,8 @@ import subprocess
 
 import numpy
 
-from foqus_lib.framework.graph.nodeVars import *
-from foqus_lib.framework.pymodel.pymodel import *
+from foqus_lib.framework.graph.nodeVars import NodeVars
+from foqus_lib.framework.pymodel.pymodel import pymodel
 
 
 def checkAvailable():

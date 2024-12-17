@@ -14,16 +14,20 @@
 #################################################################################
 import copy
 import logging
+import math
 import os
 import platform
+import time
 
 import numpy
 from PyQt5 import QtCore, QtGui, uic
-from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
+from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize, Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
     QApplication,
     QDialog,
+    QFileDialog,
     QInputDialog,
     QMenu,
     QMessageBox,
@@ -35,20 +39,16 @@ from PyQt5.QtWidgets import (
 )
 
 from foqus_lib.framework.sampleResults.results import Results
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.DataProcessor import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.RawDataAnalyzer import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.SampleRefiner import *
-from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.Visualizer import *
-from foqus_lib.gui.uq.SimSetup import *
-from foqus_lib.gui.uq.stopEnsembleDialog import *
-from foqus_lib.gui.uq.updateUQModelDialog import *
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.DataProcessor import DataProcessor
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.SampleData import SampleData
+from foqus_lib.framework.uq.SampleRefiner import SampleRefiner
+from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
+from foqus_lib.gui.uq.SimSetup import SimSetup
+from foqus_lib.gui.uq.stopEnsembleDialog import stopEnsembleDialog
+from foqus_lib.gui.uq.updateUQModelDialog import updateUQModelDialog
 from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
 
 from .AnalysisDialog import AnalysisDialog
@@ -1133,7 +1133,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.simulationTable.setColumnWidth(self.statusCol, 200)
 
     def resultsBox(self, numSuccessful, numSamples):
-        msgBox = QtWidgets.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setWindowTitle("FOQUS Run Finished")
         msgBox.setText("%d of %d runs were successful!" % (numSuccessful, numSamples))
         result = msgBox.open()

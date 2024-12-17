@@ -25,12 +25,11 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QDialog
 
 import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.framework.graph.graph import *
-from foqus_lib.framework.graph.node import *
-from foqus_lib.framework.graph.nodeVars import *
-from foqus_lib.gui.optimization.optMonitor import *
-from foqus_lib.gui.optimization.optSampleGenDialog import *
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
+from foqus_lib.framework.graph.nodeVars import ivarScales
+from foqus_lib.framework.graph.OptGraphOptim import optimInEq, optimObj
+from foqus_lib.gui.optimization.optMonitor import optMonitor
+from foqus_lib.gui.optimization.optSampleGenDialog import optSampleGenDialog
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import PythonHighlighter
 
 mypath = os.path.dirname(__file__)
 _optSetupFrameUI, _optSetupFrame = uic.loadUiType(

@@ -24,12 +24,11 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
 )
 
-from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.uq.Common import Common
-from foqus_lib.framework.uq.flowsheetToUQModel import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
+from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+from foqus_lib.framework.uq.Model import Model
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 
 mypath = os.path.dirname(__file__)
 _updateUQModelDialogUI, _updateUQModelDialog = uic.loadUiType(

@@ -14,9 +14,6 @@
 #################################################################################
 import numpy
 
-from foqus_lib.framework.graph.edge import *
-from foqus_lib.framework.graph.node import *
-
 
 class optimObj:
     def __init__(self, pycode="", ps=1, failval=1000):

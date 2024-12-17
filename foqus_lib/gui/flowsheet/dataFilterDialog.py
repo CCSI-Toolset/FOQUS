@@ -34,7 +34,7 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 
-from foqus_lib.framework.sampleResults.results import *
+from foqus_lib.framework.sampleResults.results import dataFilter
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 
 mypath = os.path.dirname(__file__)

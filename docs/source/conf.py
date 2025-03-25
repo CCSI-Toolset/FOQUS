@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -86,7 +86,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "FOQUS"
-copyright = "2012 - 2024 by CCSI Team All rights reserved."
+copyright = "2012 - 2025 by CCSI Team All rights reserved."
 author = "CCSI"
 
 # The version info for the project you're documenting, acts as replacement for

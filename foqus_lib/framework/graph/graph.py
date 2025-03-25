@@ -1614,7 +1614,7 @@ class Graph(threading.Thread):
         This function find all the cycles in a directed graph.
         The algorithm is based on Tarjan 1973 Enumeration of the
         elementary circuits of a directed graph,
-        SIAM J. Comput. v3 n2 1973.
+        SIAM Journal of Compututing v3 n2 1973.
         ---Arguments---
         includeTear = {True, False} include or exclude tear edges
         includeInactive = {True, False} include or exclude
@@ -1702,7 +1702,7 @@ class Graph(threading.Thread):
     ):
         """
         This is an algorithm for finding strongly connected components in a graph. It is based on
-        Tarjan. 1972 Depth-First Search and Linear Graph Algorithms, SIAM J. Comput. v1 no. 2 1972
+        Tarjan. 1972 Depth-First Search and Linear Graph Algorithms, SIAM Journal of Computing v1 no. 2 1972
 
         Arguments:
 

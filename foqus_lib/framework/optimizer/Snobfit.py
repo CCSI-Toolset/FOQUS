@@ -219,7 +219,7 @@ class opt(optimization):
         # Count iteration, (in this case actually evaluations)
         self.prob.iterationNumber += 1
         # Save flowsheet at certain intervals with best solution so
-        # far stored.  If something bad happes and optimization stops
+        # far stored.  If something bad happens and optimization stops
         # at least you will have that.
 
         #        best solution of flowsheet saved

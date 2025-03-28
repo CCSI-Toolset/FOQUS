@@ -248,7 +248,7 @@ class checkingThread(QtCore.QThread):
                                     # else:
                                     #    errors[sampleNum] = True
                                 outData[sampleNum] = outputValues
-                    # updatae sim so intermediate results can be saved
+                    # update sim so intermediate results can be saved
                     sim.setRunState(runState)
                     sim.setOutputData(outData)
                     errorIndex = sim.getOutputNames().index("graph.error")

@@ -1,13 +1,13 @@
 Copyright and License
 =====================
 
-Copyright (c) 2012 - 2024
+Copyright (c) 2012 - 2025
 
 Copyright Notice
 ----------------
 
 Foqus was produced under the DOE Carbon Capture Simulation Initiative (CCSI), and is copyright (c)
-2012 - 2024 by the software owners: Oak Ridge Institute for Science and Education (ORISE), TRIAD
+2012 - 2025 by the software owners: Oak Ridge Institute for Science and Education (ORISE), TRIAD
 National Security, LLC., Lawrence Livermore National Security, LLC., The Regents of the University
 of California, through Lawrence Berkeley National Laboratory, Battelle Memorial Institute, Pacific
 Northwest Division through Pacific Northwest National Laboratory, Carnegie Mellon University, West
@@ -23,7 +23,7 @@ publicly and display publicly, and to permit other to do so.
 License Agreement
 -----------------
 
-Foqus Copyright (c) 2012 - 2024, by the software owners: Oak Ridge Institute for Science and
+Foqus Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute for Science and
 Education (ORISE), TRIAD National Security, LLC., Lawrence Livermore National Security, LLC., The
 Regents of the University of California, through Lawrence Berkeley National Laboratory, Battelle
 Memorial Institute, Pacific Northwest Division through Pacific Northwest National Laboratory,

@@ -26,7 +26,7 @@ def flowsheetToUQModel(gr):
     uqModel.setNamesIncludeNodes(True)
     keys = gr.input.compoundNames()
     names = []
-    typ = []  # Type for each input (Fixed or Variable)
+    ityp = []  # Type for each input (Fixed or Variable)
     val = []  # Current value of inputs in the node
     mins = []  # minimums for inputs
     maxs = []  # maximums for inputs
@@ -37,7 +37,7 @@ def flowsheetToUQModel(gr):
     for key in keys:  # key is input variable name, make lists
         if not gr.input.get(key).con:
             names.append(key)
-            typ.append(Model.VARIABLE)
+            ityp.append(Model.VARIABLE)
             val.append(gr.input.get(key).value)
             mins.append(gr.input.get(key).min)
             maxs.append(gr.input.get(key).max)
@@ -46,7 +46,7 @@ def flowsheetToUQModel(gr):
             flowsheetFixed.append(False)
     # Set input values
     uqModel.setInputNames(names)
-    uqModel.setInputTypes(typ)
+    uqModel.setInputTypes(ityp)
     uqModel.setInputMins(mins)
     uqModel.setInputMaxs(maxs)
     uqModel.setInputDistributions(dists)

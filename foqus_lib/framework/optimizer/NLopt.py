@@ -289,7 +289,7 @@ class opt(optimization):
         # Count iteration, (in this case actually evaluations)
         self.prob.iterationNumber += 1
         # Save flowsheet at certain intervals with best solution so
-        # far stored.  If something bad happes and optimization stops
+        # far stored.  If something bad happens and optimization stops
         # at least you will have that.  Restart files are not possible
         # with NLopt, but can do with some solvers.
         if self.bkp_int > 0.03 and (time.time() - self.bkp_timer) / 3600 > self.bkp_int:

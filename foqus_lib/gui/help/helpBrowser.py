@@ -141,7 +141,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         if isinstance(w, QMessageBox):
             self.pressButton(w, "Cancel")
 
-    def dailogNotModal(self):
+    def dialogNotModal(self):
         w = self.getWindow()
         if isinstance(w, QDialog):
             w.setModal(False)

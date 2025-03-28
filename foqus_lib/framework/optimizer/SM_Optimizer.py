@@ -990,15 +990,15 @@ class opt(optimization):
                             r"\d+", "{0}".format(len(latin_hypercube_samples)), line
                         )
                     if index in range(idx1 + 1, idx2):
-                        sampl1 = index - idx1 - 1
-                        if sampl1 <= len(latin_hypercube_samples) - 1:
+                        sample1 = index - idx1 - 1
+                        if sample1 <= len(latin_hypercube_samples) - 1:
                             vl1 = re.findall(r"\d+\.\d+", line)
                             for i, v in enumerate(vl1):
                                 if i <= len(surrin_pyomo) - 1:
                                     line = re.sub(
                                         v,
                                         "{0}".format(
-                                            float(latin_hypercube_samples[sampl1][i])
+                                            float(latin_hypercube_samples[sample1][i])
                                         ),
                                         line,
                                     )
@@ -1007,7 +1007,7 @@ class opt(optimization):
                                         v,
                                         "{0}".format(
                                             float(
-                                                latin_hypercube_samples_values[sampl1][
+                                                latin_hypercube_samples_values[sample1][
                                                     i - len(surrin_pyomo)
                                                 ]
                                             )
@@ -1018,15 +1018,15 @@ class opt(optimization):
                             line = re.sub(r"\d+\.\d+", "", line)
 
                     if index in range(idx3 + 1, idx4):
-                        sampl2 = index - idx3 - 1
-                        if sampl2 <= len(latin_hypercube_samples) - 1:
+                        sample2 = index - idx3 - 1
+                        if sample2 <= len(latin_hypercube_samples) - 1:
                             vl2 = re.findall(r"\d+\.\d+", line)
                             for i, v in enumerate(vl2):
                                 if i <= len(surrin_pyomo) - 1:
                                     line = re.sub(
                                         v,
                                         "{0}".format(
-                                            float(latin_hypercube_samples[sampl2][i])
+                                            float(latin_hypercube_samples[sample2][i])
                                         ),
                                         line,
                                     )
@@ -1035,7 +1035,7 @@ class opt(optimization):
                                         v,
                                         "{0}".format(
                                             float(
-                                                latin_hypercube_samples_values[sampl2][
+                                                latin_hypercube_samples_values[sample2][
                                                     i - len(surrin_pyomo)
                                                 ]
                                             )

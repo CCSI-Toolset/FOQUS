@@ -78,7 +78,7 @@ class problem(object):
         self.obj = []  # Objective functions for eval type
         self.g = []  # Inequality constraints for eval type
         self.custpy = ""  # custom python objective code
-        self.objtype = self.OBJ_TYPE_EVAL  # objective evalulation type
+        self.objtype = self.OBJ_TYPE_EVAL  # objective evaluation type
         self.v = []  # List of decision variable names (subset of inputs)
         self.vs = []  # List of sampled variable names (subset of inputs)
         self.samp = {}  #

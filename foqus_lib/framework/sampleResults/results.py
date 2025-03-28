@@ -240,17 +240,17 @@ class Results(pd.DataFrame):
         _log.debug("Row to flowsheet, table row {} dataframe index {}".format(row, idx))
         for col in self.columns:
             try:
-                (typ, node, var) = col.split(".", 2)
+                (io_type, node, var) = col.split(".", 2)
             except ValueError:
                 # this would happen for cols with less than two .'s and is
                 # totally fine
                 continue
-            if typ == "input":
+            if io_type == "input":
                 try:
                     fs.nodes[node].inVars[var].value = self.loc[idx, col]
                 except KeyError:
                     pass
-            elif typ == "output":
+            elif io_type == "output":
                 try:
                     fs.nodes[node].outVars[var].value = self.loc[idx, col]
                 except KeyError:

@@ -28,17 +28,17 @@ jobs:
         os:
           - linux
           - win64
-          - macos
+          - macos-intel
         foqus-install-target:
           - stable
           - master
         examples-release:
           - '3.9.0'
         include:
-          - os: macos
-            os-version: macos-12
+          - os: macos-intel
+            os-version: macos-13
           - os: linux
-            os-version: ubuntu-20.04
+            os-version: ubuntu-22.04
           - os: win64
             os-version: windows-2019
           - foqus-install-target: stable

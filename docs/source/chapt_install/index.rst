@@ -23,9 +23,8 @@ FOQUS:
       conda create --name ccsi-foqus -c conda-forge python=3.10 pywin32=306
       conda activate ccsi-foqus
       pip install ccsi-foqus
+      conda install --yes -c conda-forge -c CCSI-Toolset psuade-lite=1.9  # Install psuade-lite
       foqus --make-shortcut  # Create Desktop shortcut (Windows only)
-
-  - 
   
   - In a terminal, to run::
       
@@ -44,6 +43,7 @@ Contents
 
     install_python
     install_foqus
+    install_psuade
     install_examples
     run_foqus
     install_optional

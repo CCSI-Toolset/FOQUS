@@ -36,9 +36,9 @@ jobs:
           - '3.9.0'
         include:
           - os: macos
-            os-version: macos-12
+            os-version: macos-13
           - os: linux
-            os-version: ubuntu-20.04
+            os-version: ubuntu-22.04
           - os: win64
             os-version: windows-2019
           - foqus-install-target: stable

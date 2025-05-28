@@ -80,7 +80,7 @@ jobs:
           - os: macos
             os-version: macos-14
           - os: linux
-            os-version: ubuntu-20.04
+            os-version: ubuntu-22.04
           - os: win64
             os-version: windows-2019
           - python-version: '3.10'  # avoid uploading coverage for full matrix

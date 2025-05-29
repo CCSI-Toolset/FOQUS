@@ -132,6 +132,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # Connections here
         self.loadAnalysisButton.clicked.connect(self.populateAnalysis)
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
+        self.maxPro_radioButton.toggled.connect(self.on_radiobutton_changed)
+        self.maxPro_designSize_groupBox.setHidden(True)
         self.testSdoeButton.setEnabled(False)
         self.analysisTableGroup.setEnabled(False)
         self.progress_groupBox.setEnabled(False)
@@ -141,6 +143,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if self.type == "NUSF":
             self.Minimax_radioButton.setEnabled(False)
             self.Maximin_radioButton.setChecked(True)
+            self.maxPro_radioButton.setHidden(True)
             self.range_groupBox.setHidden(True)
             self.rangeIRSF_groupBox.setHidden(True)
             self.progress_groupBox.setHidden(True)
@@ -158,6 +161,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         elif self.type == "IRSF":
             self.Minimax_radioButton.setEnabled(False)
             self.Maximin_radioButton.setChecked(True)
+            self.maxPro_radioButton.setHidden(True)
             self.scalingGroup.setHidden(True)
             self.range_groupBox.setHidden(True)
             self.rangeNUSF_groupBox.setHidden(True)
@@ -628,10 +632,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             f.write("mode = minimax\n")
         elif self.Maximin_radioButton.isChecked():
             f.write("mode = maximin\n")
+        elif self.maxPro_radioButton.isChecked():
+            f.write("mode = maxpro\n")
 
         if self.type == "USF":
-            f.write("min_design_size = %d\n" % self.minDesignSize_spin.value())
-            f.write("max_design_size = %d\n" % self.maxDesignSize_spin.value())
+            if self.maxPro_radioButton.isChecked():
+                f.write("design_size = %d\n" % self.maxPro_designSize_spinBox.value())
+            else:
+                f.write("min_design_size = %d\n" % self.minDesignSize_spin.value())
+                f.write("max_design_size = %d\n" % self.maxDesignSize_spin.value())
         elif self.type == "NUSF":
             f.write("design_size = %d\n" % self.designSize_spin.value())
         elif self.type == "IRSF":
@@ -679,7 +688,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         f.write("max_vals = %s\n" % ",".join(max_vals))
         f.write("include = %s\n" % ",".join(include_list))
         f.write("types = %s\n" % ",".join(type_list))
-        f.write("difficulty = %s\n" % ",".join(difficulty_list))
+        if not self.maxPro_radioButton.isChecked():
+            f.write("difficulty = %s\n" % ",".join(difficulty_list))
         f.write("\n")
 
         # USF ONLY
@@ -1048,6 +1058,26 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 int(self.sampleSize_comboBox.currentText()),
             )
         )
+
+    def on_radiobutton_changed(self):
+        numInputs = self.candidateData.getNumInputs()
+
+        if self.maxPro_radioButton.isChecked():
+            self.range_groupBox.setHidden(True)
+            self.maxPro_designSize_groupBox.setHidden(False)
+            self.sampleSize_static.setHidden(True)
+            self.sampleSize_spin.setHidden(True)
+            self.sampleSizeRuntime_slider.setHidden(True)
+            for i in range(numInputs):
+                self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(False)
+        else:
+            self.range_groupBox.setHidden(False)
+            self.maxPro_designSize_groupBox.setHidden(True)
+            self.sampleSize_static.setHidden(False)
+            self.sampleSize_spin.setHidden(False)
+            self.sampleSizeRuntime_slider.setHidden(False)
+            for i in range(numInputs):
+                self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(True)
 
     def checkType(self):
         numInputs = self.candidateData.getNumInputs()

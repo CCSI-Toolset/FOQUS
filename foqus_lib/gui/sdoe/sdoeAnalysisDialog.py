@@ -648,14 +648,21 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         if test:
             if self.type == "USF":
-                f.write("number_random_starts = %d\n" % USF_SAMPLES)
+                if self.maxPro_radioButton.isChecked():
+                    f.write("max_iter = 25\n")
+                else:
+                    f.write("number_random_starts = %d\n" % USF_SAMPLES)
             else:
                 f.write("number_random_starts = 2\n")
         else:
             if self.type == "USF":
-                f.write(
-                    "number_random_starts = %d\n" % 10 ** (self.sampleSize_spin.value())
-                )
+                if self.maxPro_radioButton.isChecked():
+                    f.write("max_iter = 400\n")
+                else:
+                    f.write(
+                        "number_random_starts = %d\n"
+                        % 10 ** (self.sampleSize_spin.value())
+                    )
             else:
                 f.write(
                     "number_random_starts = %d\n"
@@ -667,10 +674,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # INPUT
         f.write("[INPUT]\n")
         if self.historyData is None:
-            f.write("history_file = \n")
+            f.write("prev_data_file = \n")
         else:
             f.write(
-                "history_file = %s\n"
+                "prev_data_file = %s\n"
                 % os.path.join(self.dname, self.historyData.getModelName())
             )
         f.write(
@@ -697,6 +704,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if self.type == "USF":
             f.write("[SF]\n")
             f.write("sf_method = usf\n")
+            f.write("\n")
 
         # NUSF ONLY
         # WEIGHT
@@ -798,6 +806,20 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.testSdoeButton.setEnabled(False)
         self.progress_groupBox.setEnabled(True)
         self.updateRunTime(runtime)
+        self.testRuntime.append(runtime)
+        QApplication.processEvents()
+
+    def test_maxpro(self):
+        QApplication.processEvents()
+        self.testRuntime = []
+        runtime = sdoe.run(
+            self.writeConfigFile(test=True),
+            self.maxPro_designSize_spinBox.value(),
+            test=True,
+        )
+        self.testSdoeButton.setEnabled(False)
+        self.progress_groupBox.setEnabled(True)
+        self.update_runtime_maxpro(runtime)
         self.testRuntime.append(runtime)
         QApplication.processEvents()
 
@@ -1068,6 +1090,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.sampleSize_static.setHidden(True)
             self.sampleSize_spin.setHidden(True)
             self.sampleSizeRuntime_slider.setHidden(True)
+            self.testSdoeButton.clicked.disconnect()
+            self.testSdoeButton.clicked.connect(self.test_maxpro)
             for i in range(numInputs):
                 self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(False)
         else:
@@ -1076,6 +1100,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.sampleSize_static.setHidden(False)
             self.sampleSize_spin.setHidden(False)
             self.sampleSizeRuntime_slider.setHidden(False)
+            self.testSdoeButton.clicked.disconnect()
+            self.testSdoeButton.clicked.connect(self.testSdoe)
             for i in range(numInputs):
                 self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(True)
 
@@ -1279,6 +1305,27 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             timeSec = (estimateTime - (timeHr * 3600)) % 60
             self.time_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
+    def update_runtime_maxpro(self, runtime):
+        print(f"reported runtime={runtime}")
+        delta = runtime
+        estimateTime = int(
+            delta
+            * (10 ** int(self.sampleSize_spin.value()))
+            * int(self.maxDesignSize_spin.value() - self.minDesignSize_spin.value() + 1)
+        )
+        if estimateTime < 60:
+            self.time_dynamic.setText(f"{estimateTime:2d} seconds")
+        elif estimateTime < 3600:
+            self.time_dynamic.setText(
+                f"{int(estimateTime/60):2d}:{estimateTime%60:02d}"
+            )
+
+        elif estimateTime > 3600:
+            timeHr = int(estimateTime / 3600)
+            timeMin = int((estimateTime - (timeHr * 3600)) / 60)
+            timeSec = (estimateTime - (timeHr * 3600)) % 60
+            self.time_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
+
     def updateRunTimeNUSF(self, runtime):
         delta = runtime / 2
         mwr_list = []
@@ -1330,7 +1377,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         config_file = self.analysis[row].config_file
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
-        hfile = config["INPUT"]["history_file"]
+        hfile = config["INPUT"]["prev_data_file"]
         cfile = config["INPUT"]["candidate_file"]
         include = [s.strip() for s in config["INPUT"]["include"].split(",")]
         types = [s.strip() for s in config["INPUT"]["types"].split(",")]
@@ -1392,7 +1439,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         min_size = int(config["METHOD"]["min_design_size"])
         max_size = int(config["METHOD"]["max_design_size"])
         nr = int(config["METHOD"]["number_random_starts"])
-        hfile = config["INPUT"]["history_file"]
+        hfile = config["INPUT"]["prev_data_file"]
         cfile = config["INPUT"]["candidate_file"]
         include = [s.strip() for s in config["INPUT"]["include"].split(",")]
         types = [s.strip() for s in config["INPUT"]["types"].split(",")]
@@ -1441,7 +1488,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         config.read(config_file)
         design_size = int(config["METHOD"]["design_size"])
         nr = int(config["METHOD"]["number_random_starts"])
-        hfile = config["INPUT"]["history_file"]
+        hfile = config["INPUT"]["prev_data_file"]
         cfile = config["INPUT"]["candidate_file"]
         include = [s.strip() for s in config["INPUT"]["include"].split(",")]
         types = [s.strip() for s in config["INPUT"]["types"].split(",")]
@@ -1499,7 +1546,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         config.read(config_file)
         design_size = int(config["METHOD"]["design_size"])
         nr = int(config["METHOD"]["number_random_starts"])
-        hfile = config["INPUT"]["history_file"]
+        hfile = config["INPUT"]["prev_data_file"]
         cfile = config["INPUT"]["candidate_file"]
         include = [s.strip() for s in config["INPUT"]["include"].split(",")]
         type = [s.strip() for s in config["INPUT"]["types"].split(",")]

@@ -61,9 +61,12 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
     config.read(config_file)
 
     mode = config["METHOD"]["mode"]
-    nr = int(config["METHOD"]["number_random_starts"])
+    if mode == "maxpro":
+        max_iter = int(config["METHOD"]["max_iter"])
+    else:
+        nr = int(config["METHOD"]["number_random_starts"])
 
-    hfile = config["INPUT"]["history_file"]
+    hfile = config["INPUT"]["prev_data_file"]
     cfile = config["INPUT"]["candidate_file"]
     include = [s.strip() for s in config["INPUT"]["include"].split(",")]
 
@@ -71,10 +74,11 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
     min_vals = [float(s) for s in config["INPUT"]["min_vals"].split(",")]
 
     types = [s.strip() for s in config["INPUT"]["types"].split(",")]
-    difficulty = [s.strip() for s in config["INPUT"]["difficulty"].split(",")]
-    type_idx = types.index("Index")
-    diff_no_idx = difficulty.copy()
-    del diff_no_idx[type_idx]
+    if mode != "maxpro":
+        difficulty = [s.strip() for s in config["INPUT"]["difficulty"].split(",")]
+        type_idx = types.index("Index")
+        diff_no_idx = difficulty.copy()
+        del diff_no_idx[type_idx]
     # 'Input' columns
     idx = [x for x, t in zip(include, types) if t == "Input"]
     # 'Index' column (should only be one)
@@ -101,6 +105,22 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
             "Unable to load Dask client, continuing without it using original algorithms"
         )
         pass
+
+    # create outdir as needed
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+
+    # load candidates
+    if cfile:
+        cand = load(cfile, index=id_)
+        if len(include) == 1 and include[0] == "all":
+            include = list(cand)
+
+    # load history
+    if hfile != "":
+        hist = load(hfile, index=id_)
+    else:
+        hist = None
 
     if sf_method == "nusf":
         # 'Weight' column (should only be one)
@@ -143,7 +163,13 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
         if use_dask:
             from .usf_dask import criterion
         else:
-            from .usf import criterion
+            if mode != "maxpro":
+                from .usf import criterion
+            else:
+                if hist is None:
+                    from .maxpro import maxpro_lhd, maxpro
+                else:
+                    from .maxpro import maxpro_augment
 
     if sf_method == "irsf":
         args = {
@@ -155,22 +181,6 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
         }
         from .irsf import criterion
 
-    # create outdir as needed
-    if not os.path.exists(outdir):
-        os.makedirs(outdir)
-
-    # load candidates
-    if cfile:
-        cand = load(cfile, index=id_)
-        if len(include) == 1 and include[0] == "all":
-            include = list(cand)
-
-    # load history
-    if hfile != "":
-        hist = load(hfile, index=id_)
-    else:
-        hist = None
-
     # do a quick test to get an idea of runtime
     if test:
         if sf_method == "irsf":
@@ -181,6 +191,14 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
             results = criterion(cand, args, nr, nd, mode=mode, hist=hist, test=True)
             # pylint: enable=unexpected-keyword-arg
             return results["t1"], results["t2"]
+        elif mode == "maxpro":
+            if hist is None:
+                result = maxpro_lhd(nd, len(args["xcols"]), itermax=max_iter)
+            else:
+                result = maxpro_augment(hist, cand, n_new=nd)
+
+            return result["time_rec"]
+
         else:
             t0 = time.time()
             criterion(cand, args, nr, nd, mode=mode, hist=hist)

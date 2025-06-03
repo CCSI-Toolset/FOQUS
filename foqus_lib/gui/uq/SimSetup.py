@@ -630,7 +630,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
         # Create SampleData object
         runData = SampleData(model, self.session)
         runData.setModelName(
-            self.session.flowsheet.results.incrimentSetName("UQ_Ensemble")
+            self.session.flowsheet.results.incrementSetName("UQ_Ensemble")
         )
         runData.setFromFile(False)
 

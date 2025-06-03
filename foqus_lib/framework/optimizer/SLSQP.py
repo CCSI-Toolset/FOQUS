@@ -198,7 +198,7 @@ class opt(optimization):
         saveRes = self.options["Save results"].value
         setName = self.options["Set Name"].value
         if saveRes:
-            setName = self.dat.flowsheet.results.incrimentSetName(setName)
+            setName = self.dat.flowsheet.results.incrementSetName(setName)
         start = time.time()
         self.userInterupt = False
         self.bestSoFar = float("inf")

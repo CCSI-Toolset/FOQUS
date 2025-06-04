@@ -54,6 +54,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: "latest"
+          conda-remove-defaults: true
       - name: Install FOQUS in a Conda env (user mode)
         env:
           py_ver: ${{ matrix.python-version }}

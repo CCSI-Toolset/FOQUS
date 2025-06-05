@@ -362,7 +362,7 @@ class opt(optimization):
 
         # The set name to use when saving evaluations in flowsheet results
         if saveRes:
-            setName = self.dat.flowsheet.results.incrimentSetName(setName)
+            setName = self.dat.flowsheet.results.incrementSetName(setName)
         #
         # Create optimization object and set options
         opt = nlopt.opt(method, n)

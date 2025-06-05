@@ -809,6 +809,35 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.testRuntime.append(runtime)
         QApplication.processEvents()
 
+    def run_maxpro(self):
+        self.runSdoeButton.setText("Stop SDOE")
+        size = self.maxPro_designSize_spinBox.value()
+        QApplication.processEvents()
+        self.freeze()
+
+        config_file = self.writeConfigFile()
+        fnames, results, elapsed_time = sdoe.run(config_file, size)
+        new_analysis = SdoeAnalysisData()
+        new_analysis.sf_method = "usf"
+        new_analysis.optimality = "maxpro"
+        new_analysis.d = len(results["design"])
+        new_analysis.nr = results["n_total"]
+        new_analysis.runtime = results["elapsed_time"]
+        new_analysis.criterion = results["measure"]
+        new_analysis.config_file = config_file
+        new_analysis.fnames = fnames
+
+        self.analysis.append(new_analysis)
+        self.analysisTableGroup.setEnabled(True)
+        self.analysisGroup.setEnabled(False)
+        self.deleteAnalysisButton.setEnabled(False)
+        self.updateAnalysisTable()
+        QApplication.processEvents()
+
+        self.unfreeze()
+        self.SDOE_progressBar.setValue(0)
+        self.runSdoeButton.setText("Run SDOE")
+
     def test_maxpro(self):
         QApplication.processEvents()
         self.testRuntime = []
@@ -1092,8 +1121,22 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.sampleSizeRuntime_slider.setHidden(True)
             self.testSdoeButton.clicked.disconnect()
             self.testSdoeButton.clicked.connect(self.test_maxpro)
+            self.runSdoeButton.clicked.disconnect()
+            self.runSdoeButton.clicked.connect(self.run_maxpro)
             for i in range(numInputs):
                 self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(False)
+
+            self.analysisTable.setHorizontalHeaderLabels(
+                [
+                    "Optimality Method",
+                    "Design Size, d",
+                    "# of Iterations",
+                    "Runtime (in sec)",
+                    "Criterion Value",
+                    "Plot SDOE",
+                ]
+            )
+
         else:
             self.range_groupBox.setHidden(False)
             self.maxPro_designSize_groupBox.setHidden(True)
@@ -1102,8 +1145,21 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.sampleSizeRuntime_slider.setHidden(False)
             self.testSdoeButton.clicked.disconnect()
             self.testSdoeButton.clicked.connect(self.testSdoe)
+            self.runSdoeButton.clicked.disconnect()
+            self.runSdoeButton.clicked.connect(self.runSdoe)
             for i in range(numInputs):
                 self.inputSdoeTable.cellWidget(i, self.difficultyCol).setEnabled(True)
+
+            self.analysisTable.setHorizontalHeaderLabels(
+                [
+                    "Optimality Method",
+                    "Design Size, d",
+                    "# of Random Starts, n",
+                    "Runtime (in sec)",
+                    "Criterion Value",
+                    "Plot SDOE",
+                ]
+            )
 
     def checkType(self):
         numInputs = self.candidateData.getNumInputs()
@@ -1307,11 +1363,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def update_runtime_maxpro(self, runtime):
         print(f"reported runtime={runtime}")
-        delta = runtime
+        _delta = runtime
+        x = int(self.maxPro_designSize_spinBox.value())
+        # estimateTime = int(
+        #     0.000023 * (x ** 3) - 0.0022 * (x ** 2) + 0.0827 * x - 0.1261
+        # )
         estimateTime = int(
-            delta
-            * (10 ** int(self.sampleSize_spin.value()))
-            * int(self.maxDesignSize_spin.value() - self.minDesignSize_spin.value() + 1)
+            -0.000346 * (x**3) + 0.0427 * (x**2) - 0.0759 * x + 3.2091
         )
         if estimateTime < 60:
             self.time_dynamic.setText(f"{estimateTime:2d} seconds")

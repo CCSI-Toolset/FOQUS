@@ -13,9 +13,79 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import time
+from typing import List, Optional, TypedDict
+
 import numpy as np
+import pandas as pd
 from scipy.optimize import minimize
 from scipy.spatial.distance import pdist
+
+
+def criterion(
+    cand: pd.DataFrame,
+    args: TypedDict(
+        "args",
+        {
+            "icol": str,
+            "xcols": List,
+            "min_scale_factors": pd.Series,
+            "max_scale_factors": pd.Series,
+        },
+    ),
+    nd: int,
+    max_iter: int,
+    hist: Optional[pd.DataFrame] = None,
+    test: bool = False,
+) -> TypedDict(
+    "results",
+    {
+        "design": pd.DataFrame,
+        "measure": float,  # Square the measure for consistency with R version
+        "n_total": int,
+        "elapsed_time": float,
+    },
+):
+    if hist is None:
+        result = maxpro_lhd(nd, len(args["xcols"]), itermax=max_iter)
+        if not test:
+            design = result["Design"]
+            time_rec = result["time_rec"]
+            n_total = result["ntotal"]
+            result = maxpro(design)
+            result["time_rec"] = time_rec
+            result["ntotal"] = n_total
+
+    else:
+        idx = args["xcols"]
+        cand_xs = cand[idx].values
+        hist_xs = hist[idx].values
+        if test:
+            result = maxpro_augment(hist_xs, cand_xs, n_new=1)
+        else:
+            result = maxpro_augment(hist_xs, cand_xs, n_new=nd)
+
+    # transform design in numpy array format to pandas dataframe
+    column_names = args["xcols"]
+    min_scaling_factors = args["min_scale_factors"][column_names]
+    max_scaling_factors = args["max_scale_factors"][column_names]
+
+    df = (
+        pd.DataFrame(result["Design"], columns=column_names)
+        * (max_scaling_factors - min_scaling_factors)
+        + min_scaling_factors
+    )
+
+    results = {
+        "design": df,
+        "measure": result["measure"],
+        "n_total": result["ntotal"],
+        "elapsed_time": result["time_rec"],
+    }
+
+    print("##### MAXPRO RESULTS RIGHT HERE #####")
+    print(results)
+
+    return results
 
 
 def maxpro_lhd(n, p, s=2, temp0=0, nstarts=1, itermax=400, total_iter=1000000):
@@ -50,8 +120,6 @@ def maxpro_lhd(n, p, s=2, temp0=0, nstarts=1, itermax=400, total_iter=1000000):
         - time_rec: Time taken for optimization
         - ntotal: Total number of iterations performed
     """
-    # Start timer
-    t00 = time.time()
 
     # Call core implementation
     design, measure, itotal, time_rec = maxpro_lhd_core(
@@ -68,7 +136,7 @@ def maxpro_lhd(n, p, s=2, temp0=0, nstarts=1, itermax=400, total_iter=1000000):
     }
 
 
-def maxpro(initial_design, s=2, iteration=10):
+def maxpro(initial_design, s=2, iteration=10, eps=1e-8):
     """
     Perform Maximum Projection (MaxPro) design optimization
 
@@ -80,6 +148,8 @@ def maxpro(initial_design, s=2, iteration=10):
         Exponent for the MaxPro criterion, default is 2
     iteration : int, optional
         Number of optimization iterations, default is 10
+    eps : float, optional
+        Small value to prevent division by zero, default is 1e-8
 
     Returns
     -------
@@ -91,28 +161,41 @@ def maxpro(initial_design, s=2, iteration=10):
     # Convert to numpy array and normalize to [0,1]
     D0 = np.asarray(initial_design)
     if D0.ndim == 1:
-        D0 = D0.reshape(-1, 1)  # Convert 1D to 2D if needed
+        D0 = D0.reshape(-1, 1)
     n, p = D0.shape
 
-    # Normalize to [0,1]
-    D0 = (D0 - D0.min(axis=0)) / (D0.max(axis=0) - D0.min(axis=0))
+    # Normalize to [0,1] with safety check
+    col_ranges = D0.max(axis=0) - D0.min(axis=0)
+    col_ranges = np.maximum(col_ranges, eps)  # Prevent division by zero
+    D0 = (D0 - D0.min(axis=0)) / col_ranges
 
-    # Function to compute objective and gradient for optimization
     def fgr(x):
         # Reshape design matrix
         D = x.reshape(n, p)
 
         # Calculate distances in each dimension and multiply
-        dis = pdist(D[:, 0].reshape(-1, 1)) ** s  # Reshape to 2D array
+        dis = pdist(D[:, 0].reshape(-1, 1)) ** s
+        # Add small epsilon to prevent zero distances
+        dis = np.maximum(dis, eps)
+
         for j in range(1, p):
-            dis = dis * (pdist(D[:, j].reshape(-1, 1))) ** s  # Reshape to 2D array
+            dis_j = pdist(D[:, j].reshape(-1, 1)) ** s
+            dis_j = np.maximum(dis_j, eps)  # Prevent zero distances
+            dis = dis * dis_j
+
+        # Ensure dis is never zero
+        dis = np.maximum(dis, eps)
 
         # Create distance matrix for calculations
         dist_mat = squareform(dis)
-        np.fill_diagonal(dist_mat, 1)  # Avoid division by zero
+        # Set diagonal to a small positive value instead of 1
+        np.fill_diagonal(dist_mat, eps)
 
         # Objective function (log of sum of reciprocal distances)
         fn = np.sum(1 / dis)
+
+        # Prevent log of zero or negative values
+        fn = max(fn, eps)
         lfn = np.log(fn)
 
         # Calculate gradient
@@ -121,15 +204,28 @@ def maxpro(initial_design, s=2, iteration=10):
 
         for j in range(p):
             # Calculate differences in dimension j
-            A = squareform(pdist(D[:, j].reshape(-1, 1), lambda u, v: u - v))
-            np.fill_diagonal(A, 1)  # Avoid division by zero
+            D_col = D[:, j].reshape(-1, 1)
+            A = squareform(pdist(D_col, lambda u, v: u - v))
 
-            # Calculate gradient for dimension j
-            gradient[:, j] = np.diag(np.dot(1 / A - I, 1 / dist_mat - I))
+            # Prevent division by zero in A
+            A_safe = np.where(np.abs(A) < eps, eps * np.sign(A), A)
+            np.fill_diagonal(A_safe, eps)
 
-        # Scale gradient and flatten
+            # Calculate gradient for dimension j with safety checks
+            term1 = 1 / A_safe
+            term2 = 1 / dist_mat
+
+            # Remove diagonal elements by subtracting identity
+            gradient_term = np.dot(term1 - I, term2 - I)
+            gradient[:, j] = np.diag(gradient_term)
+
+        # Scale gradient and flatten with safety check
+        fn = max(fn, eps)  # Ensure fn is not zero
         G = s * gradient / fn
         G = G.flatten()
+
+        # Replace any NaN or inf values
+        G = np.nan_to_num(G, nan=0.0, posinf=1e6, neginf=-1e6)
 
         return lfn, G
 
@@ -147,19 +243,25 @@ def maxpro(initial_design, s=2, iteration=10):
 
     # Perform optimization iterations
     for i in range(iteration):
-        # Use L-BFGS-B optimizer (similar to NLOPT_LD_LBFGS in R)
-        result = minimize(
-            objective,
-            x0,
-            method="L-BFGS-B",
-            jac=gradient,
-            bounds=[(0, 1) for _ in range(n * p)],
-            options={"maxiter": 100},
-        )
+        try:
+            # Use L-BFGS-B optimizer
+            result = minimize(
+                objective,
+                x0,
+                method="L-BFGS-B",
+                jac=gradient,
+                bounds=[(0, 1) for _ in range(n * p)],
+                options={"maxiter": 100, "ftol": 1e-9},
+            )
 
-        # Update design
-        D1 = result.x.reshape(n, p)
-        x0 = D1.flatten()
+            # Update design
+            D1 = result.x.reshape(n, p)
+            x0 = D1.flatten()
+
+        except (np.linalg.LinAlgError, ValueError) as e:
+            print(f"Optimization warning at iteration {i}: {e}")
+            # Continue with current design
+            break
 
     # Calculate final criterion
     q1 = prod_criterion(D1, s)
@@ -1276,6 +1378,10 @@ def maxpro_augment_core(lambda_vals, existing_design, cand_design, n_new, n_nom=
     return augmented_design.T, final_measure, success_flag
 
 
+import numpy as np
+import time
+
+
 def maxpro_lhd_core(n, p, s=2, temp0=0, n_starts=1, iter_max=400, total_iter=1000000):
     """
     Create a MaxPro Latin Hypercube Design
@@ -1301,9 +1407,13 @@ def maxpro_lhd_core(n, p, s=2, temp0=0, n_starts=1, iter_max=400, total_iter=100
     Returns
     -------
     tuple
-        (optimized LHD, criterion value, number of iterations)
+        (optimized LHD, criterion value, number of iterations, time)
     """
-    import time
+    # Input validation
+    if n < 2:
+        raise ValueError("Number of runs (n) must be at least 2")
+    if p < 1:
+        raise ValueError("Number of factors (p) must be at least 1")
 
     # Set m (rows per slice) = n for a regular LHD (not sliced)
     m = n
@@ -1312,10 +1422,7 @@ def maxpro_lhd_core(n, p, s=2, temp0=0, n_starts=1, iter_max=400, total_iter=100
 
     # Calculate temperature if not provided
     if temp0 == 0:
-        avgdist1 = 1 / (n - 1)
-        avgdist2 = (1 / ((n - 1) ** (k - 1) * (n - 2))) ** (1 / k)
-        delta = avgdist2 - avgdist1
-        temp0 = -delta / np.log(0.99)
+        temp0 = calculate_initial_temperature(n, k, s)
 
     # Start timer
     t00 = time.time()
@@ -1436,6 +1543,77 @@ def maxpro_lhd_core(n, p, s=2, temp0=0, n_starts=1, iter_max=400, total_iter=100
     measure = prod_criterion_core(scaled_design, s)
 
     return scaled_design, measure, itotal, time_rec
+
+
+def calculate_initial_temperature(n, k, s=2):
+    """
+    Calculate initial temperature for simulated annealing
+
+    Parameters
+    ----------
+    n : int
+        Number of runs
+    k : int
+        Number of factors
+    s : int
+        Exponent for MaxPro criterion
+
+    Returns
+    -------
+    float
+        Initial temperature
+    """
+    # Handle edge cases
+    if n <= 1:
+        return 1.0  # Default temperature
+
+    # Calculate avgdist1 (always safe)
+    avgdist1 = 1 / (n - 1)
+
+    # Calculate avgdist2 with protection against division by zero
+    if n == 2:
+        # Special case for n=2: use a reasonable approximation
+        # When n=2, the original formula becomes undefined
+        # Use a heuristic based on the dimension
+        avgdist2 = (0.5) ** (1 / k)  # Approximate average distance
+    elif n == 3 and k > 1:
+        # For n=3, be extra careful with small denominators
+        denominator = (n - 1) ** (k - 1) * (n - 2)  # = 2^(k-1) * 1
+        if denominator <= 0:
+            avgdist2 = avgdist1 * 0.5  # Fallback
+        else:
+            avgdist2 = (1 / denominator) ** (1 / k)
+    else:
+        # Standard calculation for n >= 3
+        try:
+            denominator = (n - 1) ** (k - 1) * (n - 2)
+            if denominator <= 0:
+                avgdist2 = avgdist1 * 0.5  # Fallback
+            else:
+                avgdist2 = (1 / denominator) ** (1 / k)
+        except (ZeroDivisionError, ValueError):
+            avgdist2 = avgdist1 * 0.5  # Fallback
+
+    # Calculate delta and temperature
+    delta = avgdist2 - avgdist1
+
+    # Protect against log(0) or negative values
+    try:
+        if delta != 0:
+            temp0 = -delta / np.log(0.99)
+        else:
+            temp0 = 1.0  # Default temperature
+    except (ZeroDivisionError, ValueError):
+        temp0 = 1.0  # Default temperature
+
+    # Ensure temperature is positive and reasonable
+    if not np.isfinite(temp0) or temp0 <= 0:
+        temp0 = 1.0
+
+    # Cap temperature to reasonable bounds
+    temp0 = max(0.001, min(temp0, 100.0))
+
+    return temp0
 
 
 def prod_criterion_core(D, s=2):

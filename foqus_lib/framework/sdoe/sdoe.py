@@ -31,12 +31,32 @@ from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 from .df_utils import load, write
 
 
-def save(fnames: Dict, results: Dict, elapsed_time: float, irsf: bool = False):
+def save(
+    fnames: Dict,
+    results: Dict,
+    elapsed_time: float,
+    irsf: bool = False,
+    maxpro: bool = False,
+):
     if irsf:
         write(fnames["des"], results["des"])
         print("Designs saved to {}".format(fnames["des"]))
         write(fnames["pf"], results["pareto_front"])
         print("Pareto Front saved to {}".format(fnames["pf"]))
+
+    elif maxpro:
+        write(fnames["cand"], results["design"])
+        print("Design saved to {}".format(fnames["cand"]))
+        print(
+            (
+                "d={}, p={}: measure={}, elapsed_time={}s".format(
+                    results["design"].shape[0],
+                    results["design"].shape[1],
+                    results["measure"],
+                    elapsed_time,
+                )
+            )
+        )
 
     else:
         write(fnames["cand"], results["best_cand"], index=True)
@@ -166,10 +186,16 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
             if mode != "maxpro":
                 from .usf import criterion
             else:
-                if hist is None:
-                    from .maxpro import maxpro_lhd, maxpro
-                else:
-                    from .maxpro import maxpro_augment
+                from .maxpro import criterion
+
+                min_scl = pd.Series(min_vals, index=include)
+                max_scl = pd.Series(max_vals, index=include)
+                args = {
+                    "icol": id_,
+                    "xcols": idx,
+                    "min_scale_factors": min_scl,
+                    "max_scale_factors": max_scl,
+                }
 
     if sf_method == "irsf":
         args = {
@@ -192,13 +218,8 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
             # pylint: enable=unexpected-keyword-arg
             return results["t1"], results["t2"]
         elif mode == "maxpro":
-            if hist is None:
-                result = maxpro_lhd(nd, len(args["xcols"]), itermax=max_iter)
-            else:
-                result = maxpro_augment(hist, cand, n_new=nd)
-
-            return result["time_rec"]
-
+            results = criterion(cand, args, nd, max_iter, hist=hist, test=True)
+            return results["elapsed_time"]
         else:
             t0 = time.time()
             criterion(cand, args, nr, nd, mode=mode, hist=hist)
@@ -211,7 +232,12 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
 
     # otherwise, run sdoe for real
     t0 = time.time()
-    results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+
+    if mode != "maxpro":
+        results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+    else:
+        results = criterion(cand, args, nd, max_iter, hist=hist)
+
     elapsed_time = time.time() - t0
 
     # save the output
@@ -230,16 +256,23 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
                 order_blocks(fnames[mwr], difficulty)
 
     if sf_method == "usf":
-        suffix = "d{}_n{}_{}".format(nd, nr, "+".join(include))
-        fnames = {
-            "cand": os.path.join(outdir, "usf_{}.csv".format(suffix)),
-            "dmat": os.path.join(outdir, "usf_dmat_{}.npy".format(suffix)),
-        }
-        save(fnames, results, elapsed_time)
-        if all(x == "Hard" for x in diff_no_idx):
-            rank(fnames)
-        elif any(x == "Hard" for x in diff_no_idx):
-            order_blocks(fnames, difficulty)
+        if mode != "maxpro":
+            suffix = "d{}_n{}_{}".format(nd, nr, "+".join(include))
+            fnames = {
+                "cand": os.path.join(outdir, "usf_{}.csv".format(suffix)),
+                "dmat": os.path.join(outdir, "usf_dmat_{}.npy".format(suffix)),
+            }
+            save(fnames, results, elapsed_time)
+            if all(x == "Hard" for x in diff_no_idx):
+                rank(fnames)
+            elif any(x == "Hard" for x in diff_no_idx):
+                order_blocks(fnames, difficulty)
+        else:
+            suffix = "d{}_p{}_{}".format(nd, len(args["xcols"]), "+".join(include))
+            fnames = {
+                "cand": os.path.join(outdir, "maxpro_{}.csv".format(suffix)),
+            }
+            save(fnames, results, results["elapsed_time"], maxpro=True)
 
     if sf_method == "irsf":
         fnames = {}

@@ -416,7 +416,7 @@ class TurbineConfiguration:
 
     def consumerCountInc(self, nodeName):
         """
-        Add incriment consumer count
+        Add increment consumer count
         """
         count = self.consumerCountDict.get(nodeName, None)
         if count == None:

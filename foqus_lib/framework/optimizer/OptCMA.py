@@ -256,7 +256,7 @@ class opt(optimization):
         tolstagnation = self.options["tolstagnation"].value
         objRecFile = self.options["Log Objective"].value
         # Increment set name it already used
-        setName = self.dat.flowsheet.results.incrimentSetName(setName)
+        setName = self.dat.flowsheet.results.incrementSetName(setName)
         #
         # Some of these options get passed to the CMA-ES solver so set
         # up options dict for that

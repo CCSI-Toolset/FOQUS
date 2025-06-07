@@ -124,7 +124,7 @@ class opt(optimization):
         tol = self.options["tol"].value
         setName = self.options["Results name"].value
         # Increment set name if already used
-        setName = self.dat.flowsheet.results.incrimentSetName(setName)
+        setName = self.dat.flowsheet.results.incrementSetName(setName)
         #
         # Options are all read in so now initialize things
         #

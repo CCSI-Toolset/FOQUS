@@ -154,7 +154,7 @@ def eval_sd_col_list(sd):
         return xnames + ynames, np.concatenate([xvals, yvals], axis=1)
 
 
-def incriment_name(name, exnames):
+def increment_name(name, exnames):
     """
     Check if a name is already in a list of names. If it is generate a new
     unique name by adding an incimenting number at the end.
@@ -296,8 +296,8 @@ class Results(pd.DataFrame):
             self.loc[idx, "set"] = name
         self.update_filter_indexes()
 
-    def incrimentSetName(self, name):
-        return incriment_name(name, list(self["set"]))
+    def incrementSetName(self, name):
+        return increment_name(name, list(self["set"]))
 
     def set_filter(self, fltr=None):
         """
@@ -420,7 +420,7 @@ class Results(pd.DataFrame):
             names = list(self.loc[self["set"] == set_name].loc[:, "result"])
         else:
             names = []
-        result_name = incriment_name(result_name, names)
+        result_name = increment_name(result_name, names)
         if sd is not None:
             columns, dat = sd_col_list(sd, time=time)
         else:
@@ -442,7 +442,7 @@ class Results(pd.DataFrame):
             names = list(self.loc[self["set"] == set_name].loc[:, "result"])
         else:
             names = []
-        result_name = incriment_name(result_name, names)
+        result_name = increment_name(result_name, names)
         columns, dat = uq_sd_col_list(data)
 
         for c in columns:
@@ -461,7 +461,7 @@ class Results(pd.DataFrame):
             names = list(self.loc[self["set"] == set_name].loc[:, "result"])
         else:
             names = []
-        result_name = incriment_name(result_name, names)
+        result_name = increment_name(result_name, names)
         columns, dat = sdoe_sd_col_list(data)
 
         for c in columns:
@@ -480,7 +480,7 @@ class Results(pd.DataFrame):
             names = list(self.loc[self["set"] == set_name].loc[:, "result"])
         else:
             names = []
-        result_name = incriment_name(result_name, names)
+        result_name = increment_name(result_name, names)
         columns, dat = odoe_sd_col_list(data)
 
         for c in columns:
@@ -499,7 +499,7 @@ class Results(pd.DataFrame):
             names = list(self.loc[self["set"] == set_name].loc[:, "result"])
         else:
             names = []
-        result_name = incriment_name(result_name, names)
+        result_name = increment_name(result_name, names)
         columns, dat = eval_sd_col_list(data)
 
         for c in columns:

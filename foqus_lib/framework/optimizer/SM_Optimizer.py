@@ -318,7 +318,7 @@ class opt(optimization):
         # The set name to use when saving evaluations in flowsheet results
         # (to get unique set names in flowsheet results section)
         if Saveresults:
-            setName = self.dat.flowsheet.results.incrimentSetName(SetName)
+            setName = self.dat.flowsheet.results.incrementSetName(SetName)
 
         # The solver is all setup and ready to go
         start = time.time()  # get start time

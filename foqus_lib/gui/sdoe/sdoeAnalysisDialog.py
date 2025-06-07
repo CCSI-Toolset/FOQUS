@@ -1368,9 +1368,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # estimateTime = int(
         #     0.000023 * (x ** 3) - 0.0022 * (x ** 2) + 0.0827 * x - 0.1261
         # )
-        estimateTime = int(
-            -0.000346 * (x**3) + 0.0427 * (x**2) - 0.0759 * x + 3.2091
-        )
+        estimateTime = int(-0.000346 * (x**3) + 0.0427 * (x**2) - 0.0759 * x + 3.2091)
         if estimateTime < 60:
             self.time_dynamic.setText(f"{estimateTime:2d} seconds")
         elif estimateTime < 3600:

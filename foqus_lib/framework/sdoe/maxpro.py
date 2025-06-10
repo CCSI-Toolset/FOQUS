@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 from scipy.spatial.distance import pdist
+from scipy.spatial.distance import squareform as scipy_squareform
 
 
 def criterion(
@@ -445,7 +446,6 @@ def squareform(v):
     np.ndarray
         Square-form distance matrix
     """
-    from scipy.spatial.distance import squareform as scipy_squareform
 
     return scipy_squareform(v)
 
@@ -1376,10 +1376,6 @@ def maxpro_augment_core(lambda_vals, existing_design, cand_design, n_new, n_nom=
 
     # Return the augmented design (transposed back to original shape)
     return augmented_design.T, final_measure, success_flag
-
-
-import numpy as np
-import time
 
 
 def maxpro_lhd_core(n, p, s=2, temp0=0, n_starts=1, iter_max=400, total_iter=1000000):

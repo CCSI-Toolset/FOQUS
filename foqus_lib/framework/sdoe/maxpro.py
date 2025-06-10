@@ -482,7 +482,7 @@ def slhd(m, t, k):
             r = list(range(1, m + 1))
             for c in range(m):
                 # Random choice from remaining values
-                idx = np.random.randint(0, m - c)
+                idx = int(np.random.randint(0, m - c))
                 slhd_mat[j1 + 1, jss * m + c] = r[idx]
                 # Remove the selected value
                 r.pop(idx)

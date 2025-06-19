@@ -21,6 +21,8 @@ from scipy.optimize import minimize
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform as scipy_squareform
 
+from .irsf import unit_scale, inv_unit_scale
+
 
 def criterion(
     cand: pd.DataFrame,
@@ -56,25 +58,46 @@ def criterion(
             result["time_rec"] = time_rec
             result["ntotal"] = n_total
 
+        # transform design in numpy array format to pandas dataframe
+        column_names = args["xcols"]
+        min_scaling_factors = args["min_scale_factors"][column_names]
+        max_scaling_factors = args["max_scale_factors"][column_names]
+
+        df = (
+            pd.DataFrame(result["Design"], columns=column_names)
+            * (max_scaling_factors - min_scaling_factors)
+            + min_scaling_factors
+        )
     else:
         idx = args["xcols"]
-        cand_xs = cand[idx].values
-        hist_xs = hist[idx].values
+        cand_xs = cand[idx].to_numpy()
+        hist_xs = hist[idx].to_numpy()
+
+        scaled_cand_xs, cand_xmin, cand_xmax = unit_scale(cand_xs)
+        scaled_hist_xs, hist_xmin, hist_xmax = unit_scale(hist_xs)
+        xmin = np.minimum(cand_xmin, hist_xmin)
+        xmax = np.maximum(cand_xmax, hist_xmax)
         if test:
-            result = maxpro_augment(hist_xs, cand_xs, n_new=1)
+            result = maxpro_augment(scaled_hist_xs, scaled_cand_xs, 3)
+            result["ntotal"] = "N/A"
         else:
-            result = maxpro_augment(hist_xs, cand_xs, n_new=nd)
+            result = maxpro_augment(scaled_hist_xs, scaled_cand_xs, nd)
+            result["ntotal"] = "N/A"
 
-    # transform design in numpy array format to pandas dataframe
-    column_names = args["xcols"]
-    min_scaling_factors = args["min_scale_factors"][column_names]
-    max_scaling_factors = args["max_scale_factors"][column_names]
+        # get new points indices
+        new_points = result["Design"][len(hist_xs) :]
+        indices = find_indices(new_points, scaled_cand_xs)
 
-    df = (
-        pd.DataFrame(result["Design"], columns=column_names)
-        * (max_scaling_factors - min_scaling_factors)
-        + min_scaling_factors
-    )
+        # Reverse scaling
+        reversed_design = inv_unit_scale(new_points, xmin, xmax)
+
+        # Insert indices as first column in array
+        final_design = np.column_stack([indices, reversed_design])
+
+        # transform design in numpy array format to pandas dataframe
+        column_names = ["__id"] + args["xcols"]
+
+        df = pd.DataFrame(final_design, columns=column_names)
 
     results = {
         "design": df,
@@ -1644,3 +1667,23 @@ def prod_criterion_core(D, s=2):
     # Scale by dimensions
     n_choose_2 = n * (n - 1) / 2
     return np.exp((value - np.log(n_choose_2)) / (p * s))
+
+
+def find_indices(new_points: np.ndarray, candidate_set: np.ndarray) -> np.ndarray:
+    # Reshape for broadcasting: new_points vs candidate_set
+    new_points_expanded = new_points[:, np.newaxis, :]
+    candidate_set_expanded = candidate_set[np.newaxis, :, :]
+
+    # Calculate distances for all pairs at once
+    distances = np.linalg.norm(new_points_expanded - candidate_set_expanded, axis=2)
+
+    # Find closest match for each new point
+    indices = np.argmin(distances, axis=1)
+
+    # Verify they're exact matches
+    min_distances = np.min(distances, axis=1)
+    exact_matches = min_distances < 1e-10
+
+    final_indices = indices[exact_matches]
+
+    return np.array(final_indices)

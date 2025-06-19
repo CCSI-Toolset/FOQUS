@@ -17,6 +17,7 @@ import os
 from datetime import datetime
 
 import numpy as np
+import pandas as pd
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
@@ -375,6 +376,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.on_design_IRSF_spinbox_changed
         )
         self.sampleSize_spin.valueChanged.connect(self.on_sample_size_spinbox_changed)
+        self.maxPro_designSize_spinBox.valueChanged.connect(
+            self.on_maxpro_sample_size_spinbox_changed
+        )
         self.runSdoeButton.clicked.connect(self.runSdoe)
         if self.type == "NUSF":
             self.runSdoe2Button.clicked.connect(self.runSdoeNUSF)
@@ -835,7 +839,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         QApplication.processEvents()
 
         self.unfreeze()
-        self.SDOE_progressBar.setValue(0)
+        self.SDOE_progressBar.setValue(100)
         self.runSdoeButton.setText("Run SDOE")
 
     def test_maxpro(self):
@@ -1071,6 +1075,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             )
         )
 
+    def on_maxpro_sample_size_spinbox_changed(self):
+        if len(self.testRuntime) > 0:
+            self.update_runtime_maxpro(self.testRuntime[0])
+
     def on_combobox_changed(self):
         self.testSdoeButton.setEnabled(self.hasSpaceFilling())
         if self.hasIndex():
@@ -1119,6 +1127,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.sampleSize_static.setHidden(True)
             self.sampleSize_spin.setHidden(True)
             self.sampleSizeRuntime_slider.setHidden(True)
+            self.designInfo_dynamic.setHidden(True)
             self.testSdoeButton.clicked.disconnect()
             self.testSdoeButton.clicked.connect(self.test_maxpro)
             self.runSdoeButton.clicked.disconnect()
@@ -1143,6 +1152,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.sampleSize_static.setHidden(False)
             self.sampleSize_spin.setHidden(False)
             self.sampleSizeRuntime_slider.setHidden(False)
+            self.designInfo_dynamic.setHidden(False)
             self.testSdoeButton.clicked.disconnect()
             self.testSdoeButton.clicked.connect(self.testSdoe)
             self.runSdoeButton.clicked.disconnect()
@@ -1341,7 +1351,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return reply
 
     def updateRunTime(self, runtime):
-        print(f"reported runtime={runtime}")
         delta = (runtime) / USF_SAMPLES
         estimateTime = int(
             delta
@@ -1362,13 +1371,23 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.time_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def update_runtime_maxpro(self, runtime):
-        print(f"reported runtime={runtime}")
-        _delta = runtime
         x = int(self.maxPro_designSize_spinBox.value())
-        # estimateTime = int(
-        #     0.000023 * (x ** 3) - 0.0022 * (x ** 2) + 0.0827 * x - 0.1261
-        # )
-        estimateTime = int(-0.000346 * (x**3) + 0.0427 * (x**2) - 0.0759 * x + 3.2091)
+
+        if self.historyData is None:
+            estimateTime = int(
+                -0.000346 * (x**3) + 0.0427 * (x**2) - 0.0759 * x + 3.2091
+            )
+        else:
+            y = len(self.candidateData.getInputData())
+            estimateTime = int(
+                1.41e-07 * (y**2)
+                + 1.97e-02 * (x**2)
+                + 4.51e-04 * x * y
+                - 2.24e-03 * y
+                - 6.32e-01 * x
+                + 4.39e00
+            )
+
         if estimateTime < 60:
             self.time_dynamic.setText(f"{estimateTime:2d} seconds")
         elif estimateTime < 3600:
@@ -1474,7 +1493,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             irsf = None
 
         elif self.type == "USF":
-            cand = load(cfile)
+            if self.maxPro_radioButton.isChecked() and hname is None:
+                cand = pd.DataFrame(columns=include)
+            else:
+                cand = load(cfile)
+
             usf = {"cand": cand}
             nusf = None
             irsf = None

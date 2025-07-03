@@ -412,7 +412,7 @@ def plot_candidates(
     labels.append(scatter_label)
     if nImpPts > 0:
         labels.append("Imputed points")
-    if cand is not None:
+    if cand is not None and len(cand) > 0:
         labels.append("Candidate data points")
     if hf is not None:
         labels.append("Previous data points")

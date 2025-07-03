@@ -40,7 +40,7 @@ jobs:
           - os: linux
             os-version: ubuntu-22.04
           - os: win64
-            os-version: windows-2019
+            os-version: windows-2022
           - foqus-install-target: stable
             pip-install-target: ccsi-foqus
           - foqus-install-target: master

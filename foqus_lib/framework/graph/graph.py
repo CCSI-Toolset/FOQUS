@@ -1829,7 +1829,7 @@ class Graph(threading.Thread):
            size of the problem in the branch by only looking at
            strongly connected components with that edge removed.
         4) This returns all equally good optimal tear sets.  That
-           may not really be nessicary.  For very large flowsheets
+           may not really be necessary.  For very large flowsheets
            There could be an extremely large number of optimal tear
            edge sets.
         """

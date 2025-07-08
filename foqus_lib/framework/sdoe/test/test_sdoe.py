@@ -94,6 +94,43 @@ def test_run_nusf():
     assert list(results[mwr_key].keys()) == expected_keys
 
 
+def test_run_maxpro():
+    config_file = "config_maxpro.ini"
+    nd = 3
+    copy_from_package("cand_data_maxpro.csv")
+    copy_from_package(config_file)
+
+    _, results, _ = sdoe.run(config_file=config_file, nd=nd, test=False)
+
+    expected_keys = [
+        "design",
+        "measure",
+        "n_total",
+        "elapsed_time",
+    ]
+
+    assert list(results.keys()) == expected_keys
+
+
+def test_run_maxpro_augment():
+    config_file = "config_maxpro_augment.ini"
+    nd = 3
+    copy_from_package("cand_data_maxpro.csv")
+    copy_from_package("prev_data_maxpro.csv")
+    copy_from_package(config_file)
+
+    _, results, _ = sdoe.run(config_file=config_file, nd=nd, test=False)
+
+    expected_keys = [
+        "design",
+        "measure",
+        "n_total",
+        "elapsed_time",
+    ]
+
+    assert list(results.keys()) == expected_keys
+
+
 def copy_from_package(file_name: str) -> None:
     content = resources.read_text(__package__, file_name)
     Path(file_name).write_text(content)

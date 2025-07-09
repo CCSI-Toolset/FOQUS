@@ -106,9 +106,6 @@ def criterion(
         "elapsed_time": result["time_rec"],
     }
 
-    print("##### MAXPRO RESULTS RIGHT HERE #####")
-    print(results)
-
     return results
 
 

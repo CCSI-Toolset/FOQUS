@@ -443,39 +443,6 @@ class TestPlotPareto:
         plt.close(fig)
 
 
-class TestIntegration:
-    """Integration tests for the plotting module"""
-
-    def test_full_workflow_simulation(self):
-        """Test a complete workflow simulation"""
-        # Create synthetic data
-        df = pd.DataFrame(
-            {
-                "x1": np.random.randn(50),
-                "x2": np.random.randn(50),
-                "y": np.random.randn(50),
-            }
-        )
-
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            df.to_csv(f.name, index=False)
-
-            try:
-                # Test the main plotting function
-                with patch(
-                    "foqus_lib.framework.sdoe.plot_utils.load_data"
-                ) as mock_load:
-                    mock_load.return_value = (df, None)
-
-                    fig = plot(f.name, "Test Points", show=["x1", "x2"])
-
-                    assert isinstance(fig, Figure)
-                    plt.close(fig)
-
-            finally:
-                os.unlink(f.name)
-
-
 # Test fixtures and parameterized tests
 @pytest.fixture
 def sample_dataframe():

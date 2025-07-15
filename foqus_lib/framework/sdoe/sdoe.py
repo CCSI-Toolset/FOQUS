@@ -31,12 +31,32 @@ from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 from .df_utils import load, write
 
 
-def save(fnames: Dict, results: Dict, elapsed_time: float, irsf: bool = False):
+def save(
+    fnames: Dict,
+    results: Dict,
+    elapsed_time: float,
+    irsf: bool = False,
+    maxpro: bool = False,
+):
     if irsf:
         write(fnames["des"], results["des"])
         print("Designs saved to {}".format(fnames["des"]))
         write(fnames["pf"], results["pareto_front"])
         print("Pareto Front saved to {}".format(fnames["pf"]))
+
+    elif maxpro:
+        write(fnames["cand"], results["design"])
+        print("Design saved to {}".format(fnames["cand"]))
+        print(
+            (
+                "d={}, p={}: measure={}, elapsed_time={}s".format(
+                    results["design"].shape[0],
+                    results["design"].shape[1],
+                    results["measure"],
+                    elapsed_time,
+                )
+            )
+        )
 
     else:
         write(fnames["cand"], results["best_cand"], index=True)
@@ -61,9 +81,12 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
     config.read(config_file)
 
     mode = config["METHOD"]["mode"]
-    nr = int(config["METHOD"]["number_random_starts"])
+    if mode == "maxpro":
+        max_iter = int(config["METHOD"]["max_iter"])
+    else:
+        nr = int(config["METHOD"]["number_random_starts"])
 
-    hfile = config["INPUT"]["history_file"]
+    hfile = config["INPUT"]["prev_data_file"]
     cfile = config["INPUT"]["candidate_file"]
     include = [s.strip() for s in config["INPUT"]["include"].split(",")]
 
@@ -71,10 +94,11 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
     min_vals = [float(s) for s in config["INPUT"]["min_vals"].split(",")]
 
     types = [s.strip() for s in config["INPUT"]["types"].split(",")]
-    difficulty = [s.strip() for s in config["INPUT"]["difficulty"].split(",")]
-    type_idx = types.index("Index")
-    diff_no_idx = difficulty.copy()
-    del diff_no_idx[type_idx]
+    if mode != "maxpro":
+        difficulty = [s.strip() for s in config["INPUT"]["difficulty"].split(",")]
+        type_idx = types.index("Index")
+        diff_no_idx = difficulty.copy()
+        del diff_no_idx[type_idx]
     # 'Input' columns
     idx = [x for x, t in zip(include, types) if t == "Input"]
     # 'Index' column (should only be one)
@@ -101,6 +125,22 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
             "Unable to load Dask client, continuing without it using original algorithms"
         )
         pass
+
+    # create outdir as needed
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+
+    # load candidates
+    if cfile:
+        cand = load(cfile, index=id_)
+        if len(include) == 1 and include[0] == "all":
+            include = list(cand)
+
+    # load history
+    if hfile != "":
+        hist = load(hfile, index=id_)
+    else:
+        hist = None
 
     if sf_method == "nusf":
         # 'Weight' column (should only be one)
@@ -143,7 +183,19 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
         if use_dask:
             from .usf_dask import criterion
         else:
-            from .usf import criterion
+            if mode != "maxpro":
+                from .usf import criterion
+            else:
+                from .maxpro import criterion
+
+                min_scl = pd.Series(min_vals, index=include)
+                max_scl = pd.Series(max_vals, index=include)
+                args = {
+                    "icol": id_,
+                    "xcols": idx,
+                    "min_scale_factors": min_scl,
+                    "max_scale_factors": max_scl,
+                }
 
     if sf_method == "irsf":
         args = {
@@ -155,22 +207,6 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
         }
         from .irsf import criterion
 
-    # create outdir as needed
-    if not os.path.exists(outdir):
-        os.makedirs(outdir)
-
-    # load candidates
-    if cfile:
-        cand = load(cfile, index=id_)
-        if len(include) == 1 and include[0] == "all":
-            include = list(cand)
-
-    # load history
-    if hfile != "":
-        hist = load(hfile, index=id_)
-    else:
-        hist = None
-
     # do a quick test to get an idea of runtime
     if test:
         if sf_method == "irsf":
@@ -181,6 +217,9 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
             results = criterion(cand, args, nr, nd, mode=mode, hist=hist, test=True)
             # pylint: enable=unexpected-keyword-arg
             return results["t1"], results["t2"]
+        elif mode == "maxpro":
+            results = criterion(cand, args, nd, max_iter, hist=hist, test=True)
+            return results["elapsed_time"]
         else:
             t0 = time.time()
             criterion(cand, args, nr, nd, mode=mode, hist=hist)
@@ -193,7 +232,12 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
 
     # otherwise, run sdoe for real
     t0 = time.time()
-    results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+
+    if mode != "maxpro":
+        results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+    else:
+        results = criterion(cand, args, nd, max_iter, hist=hist)
+
     elapsed_time = time.time() - t0
 
     # save the output
@@ -212,16 +256,23 @@ def run(config_file: str, nd: int, test: bool = False) -> Tuple[Dict, Dict, floa
                 order_blocks(fnames[mwr], difficulty)
 
     if sf_method == "usf":
-        suffix = "d{}_n{}_{}".format(nd, nr, "+".join(include))
-        fnames = {
-            "cand": os.path.join(outdir, "usf_{}.csv".format(suffix)),
-            "dmat": os.path.join(outdir, "usf_dmat_{}.npy".format(suffix)),
-        }
-        save(fnames, results, elapsed_time)
-        if all(x == "Hard" for x in diff_no_idx):
-            rank(fnames)
-        elif any(x == "Hard" for x in diff_no_idx):
-            order_blocks(fnames, difficulty)
+        if mode != "maxpro":
+            suffix = "d{}_n{}_{}".format(nd, nr, "+".join(include))
+            fnames = {
+                "cand": os.path.join(outdir, "usf_{}.csv".format(suffix)),
+                "dmat": os.path.join(outdir, "usf_dmat_{}.npy".format(suffix)),
+            }
+            save(fnames, results, elapsed_time)
+            if all(x == "Hard" for x in diff_no_idx):
+                rank(fnames)
+            elif any(x == "Hard" for x in diff_no_idx):
+                order_blocks(fnames, difficulty)
+        else:
+            suffix = "d{}_p{}_{}".format(nd, len(args["xcols"]), "+".join(include))
+            fnames = {
+                "cand": os.path.join(outdir, "maxpro_{}.csv".format(suffix)),
+            }
+            save(fnames, results, results["elapsed_time"], maxpro=True)
 
     if sf_method == "irsf":
         fnames = {}

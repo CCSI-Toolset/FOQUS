@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1440</width>
-    <height>994</height>
+    <height>1095</height>
    </rect>
   </property>
   <property name="font">
@@ -147,20 +147,10 @@
         <property name="title">
          <string>Optimality Method Selection</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <layout class="QGridLayout" name="gridLayout_11">
-           <item row="0" column="1">
-            <widget class="QRadioButton" name="Maximin_radioButton">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="text">
-              <string>Maximin</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
             <widget class="QRadioButton" name="Minimax_radioButton">
              <property name="toolTip">
               <string/>
@@ -171,6 +161,32 @@
              <property name="checked">
               <bool>true</bool>
              </property>
+             <attribute name="buttonGroup">
+              <string notr="true">buttonGroup</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="Maximin_radioButton">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="text">
+              <string>Maximin</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">buttonGroup</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="maxPro_radioButton">
+             <property name="text">
+              <string>MaxPro</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">buttonGroup</string>
+             </attribute>
             </widget>
            </item>
           </layout>
@@ -229,6 +245,51 @@
          <string/>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QGroupBox" name="maxPro_designSize_groupBox">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="title">
+            <string>Desired Design Size</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QLabel" name="maxPro_designSize_static">
+              <property name="text">
+               <string>Design Size</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="maxPro_designSize_spinBox">
+              <property name="minimum">
+               <number>3</number>
+              </property>
+              <property name="value">
+               <number>3</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_15">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
          <item>
           <widget class="QGroupBox" name="range_groupBox">
            <property name="font">
@@ -670,6 +731,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
         <zorder>rangeNUSF_groupBox</zorder>
         <zorder>rangeIRSF_groupBox</zorder>
         <zorder>testSdoe_static</zorder>
+        <zorder>maxPro_designSize_groupBox</zorder>
        </widget>
       </item>
       <item>
@@ -1176,4 +1238,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

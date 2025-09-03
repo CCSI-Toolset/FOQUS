@@ -204,7 +204,13 @@ class TurbineLiteDependencyTracker(WindowsPackageDependencyTracker):
 
     package_name = "TurbineLite"
     install_path = "C:/Program Files/Turbine/Lite"
+    database_path = "C:/ProgramData/Turbine/Data/TurbineCompactDatabase.sdf"
 
     @property
     def path(self):
         return self.install_path
+    
+    @property
+    def database(self):
+        return self.database_path
+

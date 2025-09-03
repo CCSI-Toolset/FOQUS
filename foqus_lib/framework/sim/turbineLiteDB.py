@@ -59,17 +59,17 @@ class turbineLiteDB:
     def __init__(self, close_after=True):
         self.conn = None
         self.close_after = close_after
-        self.dbFile = os.path.join(
-            core.TurbineLiteDependencyTracker.load().path,
-            "/Data/TurbineCompactDatabase.sdf",
-        )
 
     def __del__(self):
         self.closeConnection()
 
+    @property
+    def database(self):
+        return core.TurbineLiteDependencyTracker.database
+    
     def connectionString(self):
         prov = "Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;"
-        data = "Data Source={0};".format(self.dbFile)
+        data = "Data Source={0};".format(self.database)
         return " ".join([prov, data])
 
     def getConnection(self, rc=0):

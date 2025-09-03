@@ -406,7 +406,6 @@ def main(args_to_parse=None):
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
             db = turbineLiteDB()
-            db.dbFile = os.path.join(fs.turbLiteHome, "Data/TurbineCompactDatabase.sdf")
             print("terminating consumer {0}".format(args.terminateConsumer))
             db.consumer_status(args.terminateConsumer, "terminate")
             sys.exit(0)
@@ -423,7 +422,6 @@ def main(args_to_parse=None):
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
             db = turbineLiteDB()
-            db.dbFile = os.path.join(fs.turbLiteHome, "Data/TurbineCompactDatabase.sdf")
             print(
                 "Adding application '{0}' to TurbineLite database".format(
                     args.addTurbineApp
@@ -626,10 +624,7 @@ def main(args_to_parse=None):
         signal.signal(signal.SIGINT, signal_handler)
         # Register consumer TurbineLite DB
         db = turbineLiteDB()
-        db.dbFile = os.path.join(
-            dat.foqusSettings.turbLiteHome, "Data/TurbineCompactDatabase.sdf"
-        )
-        _logger.info("TurbineLite Database:\n   {0}".format(db.dbFile))
+        _logger.info("TurbineLite Database:\n   {0}".format(db.database))
         # add 'foqus' app to TurbineLite DB if not already there
         db.add_new_application("foqus")
         # register the consumer in the database

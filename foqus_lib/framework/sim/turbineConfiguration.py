@@ -66,6 +66,20 @@ if os.name == "nt":
         _log.exception("Problem importing turbineLiteDB")
 
 
+class sinter_AppError:
+    si_OKAY = 0
+    si_SIMULATION_ERROR = 1
+    si_SIMULATION_WARNING = 2
+    si_COULD_NOT_CONTACT = 3
+    si_UNKNOWN_FIELD = 4
+    si_INPUT_ERROR = 5
+    si_SIMULATION_NOT_RUN = 6
+    si_SIMULATION_STOPPED = 7  #//The user stopped the simulation
+    si_STOP_FAILED = 8         #//The user tried to stop the sim, but the stop timed out.  Terminate should probably be called.
+    si_NONCONVERGENCE_ERROR = 9 #        //The user tried to stop the sim, but the stop timed out.  Terminate should probably be called.
+    si_COM_EXCEPTION = 100
+
+
 class TurbineInterfaceEx(foqusException):
     """
     This is an exception class for FOQUS interaction with Turbine, it also tries
@@ -262,11 +276,7 @@ class TurbineConfiguration:
 
     def getTurbineLiteDB(self):
         if self.tldb is None:
-            db = turbineLiteDB.turbineLiteDB()
-            db.dbFile = os.path.join(
-                self.dat.foqusSettings.turbLiteHome, "Data/TurbineCompactDatabase.sdf"
-            )
-            self.tldb = db
+            self.tldb = turbineLiteDB.turbineLiteDB()
         return self.tldb
 
     def closeTurbineLiteDB(self):
@@ -1072,11 +1082,12 @@ class TurbineConfiguration:
                 if (
                     not allowWarnings
                     and state == "success"
-                    and res.get("Status", 1) == 2
+                    and res.get("Status", sinter_AppError.si_OKAY) == sinter_AppError.si_SIMULATION_WARNING
                 ):
                     state = "error"
                 failure = state in failedStates
                 success = state in successStates
+                
                 # Check for the run start time instead of the state just
                 # in case job started and completed between checks
                 if not setupStart and state == "setup":

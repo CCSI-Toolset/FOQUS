@@ -65,7 +65,7 @@ class turbineLiteDB:
 
     @property
     def database(self):
-        return core.TurbineLiteDependencyTracker.database
+        return core.TurbineLiteDependencyTracker.load().database
     
     def connectionString(self):
         prov = "Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;"

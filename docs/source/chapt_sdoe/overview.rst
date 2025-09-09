@@ -192,29 +192,10 @@ latter of which do not necessarily have to be space-filling. This functionality 
 to plan the experiment configurations in an adaptive manner, starting from an arbitrary initial design
 and then using MaxPro to generate a space-filling design.
 
-.. figure:: figs/minimax_smp.png
+.. figure:: figs/usf_methods.png
    :alt:
-   :name: fig.minimax_smp
+   :name: fig.usf_methods
 
-   A 10-point Minimax design with two input variables
-
-
-.. figure:: figs/maximin_smp.png
-   :alt:
-   :name: fig.maximin_smp
-
-   A 10-point Maximin design with two input variables
-
-
-.. figure:: figs/maxpro_smp.png
-   :alt:
-   :name: fig.maxpro_smp
-
-   A 10-point MaxPro design with two input variables
-
-
-.. figure:: figs/maxpro_seq_smp.png
-   :alt:
-   :name: fig.maxpro_seq_smp
-
-   A 10-point MaxPro initial design with two input variables in blue with a further 10-point MaxPro sequential design in red
+   A 10-point Minimax design with two input variables, a 10-point Maximin design with two input variables,
+   a 10-point MaxPro design with two input variables, and a 10-point MaxPro initial design with two input variables in
+   blue with a further 10-point MaxPro sequential design in red.

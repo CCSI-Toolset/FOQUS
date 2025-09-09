@@ -196,6 +196,5 @@ and then using MaxPro to generate a space-filling design.
    :alt:
    :name: fig.usf_methods
 
-   A 10-point Minimax design with two input variables, a 10-point Maximin design with two input variables,
-   a 10-point MaxPro design with two input variables, and a 10-point MaxPro initial design with two input variables in
-   blue with a further 10-point MaxPro sequential design in red.
+   A comparison of four 10-point designs with two input variables: On top left Minimax design. On top right, Maximin design.
+   On bottom left, MaxPro design. On bottom right, MaxPro initial design in blue with a further 10-point MaxPro sequential design in red.

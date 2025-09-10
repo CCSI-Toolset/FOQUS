@@ -283,7 +283,7 @@ configuration can be done.
    Save Location** at the top of the window. This is where the Sinter
    configuration file is saved. The system suggests a file location and
    name. The user should confirm this is the intended location of the
-   files to not accidently overwrite other files. Enter the remaining
+   files to not accidentally overwrite other files. Enter the remaining
    fields to provide the meta-data to describe the simulation that was
    just opened and then click **Next**.
 

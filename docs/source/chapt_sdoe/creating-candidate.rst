@@ -5,15 +5,15 @@ To create a new candidate set the user can choose between two options: loading f
 candidate set providing some ranges for each input.
 
 .. note::
-    To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_optional`
+    To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_psuade`
 
 Loading from File
 -----------------
 
-In the **Ensemble Selection** box, click on the **Load from File...** button to select the file(s) for the construction
+In the **Design Setup** box, click on the **Load Load Existing Set** button to select the file(s) for the construction
 of the design. Several files can be selected and added to the box listing the chosen files.
 
-For each of the files selected using the pull-down menu, identify them as either a **Candidate** file or a **History**
+For each of the files selected using the pull-down menu, identify them as either a **Candidate** file or a **Previous Data**
 file. **Candidate** .csv files are comprised of possible input combinations from which the design can be constructed.
 The columns of the file should contain the different input factors that define the dimensions of the input space. The
 rows of the file each identify one combination of input values that could be selected as a run in the final design.
@@ -21,31 +21,31 @@ Typically, a good candidate file will have many different candidate runs listed,
 ranges of the inputs to be considered. Leaving gaps or holes in the input space is possible, but generally should
 correspond to a region where it is not possible (or desirable) to collect data.
 
-**History** .csv files should have the same number of columns for the input space as the candidate file (with matching
+**Previous Data** .csv files should have the same number of columns for the input space as the candidate file (with matching
 column names) and represent data that have already been collected. The algorithm for creating the design aims to place
 points in different locations from where data have already been obtained, while filling the input space around those
 locations.
 
-Both the **Candidate** and **History** files should be .csv files that have the first row as the Column heading. The
+Both the **Candidate** and **Previous Data** files should be .csv files that have the first row as the Column heading. The
 Input columns should be numeric. Additional columns are allowed and can be identified as not necessary to the design
 creation at a later stage.
 
 Generating a New Candidate Set
 ------------------------------
 
-In the **Ensemble Selection** box, click on the **Add New...** button to select the file for the construction of the
+In the **Design Setup** box, click on the **Generate New Candidate Set** button to select the file for the construction of the
 candidate set. The following menu will appear:
 
 .. figure:: figs/addNewScreen.png
    :alt: Add New Ensemble Dialog
    :name: fig.add_new
 
-The user can select between two options: using a history file or a template file.
+The user can select between two options: **New Sequential Experiment** or **First Experiment**.
 
-#. **History File.** An existing .csv file with historical data is required. If this option is selected, then the inputs
+#. **New Sequential Experiment.** An existing .csv file with previous data is required. If this option is selected, then the inputs
    to be used in the candidate set are extracted from the columns of the file.
 
-#. **Template File.** The template file should be a simple comma separated values (.csv) file with at least three rows:
+#. **First Experiment.** The template file should be a simple comma separated values (.csv) file with at least three rows:
 
    - Header with input names
    - Minimum values
@@ -55,7 +55,7 @@ An optional fourth row with default value can be added. If fourth row is not pro
 max becomes the default value.
 
 .. note::
-    Choosing History or Template file won't change the next steps.
+    Choosing New sequential or First experiment won't change the next steps.
 
 Once the user has decided on which file to use, click on the OK button and the following dialog will pop up:
 
@@ -89,4 +89,4 @@ you can select which inputs you want to plot.
    :name: fig.visualize
 
 Once you are happy with the samples generated then click on **Done** button, so the new candidate set gets saved and
-populated in the **Ensemble Selection** box.
+populated in the **Design Setup** box.

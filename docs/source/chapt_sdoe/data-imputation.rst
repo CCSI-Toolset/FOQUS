@@ -11,7 +11,7 @@ original incomplete candidate set be deleted or deselected (unchecked) before co
 candidate sets will be combined, and will still contain missing values.
 
 .. note::
-    To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_optional`
+    To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_psuade`
 
 When the user clicks on the **Load Existing Set** button in the **Design Setup** section and selects a candidate set,
 the program will run a quick file scan and show the missing values (if any) for all the existing columns.

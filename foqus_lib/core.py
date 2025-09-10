@@ -209,8 +209,7 @@ class TurbineLiteDependencyTracker(WindowsPackageDependencyTracker):
     @property
     def path(self):
         return self.install_path
-    
+
     @property
     def database(self):
         return self.database_path
-

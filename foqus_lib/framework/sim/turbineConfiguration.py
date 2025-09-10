@@ -74,9 +74,9 @@ class sinter_AppError:
     si_UNKNOWN_FIELD = 4
     si_INPUT_ERROR = 5
     si_SIMULATION_NOT_RUN = 6
-    si_SIMULATION_STOPPED = 7  #//The user stopped the simulation
-    si_STOP_FAILED = 8         #//The user tried to stop the sim, but the stop timed out.  Terminate should probably be called.
-    si_NONCONVERGENCE_ERROR = 9 #        //The user tried to stop the sim, but the stop timed out.  Terminate should probably be called.
+    si_SIMULATION_STOPPED = 7  # //The user stopped the simulation
+    si_STOP_FAILED = 8  # //The user tried to stop the sim, but the stop timed out.  Terminate should probably be called.
+    si_NONCONVERGENCE_ERROR = 9  #        //The user tried to stop the sim, but the stop timed out.  Terminate should probably be called.
     si_COM_EXCEPTION = 100
 
 
@@ -1082,12 +1082,13 @@ class TurbineConfiguration:
                 if (
                     not allowWarnings
                     and state == "success"
-                    and res.get("Status", sinter_AppError.si_OKAY) == sinter_AppError.si_SIMULATION_WARNING
+                    and res.get("Status", sinter_AppError.si_OKAY)
+                    == sinter_AppError.si_SIMULATION_WARNING
                 ):
                     state = "error"
                 failure = state in failedStates
                 success = state in successStates
-                
+
                 # Check for the run start time instead of the state just
                 # in case job started and completed between checks
                 if not setupStart and state == "setup":

@@ -3,7 +3,7 @@ Example USF-1: Constructing Uniform Space Filling minimax and maximin designs fo
 
 For this first example, the goal is to construct a simple space-filling design with between 8 and 10 runs in a 2-dimensional space based on a regular unconstrained square region populated with a grid of candidate points. 
 
-1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load Existing Set**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. 
+1. From the FOQUS main screen, click the **SDoE** button. On the top left side, select **Load Existing Set**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion.
 
 .. figure:: figs/6-SS1.png
    :alt: Home Screen

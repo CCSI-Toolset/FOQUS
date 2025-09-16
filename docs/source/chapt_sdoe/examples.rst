@@ -7,6 +7,9 @@ Example USF-1 constructs several uniform space filling designs of size 8 to 10 r
 Example USF-2 takes one of the designs created in Example 1, and considers how it might be used for sequential updating with additional experimentation. In this case the Example 1 design is considered as historical data, and the goal is to augment the design with several additional runs.
 Example USF-3 considers a 5-dimensional input space based on a CCSI example, and demonstrates what the process of Sequential Design of Experiments might look like with several iterations of constructing uniform space filling designs.
 
+Example MaxPro-1 constructs a MaxPro design.
+Example MaxPro-2 constructs a MaxPro augmented design using a previously created MaxPro design.
+
 Example NUSF-1 constructs several non-uniform space filing designs of size 15 in a 2-dimensional regular input space. Several designs are generated using the same weights, but with different Maximum Weight Ratios (MWRs), to illustrate how the concentration of points can be altered to match the experimenter's preferences.
 Example NUSF-2 considers a CCSI example, with a non-regular region, and the weights that were derived from the width of the confidence interval for prediction based on an existing model. The goal is to concentrate more of the new runs in regions where there is greater uncertainty, and hence the widths of the confidence intervals are larger. Again multiple designs are created to show how the MWR influences the concentration of the points in different regions.
 
@@ -20,5 +23,6 @@ The files for these tutorials are located in: :path:`examples/tutorial_files/SDO
     :maxdepth: 2
 
     examples-uniform
+    examples-maxpro
     examples-nonuniform
     examples-inputresponse

@@ -11,7 +11,7 @@ original incomplete candidate set be deleted or deselected (unchecked) before co
 candidate sets will be combined, and will still contain missing values.
 
 .. note::
-    To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_optional`
+    To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_psuade`
 
 When the user clicks on the **Load Existing Set** button in the **Design Setup** section and selects a candidate set,
 the program will run a quick file scan and show the missing values (if any) for all the existing columns.
@@ -38,7 +38,7 @@ The user needs to select a response surface from the ones available in the drop-
 
 For this particular example we will be using MARS. Once the response surface is selected, click the **Validate RS**
 button. A response surface validation plot will be generated and also an informative message window will pop up telling
-the user to confirm if the response surface satisfy their needs or to select a different response surface and validate
+the user to confirm if the response surface satisfies their needs or to select a different response surface and validate
 again if it doesn't.
 
 .. figure:: figs/03_dataImputation_RSValidationPlot_MARS.png
@@ -48,7 +48,7 @@ again if it doesn't.
 The validation plot is a plot of expected values based on the model versus the actual values. The better the
 model fits, the closer the points will be around the diagonal line.
 
-Since this particular validation plot looks good (note the points falling along the diagonal line), user can go ahead
+Since this particular validation plot looks good (note the points falling along the diagonal line), the user can go ahead
 and confirm the response surface by clicking the **Confirm RS** button.
 
 .. figure:: figs/04_dataImputation_confirmRS.png

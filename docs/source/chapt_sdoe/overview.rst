@@ -119,3 +119,82 @@ To conclude this example, we illustrate the power of the sequential approach to 
    
    A comparison of 2 18-run experiments: On left, the sequential approach. On right, the single experiment approach.
    
+
+Available USF Methods in FOQUS
+------------------------------
+
+In physical experiments, the design is traditionally created by choosing a few discrete choices of values
+for each factor and then using a factorial structure to generate a number of runs. More recently, it can
+be obtained in a completely different way. We can place the design points such that the points scatter
+the experimental region, which is called **space-filling design**. In such type of designs, we aim to obtain
+a design point in the vicinity of any point in the experiment region.
+
+There have been a few popular space-filling design strategies proposed over the past decades. Two
+of them are introduced here and have been incorporated in the Uniform Space Filling (USF) design
+under the SDoE module, namely minimax distance design and maximin distance design respectively.
+With the new update, we have added a third USF design method, which is the **maximum projection
+design**.
+
+USF Design Methods
+^^^^^^^^^^^^^^^^^^
+
+The experimental region can be denoted by :math:`X = [0, 1]^p` which is a hypercube in :math:`p` dimension. The
+design can be denoted by :math:`D = \{x_1, x_2, \ldots, x_n\}`, which includes :math:`n` points. For any point :math:`x \in X`, we can
+find the distance between it and closest design point, denoted by :math:`\text{dist}(x, D) = \min_i d(x, x_i)`, where :math:`d`
+denotes the distance metric, for example, the Euclidean distance.
+
+Minimax Design
+~~~~~~~~~~~~~~
+
+Minimax distance design aims to minimize the maximum distance between
+any point in the experimental region and any of the design points, which has desirable properties of a
+space-filling design. It can be formulated as an optimization problem:
+
+.. math::
+   :label: eq_minimax
+
+   \min_D \max_{x \in X} \text{dist}(x, D)
+
+Maximin Design
+~~~~~~~~~~~~~~
+
+Another way of obtaining a space-filling design is to place the design points as
+far as possible from each other. This can be done to maximize the minimum pairwise distance between
+any two points in the design. It can also be formulated as an optimization problem:
+
+.. math::
+   :label: eq_maxmin
+
+   \max_D \min_{i,j} d(x_i, x_j)
+
+which is called the **maximin distance design**.
+
+MaxPro Design
+~~~~~~~~~~~~~
+
+One disadvantage of the minimax and maximin designs is that they do not take
+into account the projection of the design points onto subspaces of the experimental region. To this
+end, **maximum projection design** (or MaxPro) has been proposed to ensure the good projection of
+the design to all subspaces of the entire region. Therefore, the optimization problem for MaxPro is
+formulated as follows:
+
+.. math::
+   :label: eq_maxpro
+
+   \min_D \sum_{i=1}^{n-1} \sum_{j=i+1}^{n} \frac{1}{\prod_{l=1}^{p} |x_{il} - x_{jl}|^s}
+
+where typically we have :math:`s = 2`. The product on the denominator ensures that no two coordinates have
+the same value, enforcing the Latin hypercube structure.
+
+Additionally, maximum projection design can be utilized in a sequential manner. MaxPro is able
+to generate a sequential space-filling design on top of the current set of design points provided, the
+latter of which do not necessarily have to be space-filling. This functionality enables the experimenters
+to plan the experiment configurations in an adaptive manner, starting from an arbitrary initial design
+and then using MaxPro to generate a space-filling design.
+
+.. figure:: figs/usf_methods.png
+   :alt:
+   :name: fig.usf_methods
+
+   A comparison of four 10-point designs with two input variables: On top left Minimax design. On top right, Maximin design.
+   On bottom left, MaxPro design. On bottom right, MaxPro initial design in blue with a further 10-point MaxPro sequential design in red.

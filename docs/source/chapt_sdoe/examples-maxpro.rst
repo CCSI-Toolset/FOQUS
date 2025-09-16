@@ -88,7 +88,7 @@ to view either of the candidate or previous data files, click on **View** to see
    MaxPro Example 2: Load Data
 
 2. Click on the **Continue** button at the bottom right of the **Design Setup** box. This will activate the
-**Design Construction** box. By clicking on the **View** button under the **Visualize** column, user can see both the
+**Design Construction** box. By clicking on the **View** button under the **Visualize** column, the user can see both the
 candidate set and the previous data set in the same plot.
 
 .. figure:: figs/02_maxpro_augment_plot_data.png

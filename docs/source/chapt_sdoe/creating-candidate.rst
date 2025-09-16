@@ -10,7 +10,7 @@ candidate set providing some ranges for each input.
 Loading from File
 -----------------
 
-In the **Design Setup** box, click on the **Load Load Existing Set** button to select the file(s) for the construction
+In the **Design Setup** box, click on the **Load Existing Set** button to select the file(s) for the construction
 of the design. Several files can be selected and added to the box listing the chosen files.
 
 For each of the files selected using the pull-down menu, identify them as either a **Candidate** file or a **Previous Data**

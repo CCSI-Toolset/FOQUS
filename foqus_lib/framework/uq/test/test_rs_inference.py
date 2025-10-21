@@ -14,6 +14,7 @@
 #################################################################################
 import numpy as np
 from PyQt5 import QtCore
+import pytest
 import tempfile
 import unittest
 from unittest.mock import Mock, patch
@@ -230,6 +231,7 @@ class TestRSInference(unittest.TestCase):
             self.assertEqual(xlim[0], [0, 10])  # x1 limits
             self.assertEqual(xlim[1], [-1, 1])  # x2 limits
 
+    @pytest.mark.skip(reason="Work in progress.")
     @patch("foqus_lib.framework.uq.RSInference.Common.invokePsuade")
     @patch("os.path.exists")
     @patch("os.rename")

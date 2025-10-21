@@ -895,7 +895,7 @@ class pymodel_pg(pymodel):
         self.outputs["Cooling_Water.Consumption"].value = Ucold[
             "Cooling_Water"
         ]  # cooling water consumption (GJ/hr)
-        #        self.outputs["FH.Heat.Addition"].value = 10000  ### romove after testing 7/11/2019
+        #        self.outputs["FH.Heat.Addition"].value = 10000  ### remove after testing 7/11/2019
         if feedIs:
             #            self.outputs["FH.Heat.Addition"].value = [0, 0, 0, 0, 0]
             FH_Heat_Addition = [

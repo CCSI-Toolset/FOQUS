@@ -70,7 +70,7 @@ calculates gradients at the points between the sample points, not the actual sam
 3. Train an MLP model on the calculated midpoint and midpoint-gradient values. After normalizing the data
 via linear scaling (see :ref:`mlaiplugin.datanorm`),
 the algorithm leverages a small neural network model to generate gradient data for the actual
-sampe points. Passing the argument *optimize_training=True* will train models using the optimizers
+sample points. Passing the argument *optimize_training=True* will train models using the optimizers
 *Adam* or *RMSProp*, with activation functions *ReLu* or *Sigmoid* on hidden layers, using a *Linear*
 or *ReLu* activation function on the output layer, building *2* or *8* hidden layers with *6* or *12*
 neurons per hidden layer. The algorithm employs cross-validation to check the mean-squared-error (MSE) loss

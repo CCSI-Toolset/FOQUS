@@ -254,7 +254,7 @@ class opt(optimization):
         """
         #        This is the function for the solver to call to get function
         #        evaluations.  This should run the FOQUS flowsheet also can
-        #        stick in other dignostic output.  Whatever you like.
+        #        stick in other diagnostic output.  Whatever you like.
         """
         #        #run the flowsheet at point x.  X is turned into a list there
         #        #because this function can return there results of multiple
@@ -936,10 +936,10 @@ class opt(optimization):
                         ]
                         nodevar = str(nodeName) + "_" + str(outVarName)
                         if nodevar in [str(v) for v in self.surrout_names_pyomo]:
-                            indx = [str(v) for v in self.surrout_names_pyomo].index(
+                            index = [str(v) for v in self.surrout_names_pyomo].index(
                                 nodevar
                             )
-                            surrin_outputvals[indx] = surrout_value
+                            surrin_outputvals[index] = surrout_value
 
                 surrin_samples_values.append(surrin_outputvals)
             latin_hypercube_samples_values = np.array(surrin_samples_values)

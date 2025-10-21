@@ -177,7 +177,7 @@ class opt(optimization):
         """
         This is the function for the solver to call to get function
         evaluations.  This should run the FOQUS flowsheet also can
-        stick in other dignostic output.  Whatever you like.  Since
+        stick in other diagnostic output.  Whatever you like.  Since
         only the DFO solvers are made available the grad arg can be
         ignored.
         """

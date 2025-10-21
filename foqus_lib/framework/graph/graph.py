@@ -124,7 +124,7 @@ class Graph(threading.Thread):
         self.sccEdges = []  # list of lists of SCC edges
         self.sccLink = []  # list of lists SCC ordering
         #
-        self.turbineSim = None  # If a string use that simuation name in
+        self.turbineSim = None  # If a string use that simulation name in
         # Turbine if none don't submit flowsheet runs to turbine
         self.sessionFile = None  # session file to upload to turbine
         self.useTurbine = False
@@ -1574,13 +1574,13 @@ class Graph(threading.Thread):
     def getEdgeIndex(self, vkey, wkey):
         # get index of edge from v to w returns None if no edge from v to w
         # multiple edges are not allowed
-        indx = None
+        index = None
         for i in range(0, len(self.edges)):
             if self.edges[i].start == vkey:
                 if self.edges[i].end == wkey:
-                    indx = i
+                    index = i
                     break
-        return indx
+        return index
 
     def setTearSet(self, tSet):
         # mark the given list of edges as tear edges

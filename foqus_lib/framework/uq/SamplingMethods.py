@@ -26,7 +26,7 @@ class SamplingMethods:
         "Generalized Morris Design",
         "Gradient Sample",
         "METIS",
-        "Generalized Monte Carlo",
+        "Monte Carlo",
         "Full Factorial Design",
     )
     psuadeNames = (

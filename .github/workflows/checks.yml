@@ -76,7 +76,7 @@ jobs:
           - macos-arm64
         include:
           - os: macos-intel
-            os-version: macos-13
+            os-version: macos-14
           - os: macos-arm64
             os-version: macos-14
           - os: linux

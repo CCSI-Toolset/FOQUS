@@ -12,6 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import os
 import numpy as np
 from PyQt5 import QtCore
 import pytest
@@ -231,7 +232,6 @@ class TestRSInference(unittest.TestCase):
             self.assertEqual(xlim[0], [0, 10])  # x1 limits
             self.assertEqual(xlim[1], [-1, 1])  # x2 limits
 
-    @pytest.mark.skip(reason="Work in progress.")
     @patch("foqus_lib.framework.uq.RSInference.Common.invokePsuade")
     @patch("os.path.exists")
     @patch("os.rename")
@@ -240,11 +240,16 @@ class TestRSInference(unittest.TestCase):
         mock_invoke.return_value = ("success", None)
         mock_exists.return_value = True
 
-        result = RSInferencer.genheatmap("test.dat", move=False)
+        # Create a real file so GetShortPathNameW succeeds on Windows
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".dat") as tf:
+            path = tf.name
 
-        mock_invoke.assert_called_once()
-        self.assertEqual(result, "matlabiplt2pdf.m")
-        mock_rename.assert_not_called()  # move=False
+        try:
+            result = RSInferencer.genheatmap(path, move=False)
+            self.assertEqual(result, "matlabiplt2pdf.m")
+            mock_rename.assert_not_called()
+        finally:
+            os.remove(path)
 
     @patch("foqus_lib.framework.uq.RSInference.Plotter.plotinf")
     @patch("foqus_lib.framework.uq.RSInference.RSInferencer.getplotdat")

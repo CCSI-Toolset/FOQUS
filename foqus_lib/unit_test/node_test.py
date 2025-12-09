@@ -133,7 +133,11 @@ class testImports(unittest.TestCase):
 
     def test_import_tensorflow_success(self):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
 
         # method loaded from node module as * import
         load, json_load, TFSM_load = attempt_load_tensorflow(try_imports=True)
@@ -154,7 +158,9 @@ class testImports(unittest.TestCase):
 
     def test_import_sympy_success(self):
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
 
         # method loaded from node module as * import
         parse, symbol, solve = attempt_load_sympy(try_imports=True)
@@ -170,7 +176,9 @@ class testImports(unittest.TestCase):
 
     def test_import_pytorch_success(self):
         # skip this test if torch is not available
-        pytest.importorskip("torch", reason="torch not installed")
+        pytest.importorskip(
+            "torch", reason="torch not installed", exc_type=ModuleNotFoundError
+        )
 
         # method loaded from node module as * import
         torch_load, torch_tensor, torch_float = attempt_load_pytorch(try_imports=True)
@@ -186,7 +194,9 @@ class testImports(unittest.TestCase):
 
     def test_import_sklearn_success(self):
         # skip this test if sklearn is not available
-        pytest.importorskip("sklearn", reason="sklearn not installed")
+        pytest.importorskip(
+            "sklearn", reason="sklearn not installed", exc_type=ModuleNotFoundError
+        )
 
         # method loaded from node module as * import
         skl_pickle_load = attempt_load_sklearn(try_imports=True)
@@ -200,7 +210,9 @@ class testImports(unittest.TestCase):
 
     def test_import_smt_success(self):
         # skip this test if smt is not available
-        pytest.importorskip("smt", reason="smt not installed")
+        pytest.importorskip(
+            "smt", reason="smt not installed", exc_type=ModuleNotFoundError
+        )
 
         # method loaded from node module as * import
         smt_pickle_load = attempt_load_smt(try_imports=True)
@@ -214,7 +226,9 @@ class testImports(unittest.TestCase):
 
     def test_import_jenn_success(self):
         # skip this test if jenn is not available
-        pytest.importorskip("jenn", reason="jenn not installed")
+        pytest.importorskip(
+            "jenn", reason="jenn not installed", exc_type=ModuleNotFoundError
+        )
 
         # method loaded from node module as * import
         jenn_pickle_load = attempt_load_jenn(try_imports=True)
@@ -249,7 +263,11 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_1(self, model_files):  # no custom layer or normalization
         # no tests using this fixture should run if tensorflow is not installed
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -270,7 +288,11 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_2(self, model_files):  # custom layer with preset normalization form
         # no tests using this fixture should run if tensorflow is not installed
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -297,8 +319,14 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_3(self, model_files):  # custom layer with custom normalization form
         # no tests using this fixture should run if tensorflow and sympy are not installed
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -332,8 +360,14 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_4(self, model_files):  # model saved in SavedModel file format
         # no tests using this fixture should run if tensorflow and sympy are not installed
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -366,8 +400,14 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_5(self, model_files):  # model saved in json form with h5 weights
         # no tests using this fixture should run if tensorflow and sympy are not installed
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -416,8 +456,12 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_6(self, model_files):  # custom layer with custom normalization form
         # no tests using this fixture should run if torch and sympy are not installed
-        pytest.importorskip("torch", reason="torch not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "torch", reason="torch not installed", exc_type=ModuleNotFoundError
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -442,8 +486,12 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_7(self, model_files):  # custom layer with custom normalization form
         # no tests using this fixture should run if sklearn and sympy are not installed
-        pytest.importorskip("sklearn", reason="sklearn not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sklearn", reason="sklearn not installed", exc_type=ModuleNotFoundError
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -465,7 +513,9 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_8(self, model_files):  # custom layer with smt model
         # no tests using this fixture should run if smt is not installed
-        pytest.importorskip("smt", reason="smt not installed")
+        pytest.importorskip(
+            "smt", reason="smt not installed", exc_type=ModuleNotFoundError
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -487,7 +537,9 @@ class TestPymodelMLAI:
     @pytest.fixture(scope="function")
     def example_9(self, model_files):  # custom layer with jenn model
         # no tests using this fixture should run if jenn is not installed
-        pytest.importorskip("jenn", reason="jenn not installed")
+        pytest.importorskip(
+            "jenn", reason="jenn not installed", exc_type=ModuleNotFoundError
+        )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -513,7 +565,11 @@ class TestPymodelMLAI:
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         # no custom layer, so set keras_has_custom_layer to False
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(
             example_1, trainer="keras", keras_has_custom_layer=False
         )
@@ -522,14 +578,24 @@ class TestPymodelMLAI:
     def test_build_and_run_as_expected_2(self, example_2):
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         test_pymodel.run()
 
     def test_build_and_run_as_expected_3(self, example_3):
         # only run if TensorFlow and SymPy are available; test run for custom norm example
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
@@ -537,8 +603,14 @@ class TestPymodelMLAI:
 
     def test_build_and_run_as_expected_4(self, example_4):
         # only run if TensorFlow and SymPy are available; test run for custom norm SavedModel
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         # legacy SavedModel type does not support custom layer, so set keras_has_custom_layer to False
@@ -549,8 +621,14 @@ class TestPymodelMLAI:
 
     def test_build_and_run_as_expected_5(self, example_5):
         # only run if TensorFlow and SymPy are available; test run for custom norm json
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         test_pymodel = pymodel_ml_ai(example_5, trainer="keras")
@@ -558,8 +636,12 @@ class TestPymodelMLAI:
 
     def test_build_and_run_as_expected_6(self, example_6):
         # only run if PyTorch and SymPy are available; test run for custom norm example
-        pytest.importorskip("torch", reason="torch not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "torch", reason="torch not installed", exc_type=ModuleNotFoundError
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         test_pymodel = pymodel_ml_ai(example_6, trainer="torch")
@@ -567,8 +649,12 @@ class TestPymodelMLAI:
 
     def test_build_and_run_as_expected_7(self, example_7):
         # only run if sklearn and SymPy are available; test run for custom norm example
-        pytest.importorskip("sklearn", reason="sklearn not installed")
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sklearn", reason="sklearn not installed", exc_type=ModuleNotFoundError
+        )
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         test_pymodel = pymodel_ml_ai(example_7, trainer="sklearn")
@@ -576,7 +662,9 @@ class TestPymodelMLAI:
 
     def test_build_and_run_as_expected_8(self, example_8):
         # only run if smt is available; test run for smt example
-        pytest.importorskip("smt", reason="smt not installed")
+        pytest.importorskip(
+            "smt", reason="smt not installed", exc_type=ModuleNotFoundError
+        )
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         test_pymodel = pymodel_ml_ai(example_8, trainer="smt")
@@ -584,7 +672,9 @@ class TestPymodelMLAI:
 
     def test_build_and_run_as_expected_9(self, example_9):
         # only run if jenn is available; test run for jenn example
-        pytest.importorskip("jenn", reason="jenn not installed")
+        pytest.importorskip(
+            "jenn", reason="jenn not installed", exc_type=ModuleNotFoundError
+        )
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         test_pymodel = pymodel_ml_ai(example_9, trainer="jenn")
@@ -622,7 +712,11 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_defaults_no_custom_layer(self, example_1):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(
             example_1, trainer="keras", keras_has_custom_layer=False
         )
@@ -652,7 +746,11 @@ class TestPymodelMLAI:
         assert test_pymodel.normalized is False
 
     def test_no_scaling(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel, "normalized", False)
         test_pymodel.run()
@@ -683,7 +781,11 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_linear_scaling(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Linear")
         test_pymodel.run()
@@ -707,7 +809,11 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_log_scaling(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Log")
         test_pymodel.run()
@@ -731,7 +837,11 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_power_scaling(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # For this example, the inputs values for some variables are large per
         # the expected_in in the no_scaling test above, and attempting to scale
         # by 10^value breaks the interpreter with a math overflow error
@@ -770,7 +880,11 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_log2_scaling(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Log 2")
         test_pymodel.run()
@@ -794,7 +908,11 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_power2_scaling(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Power 2")
         test_pymodel.run()
@@ -818,9 +936,15 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_custom_scaling(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks custom form of linear scaling
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
 
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
         test_pymodel.run()
@@ -849,7 +973,11 @@ class TestPymodelMLAI:
     # this set of tests builds and runs the pymodel class and checks exceptions
 
     def test_no_norm_form(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
 
         # check that fixture contained expected attributes
@@ -863,7 +991,11 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_disallowed_norm_form(self, example_2):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
 
         # check that fixture contained expected attributes
@@ -877,9 +1009,15 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_norm_function(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks custom form of linear scaling
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
@@ -897,9 +1035,15 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_nonstring_norm_function(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks custom form of linear scaling
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
@@ -917,9 +1061,15 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_datavalue_reference(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks custom form of linear scaling
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
@@ -941,9 +1091,15 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_dataminimum_reference(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks custom form of linear scaling
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
@@ -965,9 +1121,15 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_datamaximum_reference(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks custom form of linear scaling
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
@@ -989,9 +1151,15 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_parse_norm_function(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks syntax of passed norm function
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
 
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
@@ -1014,9 +1182,15 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_solve_norm_function(self, example_3):
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # only run if SymPy is available; checks solve of passed norm function
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
 
         test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
@@ -1292,7 +1466,11 @@ class TestNode:
 
     def test_setSim_modelMLAI_example1(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1323,7 +1501,11 @@ class TestNode:
 
     def test_runPymodelMLAI_example1(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1356,7 +1538,11 @@ class TestNode:
 
     def test_setSim_modelMLAI_example2(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1387,7 +1573,11 @@ class TestNode:
 
     def test_runPymodelMLAI_example2(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1420,9 +1610,15 @@ class TestNode:
 
     def test_setSim_modelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1453,9 +1649,15 @@ class TestNode:
 
     def test_runPymodelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1488,9 +1690,15 @@ class TestNode:
 
     def test_setSim_modelMLAI_example4(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1521,9 +1729,15 @@ class TestNode:
 
     def test_runPymodelMLAI_example4(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1556,9 +1770,15 @@ class TestNode:
 
     def test_setSim_modelMLAI_example5(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1589,9 +1809,15 @@ class TestNode:
 
     def test_runPymodelMLAI_example5(self, node, model_files):
         # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip(
+            "tensorflow",
+            reason="tensorflow not installed",
+            exc_type=ModuleNotFoundError,
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1624,9 +1850,13 @@ class TestNode:
 
     def test_setSim_modelMLAI_example6(self, node, model_files):
         # skip this test if torch is not available
-        pytest.importorskip("torch", reason="torch not installed")
+        pytest.importorskip(
+            "torch", reason="torch not installed", exc_type=ModuleNotFoundError
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1657,9 +1887,13 @@ class TestNode:
 
     def test_runPymodelMLAI_example6(self, node, model_files):
         # skip this test if torch is not available
-        pytest.importorskip("torch", reason="torch not installed")
+        pytest.importorskip(
+            "torch", reason="torch not installed", exc_type=ModuleNotFoundError
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1692,9 +1926,13 @@ class TestNode:
 
     def test_setSim_modelMLAI_example7(self, node, model_files):
         # skip this test if sklearn is not available
-        pytest.importorskip("sklearn", reason="sklearn not installed")
+        pytest.importorskip(
+            "sklearn", reason="sklearn not installed", exc_type=ModuleNotFoundError
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1725,9 +1963,13 @@ class TestNode:
 
     def test_runPymodelMLAI_example7(self, node, model_files):
         # skip this test if sklearn is not available
-        pytest.importorskip("sklearn", reason="sklearn not installed")
+        pytest.importorskip(
+            "sklearn", reason="sklearn not installed", exc_type=ModuleNotFoundError
+        )
         # skip this test if sympy is not available
-        pytest.importorskip("sympy", reason="sympy not installed")
+        pytest.importorskip(
+            "sympy", reason="sympy not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1760,7 +2002,9 @@ class TestNode:
 
     def test_runPymodelMLAI_example8(self, node, model_files):
         # skip this test if smt is not available
-        pytest.importorskip("smt", reason="smt not installed")
+        pytest.importorskip(
+            "smt", reason="smt not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1793,7 +2037,9 @@ class TestNode:
 
     def test_runPymodelMLAI_example9(self, node, model_files):
         # skip this test if jenn is not available
-        pytest.importorskip("jenn", reason="jenn not installed")
+        pytest.importorskip(
+            "jenn", reason="jenn not installed", exc_type=ModuleNotFoundError
+        )
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))

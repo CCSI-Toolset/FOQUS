@@ -112,6 +112,10 @@ dist = setup(
         "winshell; sys_platform == 'win32'",
         "websocket_client>=1.1.0",
     ],
+    # pip install ccsi-foqus[nlopt]
+    extras_require={
+        "nlopt": ["nlopt==2.7.1"]
+    },
 )
 
 print(

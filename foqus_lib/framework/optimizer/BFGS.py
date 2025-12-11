@@ -106,7 +106,7 @@ class opt(optimization):
         self.options.add(
             name="ftol",
             default=1.0e-9,
-            desc="Function abs tolerance termiantion condition",
+            desc="Function abs tolerance termination condition",
             dtype=float,
         )
         self.options.add(

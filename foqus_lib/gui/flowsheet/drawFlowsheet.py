@@ -277,7 +277,7 @@ class fsScene(QGraphicsScene):
                keep edges from overlapping.
         tear: if true draw in tear edge style
         """
-        # determine if edge conntects a node to itself.
+        # determine if edge connects a node to itself.
         if abs(x1 - x2) < 0.01 and abs(y1 - y2) < 0.01:
             path = QPainterPath()
             curve = curve * 2

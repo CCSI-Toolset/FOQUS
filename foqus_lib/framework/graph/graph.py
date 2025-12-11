@@ -124,7 +124,7 @@ class Graph(threading.Thread):
         self.sccEdges = []  # list of lists of SCC edges
         self.sccLink = []  # list of lists SCC ordering
         #
-        self.turbineSim = None  # If a string use that simuation name in
+        self.turbineSim = None  # If a string use that simulation name in
         # Turbine if none don't submit flowsheet runs to turbine
         self.sessionFile = None  # session file to upload to turbine
         self.useTurbine = False

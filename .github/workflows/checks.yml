@@ -95,6 +95,12 @@ jobs:
       MPLBACKEND: AGG
     steps:
       - uses: actions/checkout@v4
+      - name: Check disk usage before cleaning
+        run: df -h
+      - name: Clean up temporary files
+        run: sudo rm -rf /tmp/*
+      - name: Check disk usage after cleaning
+        run: df -h
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v3
         with:

@@ -38,7 +38,7 @@ jobs:
           - os: macos-intel
             os-version: macos-15-intel
           - os: linux
-            os-version: ubuntu-22.04
+            os-version: ubuntu-24.04
           - os: win64
             os-version: windows-2022
           - foqus-install-target: stable
@@ -54,6 +54,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: "latest"
+          channels: conda-forge
           conda-remove-defaults: true
       - name: Install FOQUS in a Conda env (user mode)
         env:

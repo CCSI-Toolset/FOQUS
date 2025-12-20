@@ -101,6 +101,7 @@ jobs:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
           miniconda-version: latest
+          conda-remove-defaults: true
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:

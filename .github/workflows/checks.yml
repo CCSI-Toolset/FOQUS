@@ -80,7 +80,7 @@ jobs:
           - os: macos-arm64
             os-version: macos-14
           - os: linux
-            os-version: ubuntu-22.04
+            os-version: ubuntu-slim
           - os: win64
             os-version: windows-2022
           - python-version: '3.10'  # avoid uploading coverage for full matrix
@@ -95,11 +95,7 @@ jobs:
       MPLBACKEND: AGG
     steps:
       - uses: actions/checkout@v4
-      - name: Check disk usage before cleaning
-        run: df -h
-      - name: Clean up temporary files
-        run: sudo rm -rf /tmp/*
-      - name: Check disk usage after cleaning
+      - name: Check disk usage
         run: df -h
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v3

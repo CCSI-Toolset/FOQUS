@@ -95,8 +95,6 @@ jobs:
       MPLBACKEND: AGG
     steps:
       - uses: actions/checkout@v4
-      - name: Check disk usage
-        run: df -h
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v3
         with:
@@ -105,8 +103,6 @@ jobs:
           miniconda-version: latest
           channels: conda-forge
           conda-remove-defaults: true
-      - name: Check pre-installed packages
-        run: conda list
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:

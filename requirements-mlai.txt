@@ -3,4 +3,4 @@ sympy
 torch
 scikit-learn
 smt
-jenn
+jenn<2.0.0  # Temp fix until we support JENN 2, see issue #1276

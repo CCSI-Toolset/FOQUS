@@ -193,7 +193,7 @@ class surrogateMethod(surrogate):
             desc="Adaptive sampling method to be used. If adaptive sampling is used, also set MAXITER below.",
             hint="Adaptive sampling method to be used by ALAMO when more data points are needed by the model"
             "If random is used a simulator must be provided by the user. If SNOBFIT is used a simulator must be"
-            " by the user and MATLAB must be istalled.",
+            " by the user and MATLAB must be installed.",
             validValues=sorted(
                 list(self.samplers.keys()), key=lambda k: self.samplers[k]
             ),
@@ -754,7 +754,7 @@ class surrogateMethod(surrogate):
                 val[i] = "{0} {1}".format(ii + 1, c)
             customcon.extend(val)
         # Replace periods with underscore in variable labels for ALAMO
-        # period is not okay for gams so someimes causes problem in ALAMO
+        # period is not okay for gams so sometimes causes problem in ALAMO
         self.xListNP = copy.copy(self.xList)
         self.zListNP = copy.copy(self.zList)
         self.xList2 = copy.copy(self.xList)  # xlist, node names removed if possible

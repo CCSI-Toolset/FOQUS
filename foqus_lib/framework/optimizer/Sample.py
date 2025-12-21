@@ -52,7 +52,7 @@ class opt(optimization):
         optimization.__init__(self, dat)
         self.name = "CMA-ES"
         self.methodDescription = (
-            "This plugin just runs samples evaluetes all the flowsheet "
+            "This plugin just runs samples evaluates all the flowsheet "
             "samples and picks out the best one.  If any samples have "
             "not been evaluated (status -1), they will be evaluated.  "
             "This works with the currently selected data filter, and "

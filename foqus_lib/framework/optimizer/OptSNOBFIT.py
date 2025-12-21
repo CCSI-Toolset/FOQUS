@@ -93,7 +93,7 @@ class opt:
         it = 0
 
         if ofile != "":
-            gr.createCSV(ofile)  # create a CSV output file add a coulmn for objective
+            gr.createCSV(ofile)  # create a CSV output file add a column for objective
             self.ofile = ofile
         self.flushc = 0
         start = time.process_time()

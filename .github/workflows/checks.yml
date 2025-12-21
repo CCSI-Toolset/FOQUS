@@ -101,6 +101,8 @@ jobs:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
           miniforge-version: latest
+          channels: conda-forge
+          conda-remove-defaults: true
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:
@@ -178,6 +180,8 @@ jobs:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
           miniforge-version: latest
+          channels: conda-forge
+          conda-remove-defaults: true
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:
@@ -197,6 +201,8 @@ jobs:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
           miniforge-version: latest
+          channels: conda-forge
+          conda-remove-defaults: true
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:

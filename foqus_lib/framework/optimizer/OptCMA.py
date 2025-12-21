@@ -122,7 +122,7 @@ class opt(optimization):
         self.options.add(
             name="tolfun",
             default=None,
-            desc="Function range tolerance termiantion condition, "
+            desc="Function range tolerance termination condition, "
             "The range of function values of the best objective "
             "over the last 10 + 30*N/popsize and all the "
             "evaluations in the most recent iteration, "
@@ -142,7 +142,7 @@ class opt(optimization):
             name="tolx",
             default=None,
             desc="Tolerance for changes in decision variables, "
-            "termiantion condition, stop if standard deviation of "
+            "termination condition, stop if standard deviation of "
             "the distribution in all directions is less that tolx "
             "(null solver default 10**-11)",
             dtype=float,

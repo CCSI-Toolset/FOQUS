@@ -161,25 +161,25 @@ class opt(optimization):
         self.options.add(
             name="tolfunabs",
             default=1.0e-9,
-            desc="Function abs tolerance termiantion condition",
+            desc="Function abs tolerance termination condition",
             dtype=float,
         )
         self.options.add(
             name="tolfunrel",
             default=1.0e-9,
-            desc="Function relative tolerance termiantion condition",
+            desc="Function relative tolerance termination condition",
             dtype=float,
         )
         self.options.add(
             name="tolxabs",
             default=1.0e-9,
-            desc="X abs tolerance termiantion condition",
+            desc="X abs tolerance termination condition",
             dtype=float,
         )
         self.options.add(
             name="tolxrel",
             default=1.0e-9,
-            desc="X relative tolerance termiantion condition",
+            desc="X relative tolerance termination condition",
             dtype=float,
         )
         self.options.add(
@@ -247,7 +247,7 @@ class opt(optimization):
         """
         This is the function for the solver to call to get function
         evaluations.  This should run the FOQUS flowsheet also can
-        stick in other dignostic output.  Whatever you like.  Since
+        stick in other diagnostic output.  Whatever you like.  Since
         only the DFO solvers are made available the grad arg can be
         ignored.  If there is an exception in here optimization
         terminates (NLopt behavior).

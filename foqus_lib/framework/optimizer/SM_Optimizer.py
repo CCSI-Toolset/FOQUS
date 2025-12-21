@@ -254,7 +254,7 @@ class opt(optimization):
         """
         #        This is the function for the solver to call to get function
         #        evaluations.  This should run the FOQUS flowsheet also can
-        #        stick in other dignostic output.  Whatever you like.
+        #        stick in other diagnostic output.  Whatever you like.
         """
         #        #run the flowsheet at point x.  X is turned into a list there
         #        #because this function can return there results of multiple

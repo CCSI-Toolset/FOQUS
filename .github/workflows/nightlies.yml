@@ -53,9 +53,7 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-version: "latest"
-          channels: conda-forge
-          conda-remove-defaults: true
+          miniforge-version: latest
       - name: Install FOQUS in a Conda env (user mode)
         env:
           py_ver: ${{ matrix.python-version }}

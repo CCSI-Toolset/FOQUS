@@ -76,11 +76,11 @@ jobs:
           - macos-arm64
         include:
           - os: macos-intel
-            os-version: macos-14
+            os-version: macos-15-intel
           - os: macos-arm64
             os-version: macos-14
           - os: linux
-            os-version: ubuntu-22.04
+            os-version: ubuntu-24.04
           - os: win64
             os-version: windows-2022
           - python-version: '3.10'  # avoid uploading coverage for full matrix
@@ -101,6 +101,8 @@ jobs:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
           miniconda-version: latest
+          channels: conda-forge
+          conda-remove-defaults: true
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:

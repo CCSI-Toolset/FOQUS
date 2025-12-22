@@ -113,9 +113,7 @@ dist = setup(
         "websocket_client>=1.1.0",
     ],
     # pip install ccsi-foqus[nlopt]
-    extras_require={
-        "nlopt": ["nlopt==2.7.1"]
-    },
+    extras_require={"nlopt": ["nlopt==2.7.1"]},
 )
 
 print(

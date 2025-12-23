@@ -136,7 +136,6 @@ class testImports(unittest.TestCase):
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
 
         # method loaded from node module as * import
@@ -256,7 +255,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
@@ -281,7 +279,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
@@ -312,7 +309,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         pytest.importorskip("sympy", reason="sympy not installed")
         # the models are all loaded a single time, and copies of individual
@@ -351,7 +347,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         pytest.importorskip("sympy", reason="sympy not installed")
         # the models are all loaded a single time, and copies of individual
@@ -389,7 +384,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         pytest.importorskip("sympy", reason="sympy not installed")
         # the models are all loaded a single time, and copies of individual
@@ -540,7 +534,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(
             example_1, trainer="keras", keras_has_custom_layer=False
@@ -553,7 +546,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         test_pymodel.run()
@@ -563,7 +555,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         pytest.importorskip("sympy", reason="sympy not installed")
         # test that the loaded models run with no issues without modifications
@@ -576,7 +567,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         pytest.importorskip("sympy", reason="sympy not installed")
         # test that the loaded models run with no issues without modifications
@@ -592,7 +582,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         pytest.importorskip("sympy", reason="sympy not installed")
         # test that the loaded models run with no issues without modifications
@@ -669,7 +658,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(
             example_1, trainer="keras", keras_has_custom_layer=False
@@ -703,7 +691,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel, "normalized", False)
@@ -738,7 +725,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Linear")
@@ -766,7 +752,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Log")
@@ -794,7 +779,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # For this example, the inputs values for some variables are large per
         # the expected_in in the no_scaling test above, and attempting to scale
@@ -837,7 +821,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Log 2")
@@ -865,7 +848,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Power 2")
@@ -893,7 +875,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks custom form of linear scaling
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -928,7 +909,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
 
@@ -946,7 +926,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
 
@@ -964,7 +943,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks custom form of linear scaling
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -988,7 +966,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks custom form of linear scaling
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1012,7 +989,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks custom form of linear scaling
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1040,7 +1016,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks custom form of linear scaling
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1068,7 +1043,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks custom form of linear scaling
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1096,7 +1070,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks syntax of passed norm function
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1125,7 +1098,6 @@ class TestPymodelMLAI:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # only run if SymPy is available; checks solve of passed norm function
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1407,7 +1379,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # change directories
         curdir = os.getcwd()
@@ -1442,7 +1413,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # change directories
         curdir = os.getcwd()
@@ -1479,7 +1449,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # change directories
         curdir = os.getcwd()
@@ -1514,7 +1483,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # change directories
         curdir = os.getcwd()
@@ -1551,7 +1519,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1588,7 +1555,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1627,7 +1593,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1664,7 +1629,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1703,7 +1667,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")
@@ -1740,7 +1703,6 @@ class TestNode:
         pytest.importorskip(
             "tensorflow",
             reason="tensorflow not installed",
-            exc_type=ModuleNotFoundError,
         )
         # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")

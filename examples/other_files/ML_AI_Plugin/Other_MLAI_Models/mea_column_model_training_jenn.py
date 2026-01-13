@@ -15,8 +15,7 @@
 import numpy as np
 import pandas as pd
 
-# from smt.utils.neural_net.model import Model
-from jenn.model import NeuralNet
+from jenn import NeuralNet
 import pickle
 from types import SimpleNamespace
 

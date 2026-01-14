@@ -936,10 +936,10 @@ class opt(optimization):
                         ]
                         nodevar = str(nodeName) + "_" + str(outVarName)
                         if nodevar in [str(v) for v in self.surrout_names_pyomo]:
-                            indx = [str(v) for v in self.surrout_names_pyomo].index(
+                            index = [str(v) for v in self.surrout_names_pyomo].index(
                                 nodevar
                             )
-                            surrin_outputvals[indx] = surrout_value
+                            surrin_outputvals[index] = surrout_value
 
                 surrin_samples_values.append(surrin_outputvals)
             latin_hypercube_samples_values = np.array(surrin_samples_values)

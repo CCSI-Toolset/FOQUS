@@ -232,7 +232,3 @@ class TestUQ(_HasAttributesSetByFixture):
             if rs_subtype:
                 qtbot.using(combo_box="Select RS:", index=1).set_option(rs_subtype)
             qtbot.click(button="Validate")
-
-    @pytest.mark.usefixtures("run_rs_validation")
-    def test_rs_validation(self):
-        assert True

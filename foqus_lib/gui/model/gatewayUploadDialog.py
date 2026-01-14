@@ -193,10 +193,10 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
             self.tableWidget.removeRow(i)
 
     def selectedTCRows(self):
-        indx = reversed(
+        index = reversed(
             sorted(set([item.row() for item in self.tableWidget.selectedItems()]))
         )
-        return indx
+        return index
 
     def updateTurbineTable(self):
         tc = self.dat.flowsheet.turbConfig
@@ -339,7 +339,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         self.updateFileTable()
 
     def removeFile(self):
-        indx = reversed(
+        index = reversed(
             sorted(
                 set(
                     [
@@ -350,7 +350,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                 )
             )
         )
-        for i in indx:
+        for i in index:
             self.files.pop(i)
         self.updateFileTable()
 

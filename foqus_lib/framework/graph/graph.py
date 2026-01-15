@@ -1574,13 +1574,13 @@ class Graph(threading.Thread):
     def getEdgeIndex(self, vkey, wkey):
         # get index of edge from v to w returns None if no edge from v to w
         # multiple edges are not allowed
-        indx = None
+        index = None
         for i in range(0, len(self.edges)):
             if self.edges[i].start == vkey:
                 if self.edges[i].end == wkey:
-                    indx = i
+                    index = i
                     break
-        return indx
+        return index
 
     def setTearSet(self, tSet):
         # mark the given list of edges as tear edges

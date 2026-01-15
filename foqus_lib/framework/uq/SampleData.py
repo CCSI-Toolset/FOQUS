@@ -196,7 +196,12 @@ class SampleData(object):
             sd["outputData"] = self.outputData.tolist()
         else:
             sd["outputData"] = self.outputData
-        sd["runState"] = self.runState.tolist()
+
+        if isinstance(self.runState, numpy.ndarray):
+            sd["runState"] = self.runState.tolist()
+        else:
+            sd["runState"] = self.runState
+
         sd["legendreOrder"] = self.legendreOrder
         sd["fromFile"] = self.fromFile
         sd["sampleRSType"] = ResponseSurfaces.getPsuadeName(self.sampleRSType)

@@ -1999,7 +1999,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.enableRSAnalyze(False)
         rs = self.getExpertRS()
         epistemicNames, epistemicIndices = self.inputPrior_table.getEpistemicVariables()
-        evars = [indx + 1 for indx in epistemicIndices]
+        evars = [index + 1 for index in epistemicIndices]
         self.RSAnalyze(
             self.output_combo,
             self.RSAnalyze_combo1,

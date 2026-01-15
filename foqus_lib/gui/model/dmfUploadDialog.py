@@ -256,10 +256,10 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.sinterConfigGUIButton.blockSignals(False)
 
     def selectedTCRows(self):
-        indx = reversed(
+        index = reversed(
             sorted(set([item.row() for item in self.tableWidget.selectedItems()]))
         )
-        return indx
+        return index
 
     def accept(self):
         """
@@ -393,7 +393,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.updateFileTable()
 
     def removeFile(self):
-        indx = reversed(
+        index = reversed(
             sorted(
                 set(
                     [
@@ -404,7 +404,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                 )
             )
         )
-        for i in indx:
+        for i in index:
             self.files.pop(i)
         self.updateFileTable()
 

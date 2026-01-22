@@ -15,6 +15,7 @@
 """
 Prototype SimSinter Configuration Writer, at this point focusing on gPROMS.
 """
+
 import sys
 from PyQt5.QtWidgets import QApplication
 from foqus_lib.gui.sinter import SinterConfigMainWindow

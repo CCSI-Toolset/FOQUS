@@ -23,8 +23,8 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-from multiprocessing.connection import Client
 
+from multiprocessing.connection import Client
 
 if __name__ == "__main__":
     inputFile = "input.txt"

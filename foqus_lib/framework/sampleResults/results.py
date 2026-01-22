@@ -240,7 +240,7 @@ class Results(pd.DataFrame):
         _log.debug("Row to flowsheet, table row {} dataframe index {}".format(row, idx))
         for col in self.columns:
             try:
-                (io_type, node, var) = col.split(".", 2)
+                io_type, node, var = col.split(".", 2)
             except ValueError:
                 # this would happen for cols with less than two .'s and is
                 # totally fine

@@ -20,6 +20,7 @@ Joshua Boverhof, Lawrence Berekeley National Lab, 2018
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
+
 import json
 import logging
 

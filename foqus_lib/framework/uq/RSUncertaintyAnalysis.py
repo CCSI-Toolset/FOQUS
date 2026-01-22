@@ -53,7 +53,7 @@ class RSUncertaintyAnalysis(UQRSAnalysis):
         fixedAsVariables = index == ResponseSurfaces.USER
         data.writeToPsuade(fnameRS, fixedAsVariables=fixedAsVariables)
         if self.subType == RSUncertaintyAnalysis.ALEATORY_ONLY:
-            (sfile, mfile) = RSAnalyzer.performUA(
+            sfile, mfile = RSAnalyzer.performUA(
                 fnameRS,
                 self.outputs[0],
                 self.responseSurface,

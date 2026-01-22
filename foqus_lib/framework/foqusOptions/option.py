@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 """option.py
-     
+
 This is an options class for FOQUS, mainly used for optimization and surrogate
 model plugins.
 

@@ -22,7 +22,6 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-
 import copy
 import logging
 import threading

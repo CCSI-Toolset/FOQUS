@@ -624,7 +624,7 @@ class InputPriorTable(QTableWidget):
                         defaultDist is not None
                         and d == defaultDist.getDistributionType()
                     ):
-                        (value1, value2) = defaultDist.getParameterValues()
+                        value1, value2 = defaultDist.getParameterValues()
                 self.activateParamCell(r, 1, d1name, value1)
                 if d2name is None:
                     self.clearParamCell(r, 2)

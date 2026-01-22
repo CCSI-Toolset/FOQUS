@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-""" #FOQUS_SURROGATE_PLUGIN
+"""#FOQUS_SURROGATE_PLUGIN
 
 Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
 beginning of the file (see pluginSearch.plugins() for exact character count of
@@ -29,7 +29,6 @@ text).  They also need to have a .py extension and inherit the surrogate class.
 John Eslick, Carnegie Mellon University, 2014
 
 """
-
 
 import copy
 import logging

@@ -15,6 +15,7 @@
 """SinterVectorizeDialog.py
 * dialog to vectorize SimSinter (.json) files
 """
+
 import os
 
 from PyQt5 import QtCore, uic

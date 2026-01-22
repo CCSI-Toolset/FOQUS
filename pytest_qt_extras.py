@@ -37,7 +37,6 @@ from PyQt5 import QtWidgets as W, QtCore, QtGui
 from pytestqt import plugin as pytestqt_plugin
 from _pytest.monkeypatch import MonkeyPatch
 
-
 # NOTE these values can be given to aliases used as kwargs when an actual filter is not needed
 # the actual value is a matter of synctactic sugar but it should suggest the meaning of
 # "any result is fine, no need to filter since I expect it to be the only one"
@@ -1423,6 +1422,7 @@ class Snapshot(_TestArtifact):
 
 class QtBot(pytestqt_plugin.QtBot):
     "Extends original class with a few convenience methods"
+
     log = ObjLogger()
 
     def __init__(

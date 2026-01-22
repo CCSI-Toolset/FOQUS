@@ -13,45 +13,44 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 """
-    Distribution class
+Distribution class
 
-    ***** Here are all the static methods dealing with the enum value ****
-    def getFullName(num):
-        Get full name of method from its enum value
-    
-    getPsuadeName(num):
-        Get psuade name of method from its enum value
+***** Here are all the static methods dealing with the enum value ****
+def getFullName(num):
+    Get full name of method from its enum value
 
-    getInfo(num):
-        Returns tuple of (full name, psuade name)
+getPsuadeName(num):
+    Get psuade name of method from its enum value
 
-    getEnumValue(name):
-        Returns enum value from full or psuade name
+getInfo(num):
+    Returns tuple of (full name, psuade name)
 
-    getParameterNames(num):
-        Returns tuple of the names of the two parameters associated
-            with the distribution of that enum value.
-            A None valuein the tuple means no parameter.
-            
+getEnumValue(name):
+    Returns enum value from full or psuade name
 
-    **** Here are all the methods for the Distribution object *****
-    Distribution(distType):
-        Instantiates object of type distType
+getParameterNames(num):
+    Returns tuple of the names of the two parameters associated
+        with the distribution of that enum value.
+        A None valuein the tuple means no parameter.
 
-    setDistributionType(distType):
-        Change distribution type
-        
-    getDistributionType():
-        Returns the distribution type of this object
 
-    getParameterValues():
-        Returns the parameter values associated with this object
+**** Here are all the methods for the Distribution object *****
+Distribution(distType):
+    Instantiates object of type distType
 
-    setParameterValues(value1, value2 = None):
-        Sets the values of the parameters.  Calling with just one parameter
-        sets the first parameter and makes the second None.
+setDistributionType(distType):
+    Change distribution type
+
+getDistributionType():
+    Returns the distribution type of this object
+
+getParameterValues():
+    Returns the parameter values associated with this object
+
+setParameterValues(value1, value2 = None):
+    Sets the values of the parameters.  Calling with just one parameter
+    sets the first parameter and makes the second None.
 """
-
 
 import numbers
 

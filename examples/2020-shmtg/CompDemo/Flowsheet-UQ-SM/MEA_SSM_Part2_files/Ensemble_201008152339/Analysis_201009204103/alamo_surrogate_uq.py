@@ -338,6 +338,6 @@ if len(sys.argv) > 3:
     else:
         if y in labels:
             index = labels.index(y)
-(nSamples, inputVectors, nInputs) = getInputData(infileName)
+nSamples, inputVectors, nInputs = getInputData(infileName)
 result = interpolate(nSamples, inputVectors, index)
 genOutputFile(outfileName, result)

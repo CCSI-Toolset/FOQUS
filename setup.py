@@ -96,7 +96,7 @@ dist = setup(
         # prebuilt wheels not available on 3.11 for matplotlib<3.6 on: macos arm64, win32
         # matplotlib>=3.8 has API incompatibilities with SDoE plots
         # see CCSI-Toolset/FOQUS#1211 for more information
-        "matplotlib >= 3.6.0, <= 3.7.5",
+        "matplotlib",
         "python-tsp==0.3.1",
         "mplcursors",
         "numpy",
@@ -112,6 +112,8 @@ dist = setup(
         "winshell; sys_platform == 'win32'",
         "websocket_client>=1.1.0",
     ],
+    # pip install ccsi-foqus[nlopt]   See Issue #1274 for details
+    extras_require={"nlopt": ["nlopt==2.7.1"]},
 )
 
 print(

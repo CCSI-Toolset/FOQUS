@@ -35,7 +35,7 @@ def checkAvailable():
 class pymodel_pg(pymodel):
     """
     This is a plugin model for a supercritical power plant using
-    some simple coorelations.
+    some simple correlations.
     """
 
     def __init__(self):

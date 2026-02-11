@@ -14,7 +14,7 @@ pytest<8.1
 coverage
 pytest-cov
 black==24.3.0
-addheader==0.3.2
+addheader
 
 # pytest-qt-extras
 pytest-qt

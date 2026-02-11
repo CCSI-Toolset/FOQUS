@@ -45,3 +45,4 @@ simin_nam = "simin_nam"
 simout_nam = "simout_nam"
 displayAvailablityWarning = "displayAvailablityWarning"
 indx = "indx"
+COmponent = "COmponent"  # Used in defining ACOSSO acronym

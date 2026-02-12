@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-""" pluginSearch.py
+"""pluginSearch.py
 
 * This class looks for plugins and creates a dictionary containing.
   the plugin models.  Plugin objects can be instantiated elsewhere.

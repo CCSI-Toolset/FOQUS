@@ -1877,7 +1877,7 @@ class Graph(threading.Thread):
         # rows of A are cycles and columns of A are edges
         # 1 if a edge is in a cycle 0 otherwise
         [A, cycles, cycleEdges] = self.cycleEdgeMatrix()  #
-        (nr, nc) = A.shape
+        nr, nc = A.shape
         if nr == 0:  # no cycles no tear edges and we are done
             return [[[]], 0, 0]
         # There are cycles so find tear edges.

@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-""" mlaiSearch.py
+"""mlaiSearch.py
 
 * This class looks for ml_ai model files and creates a list containing the
   NN model names.

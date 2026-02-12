@@ -22,7 +22,6 @@ from docutils import nodes
 from sphinx.application import Sphinx as SphinxApp
 from sphinx.roles import EmphasizedLiteral
 
-
 _logger = logging.getLogger(f"sphinx.ext.{__name__}")
 
 

@@ -17,6 +17,7 @@ Tests for sdoe/irsf
 
 See LICENSE.md for license and copyright details.
 """
+
 from importlib import resources
 from unittest import result
 

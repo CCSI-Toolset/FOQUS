@@ -417,7 +417,7 @@ class problem(object):
                         # This is just some error that was caught usually
                         # means failed to converge.
                         fail[i] = True
-            (x, f) = self.get_at_dicts(x, f)
+            x, f = self.get_at_dicts(x, f)
             if self.objtype == self.OBJ_TYPE_EVAL:
                 (
                     res[obj_index],
@@ -474,7 +474,7 @@ class problem(object):
                         # This is just some error that was caught usually
                         # means failed to converge.
                         fail[i] = True
-            (xvector, fvector) = self.get_at_dicts(xvector, fvector)
+            xvector, fvector = self.get_at_dicts(xvector, fvector)
             if self.objtype == self.OBJ_TYPE_EVAL:
                 (
                     res[obj_index],

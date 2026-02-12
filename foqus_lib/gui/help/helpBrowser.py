@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-""" turbineConfiguration.py
+"""turbineConfiguration.py
 
 * This class contains Turbine configuration profiles and  functions for
   interacting with Turbine

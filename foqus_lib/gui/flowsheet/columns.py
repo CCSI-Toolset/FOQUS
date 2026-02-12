@@ -17,6 +17,7 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+
 import os
 
 from PyQt5 import QtCore, uic

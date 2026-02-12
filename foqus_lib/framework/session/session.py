@@ -20,6 +20,7 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+
 import collections
 import copy
 import json

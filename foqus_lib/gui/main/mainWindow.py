@@ -18,6 +18,7 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+
 import functools
 import logging
 import os

@@ -17,6 +17,7 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+
 import math
 
 from PyQt5 import QtCore

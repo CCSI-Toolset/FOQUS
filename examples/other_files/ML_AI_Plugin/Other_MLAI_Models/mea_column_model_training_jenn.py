@@ -19,7 +19,6 @@ from jenn import NeuralNet
 import pickle
 from types import SimpleNamespace
 
-
 # Example follows the sequence below:
 # 1) Code at end of file to import data and create model
 # 2) Call create_model() to define inputs and outputs

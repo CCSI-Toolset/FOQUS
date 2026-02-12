@@ -114,8 +114,7 @@ dist = setup(
     ],
 )
 
-print(
-    f"""
+print(f"""
 
 ==============================================================================
 **Installed FOQUS {ver.version}**
@@ -161,5 +160,4 @@ To start FOQUS run (within this Anaconda env):
 To create a Windows Desktop shortcut for easy start-up of FOQUS,
 run once (within this Anaconda env):
   > foqus --make-shortcut
-"""
-)
+""")

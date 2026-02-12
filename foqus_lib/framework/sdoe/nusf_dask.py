@@ -77,7 +77,7 @@ def criterion(
     rand_gen = np.random.default_rng(rand_seed)
 
     def step(
-        mwr_tuple: Tuple[int, List[int], np.ndarray, Union[np.ndarray, None]]
+        mwr_tuple: Tuple[int, List[int], np.ndarray, Union[np.ndarray, None]],
     ) -> Dict:
         mwr, rands, cand_np, hist_np = mwr_tuple
 

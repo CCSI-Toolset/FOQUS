@@ -23,6 +23,7 @@
 
 Jeremy Ou, Lawrence Livermore National Laboratory, 2015
 """
+
 import sys
 from multiprocessing.connection import Client
 
@@ -115,7 +116,7 @@ def main():
     f = open("foquspsuadeclient.log", "a")
     f.write("Get samples from file %s\n" % inputFile)
     f.close()
-    (nSamples, samples) = getInputData(inputFile)
+    nSamples, samples = getInputData(inputFile)
     f = open("foquspsuadeclient.log", "a")
     f.write("Number of samples is %d\n" % nSamples)
     f.close()

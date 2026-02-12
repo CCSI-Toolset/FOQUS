@@ -13,7 +13,7 @@ pytest<8.1
 ### coverage
 coverage
 pytest-cov
-black==24.3.0
+black==26.1.0
 addheader
 
 # pytest-qt-extras

@@ -606,7 +606,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
     def addPlotValues(self, valuesDict):
         self.addPointToObjPlot(valuesDict["objective"])
         self.addToInputPlots(valuesDict["input"])
-        (iteration, objValue) = valuesDict["objective"]
+        iteration, objValue = valuesDict["objective"]
         self.setBestValueTable(iteration, objValue, valuesDict["input"][1:])
 
     def addPointToObjPlot(self, x):

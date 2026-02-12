@@ -18,6 +18,7 @@ This class can be inherited to create new FOQUS exception classes
 
 John Eslick, Carnegie Mellon University, 2014
 """
+
 import traceback
 
 

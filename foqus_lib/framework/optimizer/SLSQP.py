@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-""" #FOQUS_OPT_PLUGIN
+"""#FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
 beginning of the file (see pluginSearch.plugins() for exact character count of

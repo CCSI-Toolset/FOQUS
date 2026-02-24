@@ -63,12 +63,12 @@ The path to the ALAMO executable will need to be set in the "Settings" panel. So
 Install NLopt
 ^^^^^^^^^^^^^
 
-NLopt is an optional optimization library, which can be used by FOQUS. NLopt is not available to be installed with pip, but can be installed with conda as follows::
+NLopt is an optional optimization library, which can be used by FOQUS. NLopt can be installed as follows::
 
     conda activate ccsi-foqus
-    conda install -c conda-forge nlopt
+    pip install nlopt==2.7.1
 
-For more information, see the `NLopt Installation Instructions <https://nlopt.readthedocs.io/en/latest/>`_.
+Newer versions of NLopt cannot be used with the latest versions of FOQUS.  For more information, see the `NLopt Installation Instructions <https://nlopt.readthedocs.io/en/latest/>`_.
 
 
 Install SnobFit

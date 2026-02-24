@@ -78,7 +78,7 @@ Modules
 8. The Sequential Design of Experiments (SDOE) module currently provides a way to construct flexible
    space-filling designs based on a user-provided candidate set of input points. The method allows
    for new designs to be constructed as well as augmenting existing data to strategically select
-   input combintions that minimizes the distance between points. Development of this module is
+   input combinations that minimizes the distance between points. Development of this module is
    continuing and will soon include other options for design construction.
 
 Application Based Examples

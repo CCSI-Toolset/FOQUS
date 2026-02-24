@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -240,7 +240,7 @@ class Results(pd.DataFrame):
         _log.debug("Row to flowsheet, table row {} dataframe index {}".format(row, idx))
         for col in self.columns:
             try:
-                (io_type, node, var) = col.split(".", 2)
+                io_type, node, var = col.split(".", 2)
             except ValueError:
                 # this would happen for cols with less than two .'s and is
                 # totally fine

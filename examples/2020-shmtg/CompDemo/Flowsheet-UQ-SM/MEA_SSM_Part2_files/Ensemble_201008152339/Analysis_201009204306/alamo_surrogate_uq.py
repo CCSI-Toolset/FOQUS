@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -338,6 +338,6 @@ if len(sys.argv) > 3:
     else:
         if y in labels:
             index = labels.index(y)
-(nSamples, inputVectors, nInputs) = getInputData(infileName)
+nSamples, inputVectors, nInputs = getInputData(infileName)
 result = interpolate(nSamples, inputVectors, index)
 genOutputFile(outfileName, result)

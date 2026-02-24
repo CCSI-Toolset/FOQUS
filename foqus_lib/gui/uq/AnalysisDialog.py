@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -1999,7 +1999,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.enableRSAnalyze(False)
         rs = self.getExpertRS()
         epistemicNames, epistemicIndices = self.inputPrior_table.getEpistemicVariables()
-        evars = [indx + 1 for indx in epistemicIndices]
+        evars = [index + 1 for index in epistemicIndices]
         self.RSAnalyze(
             self.output_combo,
             self.RSAnalyze_combo1,

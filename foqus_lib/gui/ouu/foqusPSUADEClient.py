@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -23,6 +23,7 @@
 
 Jeremy Ou, Lawrence Livermore National Laboratory, 2015
 """
+
 import sys
 from multiprocessing.connection import Client
 
@@ -115,7 +116,7 @@ def main():
     f = open("foquspsuadeclient.log", "a")
     f.write("Get samples from file %s\n" % inputFile)
     f.close()
-    (nSamples, samples) = getInputData(inputFile)
+    nSamples, samples = getInputData(inputFile)
     f = open("foquspsuadeclient.log", "a")
     f.write("Number of samples is %d\n" % nSamples)
     f.close()

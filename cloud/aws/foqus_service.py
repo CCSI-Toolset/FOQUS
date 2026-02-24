@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -18,6 +18,7 @@
 Joshua Boverhof, Lawrence Berkeley National Lab
 
 """
+
 import os, sys
 import traceback
 import win32api

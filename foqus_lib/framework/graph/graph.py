@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -1574,13 +1574,13 @@ class Graph(threading.Thread):
     def getEdgeIndex(self, vkey, wkey):
         # get index of edge from v to w returns None if no edge from v to w
         # multiple edges are not allowed
-        indx = None
+        index = None
         for i in range(0, len(self.edges)):
             if self.edges[i].start == vkey:
                 if self.edges[i].end == wkey:
-                    indx = i
+                    index = i
                     break
-        return indx
+        return index
 
     def setTearSet(self, tSet):
         # mark the given list of edges as tear edges
@@ -1877,7 +1877,7 @@ class Graph(threading.Thread):
         # rows of A are cycles and columns of A are edges
         # 1 if a edge is in a cycle 0 otherwise
         [A, cycles, cycleEdges] = self.cycleEdgeMatrix()  #
-        (nr, nc) = A.shape
+        nr, nc = A.shape
         if nr == 0:  # no cycles no tear edges and we are done
             return [[[]], 0, 0]
         # There are cycles so find tear edges.

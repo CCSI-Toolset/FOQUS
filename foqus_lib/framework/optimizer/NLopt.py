@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-""" #FOQUS_OPT_PLUGIN
+"""#FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
 beginning of the file (see pluginSearch.plugins() for exact character count of
@@ -25,6 +25,7 @@ text).  They also need to have a .py extension and inherit the optimization clas
 
 John Eslick, Carnegie Mellon University, 2014
 """
+
 import logging
 import math
 import time  # Some of these things are left over from CMA-ES

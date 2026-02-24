@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -232,7 +232,3 @@ class TestUQ(_HasAttributesSetByFixture):
             if rs_subtype:
                 qtbot.using(combo_box="Select RS:", index=1).set_option(rs_subtype)
             qtbot.click(button="Validate")
-
-    @pytest.mark.usefixtures("run_rs_validation")
-    def test_rs_validation(self):
-        assert True

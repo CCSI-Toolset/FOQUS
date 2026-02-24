@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -286,10 +286,10 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         self.solverBox.clear()
         self.solverBox.addItems(self.osolvers)
         if self.osolvers:  # at least on solver available
-            indx = self.solverBox.findText(o.solver)
-            if indx == -1:
-                indx = 0
-            self.solverBox.setCurrentIndex(indx)
+            index = self.solverBox.findText(o.solver)
+            if index == -1:
+                index = 0
+            self.solverBox.setCurrentIndex(index)
             self.lastSolver = self.solverBox.currentText()
             self.setSolver(self.lastSolver)
             self.solverBox.blockSignals(False)
@@ -433,7 +433,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                 )
         table.resizeColumnsToContents()
 
-    def selectSolver(self, indx):
+    def selectSolver(self, index):
         """
         Called when a solver is selected in the solver combobox
         index:  the combo box index of current selection

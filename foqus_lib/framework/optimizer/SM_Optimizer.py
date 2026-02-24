@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,7 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-""" #FOQUS_OPT_PLUGIN
+"""#FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
 beginning of the file (see pluginSearch.plugins() for exact character count of
@@ -101,9 +101,11 @@ class opt(optimization):
         optimization.__init__(self, dat)  # base class __init__
 
         # Description of the optimization
-        self.methodDescription = "This solver provides the option to perform mathematical \
+        self.methodDescription = (
+            "This solver provides the option to perform mathematical \
              optimization based on surrogate models developed for the FOQUS \
                  flowsheet"
+        )
         self.available = packages_available  # If plugin is available
         self.description = "Optimization Solver"  # Short description
         self.mp = False  # Can evaluate objectives in parallel?
@@ -936,10 +938,10 @@ class opt(optimization):
                         ]
                         nodevar = str(nodeName) + "_" + str(outVarName)
                         if nodevar in [str(v) for v in self.surrout_names_pyomo]:
-                            indx = [str(v) for v in self.surrout_names_pyomo].index(
+                            index = [str(v) for v in self.surrout_names_pyomo].index(
                                 nodevar
                             )
-                            surrin_outputvals[indx] = surrout_value
+                            surrin_outputvals[index] = surrout_value
 
                 surrin_samples_values.append(surrin_outputvals)
             latin_hypercube_samples_values = np.array(surrin_samples_values)

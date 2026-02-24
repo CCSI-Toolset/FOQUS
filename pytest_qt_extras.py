@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -36,7 +36,6 @@ from PyQt5 import QtWidgets as W, QtCore, QtGui
 
 from pytestqt import plugin as pytestqt_plugin
 from _pytest.monkeypatch import MonkeyPatch
-
 
 # NOTE these values can be given to aliases used as kwargs when an actual filter is not needed
 # the actual value is a matter of synctactic sugar but it should suggest the meaning of
@@ -1423,6 +1422,7 @@ class Snapshot(_TestArtifact):
 
 class QtBot(pytestqt_plugin.QtBot):
     "Extends original class with a few convenience methods"
+
     log = ObjLogger()
 
     def __init__(

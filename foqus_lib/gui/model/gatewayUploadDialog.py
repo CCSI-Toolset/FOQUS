@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -17,6 +17,7 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+
 import logging
 import os
 import subprocess
@@ -193,10 +194,10 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
             self.tableWidget.removeRow(i)
 
     def selectedTCRows(self):
-        indx = reversed(
+        index = reversed(
             sorted(set([item.row() for item in self.tableWidget.selectedItems()]))
         )
-        return indx
+        return index
 
     def updateTurbineTable(self):
         tc = self.dat.flowsheet.turbConfig
@@ -339,7 +340,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         self.updateFileTable()
 
     def removeFile(self):
-        indx = reversed(
+        index = reversed(
             sorted(
                 set(
                     [
@@ -350,7 +351,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                 )
             )
         )
-        for i in indx:
+        for i in index:
             self.files.pop(i)
         self.updateFileTable()
 

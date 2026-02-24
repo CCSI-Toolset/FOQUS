@@ -1,5 +1,5 @@
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -196,7 +196,12 @@ class SampleData(object):
             sd["outputData"] = self.outputData.tolist()
         else:
             sd["outputData"] = self.outputData
-        sd["runState"] = self.runState.tolist()
+
+        if isinstance(self.runState, numpy.ndarray):
+            sd["runState"] = self.runState.tolist()
+        else:
+            sd["runState"] = self.runState
+
         sd["legendreOrder"] = self.legendreOrder
         sd["fromFile"] = self.fromFile
         sd["sampleRSType"] = ResponseSurfaces.getPsuadeName(self.sampleRSType)

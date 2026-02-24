@@ -13,11 +13,11 @@ pytest<8.1
 ### coverage
 coverage
 pytest-cov
-black==24.3.0
-addheader==0.3.2
+black==26.1.0
+addheader
 
 # pytest-qt-extras
-pytest-qt==4.2.*
+pytest-qt
 python-slugify
 oyaml
 hypothesis 

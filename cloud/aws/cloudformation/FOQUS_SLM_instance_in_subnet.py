@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #################################################################################
-# FOQUS Copyright (c) 2012 - 2025, by the software owners: Oak Ridge Institute
+# FOQUS Copyright (c) 2012 - 2026, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -61,7 +61,6 @@ from troposphere import iam
 from awacs.aws import Allow, Statement, Principal, Policy, Action
 from awacs.sts import AssumeRole
 
-
 # Globals
 # bucket_name:
 #   used by instance cloud-init scripts to grab installers, etc
@@ -76,11 +75,9 @@ def _create_template(
     """returns Template instance"""
     t = Template()
     t.add_version("2010-09-09")
-    t.add_description(
-        """Template to create SLM instance and bind to
+    t.add_description("""Template to create SLM instance and bind to
     passed in Network Interface\
-    """
-    )
+    """)
 
     keyname_param = t.add_parameter(
         Parameter(
@@ -398,7 +395,7 @@ def main():
         usage="USAGE: %prog [vpc_id] [subnet_id] [internet_gateway_id] [network_interface_id] [allocation_id]",
         description=main.__doc__,
     )
-    (options, args) = op.parse_args()
+    options, args = op.parse_args()
     # if len(args) != 1: usage()
     # command = args[0]
     # Ref(VPC)
